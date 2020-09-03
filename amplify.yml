@@ -8,9 +8,6 @@ frontend:
     # IMPORTANT - Please verify your build output directory
     baseDirectory: /home
     files:
-      - 'index.html'
-      - '/img/*'
-      - '/css/*'
-      - '/js/*'
+      - '**/*'
   cache:
     paths: []
