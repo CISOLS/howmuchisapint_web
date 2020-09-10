@@ -546,7 +546,7 @@
 	
 			<footer class="container">
 				<p class="float-right"><a href="mailto:hello@howmuchisapint.com">hello@howmuchisapint.com</a></p>
-				<p>&copy; 2018 <a href="https://www.conceptintegral.com">Concept Integral</a></p>
+				<p>&copy; 2020 <a href="https://www.conceptintegral.com">Concept Integral</a></p>
 			</footer>
 		</div>
 	
@@ -956,10 +956,9 @@
 					$scope.prices_pub_town = $scope.home_town;
 				    $scope.upd_prices_pub_town();
 	
-					var params = '?pretty=false';
+					var params = '?style=small';
 					params = params + '&pubCountry=' + $scope.home_country;
 					params = params + '&pubCity=' + $scope.home_city;
-					params = params + '&beerType=';
 					params = params + '&pubType=Pub';
 					params = params + '&pubTown=' + $scope.home_town;
 					if ($scope.home_country == 'United Kingdom' )
@@ -998,7 +997,7 @@
 								{
 									max = 5;
 								}
-								$scope.headline_stat1 = tot + ' prices in ' + stats[0]['pub']['location']['town'] + ' ' + stats[0]['pub']['type'] + 's ';
+								$scope.headline_stat1 = tot + ' prices in ' + stats[0]['pub']['town'] + ' ' + stats[0]['pub']['type'] + 's ';
 								for (i = 0; i < stats.length; i++)
 								{
 									if (stats[i]['tags'].length == 0 && stats[i]['count'] >= max)
@@ -1051,7 +1050,7 @@
 					$scope.beer_data = '';
 					$scope.add_beer_info = '';
 					$scope.add_beer_err = '';
-					var params = '?pretty=false'
+					var params = '?style=small'
 					if ($scope.add_beer_tags.length > 0)
 					{
 						params = params + '&tags=' + $scope.add_beer_tags;
@@ -1092,7 +1091,7 @@
 					$scope.pub_data = '';
 					$scope.add_pub_info = '';
 					$scope.add_pub_err = '';
-					var params = '?pretty=false'
+					var params = '?style=small'
 					if ($scope.add_pub_tags.length > 0)
 					{
 						params = params + '&tags=' + $scope.add_pub_tags;
@@ -1142,7 +1141,7 @@
 				}
 			    $scope.get_prices_params = function(wethers)
 			    {
-					var params = '?pretty=false'
+					var params = '?style=small'
 					if ($scope.prices_tags.length > 0)
 					{
 						params = params + '&tags=' + $scope.prices_tags;
@@ -1198,18 +1197,19 @@
 			  				$scope.price_stat_data = response.data;
 			  				var tot = 0;
 			  				var yrtot = 0;
+							yr = new Date().getFullYear()
 			  				for (p in response.data['beer-price-stats'])
 			  				{
-				  				for (s in response.data['beer-price-stats'][p].statistics)
+				  				for (s in response.data['beer-price-stats'][p]['by-year'])
 				  				{
-				  					if (response.data['beer-price-stats'][p].statistics[s].year == 0)
+				  					if (yr - response.data['beer-price-stats'][p]['by-year'][s].year == 0)
 				  					{
-				  						yrtot = yrtot + response.data['beer-price-stats'][p].statistics[s].count;
+				  						yrtot = yrtot + response.data['beer-price-stats'][p]['by-year'][s].count;
 				  					}
 				  				}
 			  					tot = tot + response.data['beer-price-stats'][p].count;
 			  				}
-			  				$scope.get_prices_info = response.data['beer-price-stats'].length + ' average(s) from ' + tot + ' price(s) (' + yrtot + ' in last year) ' + $scope.prices_criteria();
+			  				$scope.get_prices_info = response.data['beer-price-stats'].length + ' average(s) from ' + tot + ' price(s) (' + yrtot + ' in the last year) ' + $scope.prices_criteria();
 							$scope.working_prices = false;
 				  		}, 
 				  		function(response) 
@@ -1290,7 +1290,7 @@
 				    $http.get('https://2h9xwsp1o4.execute-api.eu-west-2.amazonaws.com/Prod/pub').
 						then(function(response)
 						{
-/*							for (i = 0; i < response.data.pub.length; i++)
+							for (i = 0; i < response.data.pub.length; i++)
 							{
 								for (t = 0; t < response.data.pub[i].tags.length; t++)
 								{
@@ -1314,7 +1314,7 @@
 				  					}
 				  					
 			  					}
-		  					}*/
+		  					}
 				  		}, 
 				  		function(response) 
 				  		{
@@ -1330,7 +1330,7 @@
 	        		$http.get('https://2h9xwsp1o4.execute-api.eu-west-2.amazonaws.com/Prod/beer').
 						then(function(response)
 						{
-/*							for (i = 0; i < response.data.beer.length; i++)
+							for (i = 0; i < response.data.beer.length; i++)
 							{
 								for (t = 0; t < response.data.beer[i].tags.length; t++)
 								{
@@ -1353,7 +1353,7 @@
 				  						$scope.beer_tags.push(response.data.beer[i].tags[t]);
 				  					}
 			  					}
-		  					}*/
+		  					}
 				  		}, 
 				  		function(response) 
 				  		{
@@ -1361,7 +1361,7 @@
 				    $http.get('https://2h9xwsp1o4.execute-api.eu-west-2.amazonaws.com/Prod/beerprice?tags=unverified').
 						then(function(response)
 						{
-/*							for (i = 0; i < response.data['beer-price'].length; i++)
+							for (i = 0; i < response.data['beer-price'].length; i++)
 							{
 								for (t = 0; t < response.data['beer-price'][i].tags.length; t++)
 								{
@@ -1384,7 +1384,7 @@
 				  						$scope.price_tags.push(response.data['beer-price'][i].tags[t]);
 				  					}
 			  					}
-		  					}*/	
+		  					}	
 				  		}, 
 				  		function(response) 
 				  		{
