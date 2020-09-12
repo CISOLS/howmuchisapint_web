@@ -14,8 +14,9 @@
 		<meta property="og:description" content="Ale, Stout or Lager How much does a good old British pint really cost?"/>  
 		<meta property="og:image" content="img/howmuchisapint_logo_big.png"/>  
 	   
-		<meta name="google-signin-client_id" content="490641715774-ntgjldqmhbr5uiginnts2nk1ack0nprj.apps.googleusercontent.com">
-
+		<!--meta name="google-signin-client_id" content="490641715774-ntgjldqmhbr5uiginnts2nk1ack0nprj.apps.googleusercontent.com"-->
+		<meta name="google-signin-client_id" content="389489146001-u67dreuh6gjbnofpmg0qtg7urtl2344r.apps.googleusercontent.com">
+		
     	<link rel="icon" type="image/png" href="img/pint.png"/>
 		<link rel="stylesheet" href="css/bootstrap.min.css">
     </head>
@@ -29,7 +30,9 @@
 		<script src="js/bootstrap.min.js"></script>
 		<script src="js/jquery.min.js"></script>
 
-	    <div class="container" ng-app="app">
+	    
+
+		<div class="container" ng-app="app">
 			<div ng-controller="appCtrl">
 				<div class="col-md-12">
 			        <h1 class="text-primary">How much is a pint?</h1>
@@ -632,10 +635,10 @@
 	        		$http.get('https://2h9xwsp1o4.execute-api.eu-west-2.amazonaws.com/Prod/drinker' + id).
 						then(function(response)
 						{
-							if (response.data['drinker'].length == 1)
+							if (response.data.data['drinker'].length == 1)
 							{
-				  				$scope.user_type = response.data.drinker[0].type;
-				  				$scope.user_name = response.data.drinker[0].name;
+				  				$scope.user_type = response.data.data.drinker[0].type;
+				  				$scope.user_name = response.data.data.drinker[0].name;
 				  				console.log($scope.user_type);
 				  				console.log($scope.user_name);
 				  				
@@ -666,18 +669,18 @@
 					    $http.get('https://2h9xwsp1o4.execute-api.eu-west-2.amazonaws.com/Prod/pub').
 							then(function(response)
 							{
-								for (p in response.data.pub)
+								for (p in response.data.data.pub)
 								{
-									if (response.data.pub[p].country == $scope.prices_pub_country)
+									if (response.data.data.pub[p].country == $scope.prices_pub_country)
 							    	{ 
 							    		var ex = false;
 							    		for (p2 in $scope.prices_pub_city_data_list)
 							    		{
-							    			ex = ex || $scope.prices_pub_city_data_list[p2].city == response.data.pub[p].city;
+							    			ex = ex || $scope.prices_pub_city_data_list[p2].city == response.data.data.pub[p].city;
 							    		}
 							    		if (!ex)
 							    		{
-						  					$scope.prices_pub_city_data_list.push(response.data.pub[p]);
+						  					$scope.prices_pub_city_data_list.push(response.data.data.pub[p]);
 					  					}
 					  				}
 					  			}
@@ -716,18 +719,18 @@
 					    $http.get('https://2h9xwsp1o4.execute-api.eu-west-2.amazonaws.com/Prod/pub').
 							then(function(response)
 							{
-								for (p in response.data.pub)
+								for (p in response.data.data.pub)
 								{
-									if (response.data.pub[p].city == $scope.prices_pub_city && response.data.pub[p].country == $scope.prices_pub_country)
+									if (response.data.data.pub[p].city == $scope.prices_pub_city && response.data.data.pub[p].country == $scope.prices_pub_country)
 							    	{ 
 							    		var ex = false;
 							    		for (p2 in $scope.prices_pub_town_data_list)
 							    		{
-							    			ex = ex || $scope.prices_pub_town_data_list[p2].town == response.data.pub[p].town;
+							    			ex = ex || $scope.prices_pub_town_data_list[p2].town == response.data.data.pub[p].town;
 							    		}
 							    		if (!ex)
 							    		{
-					  						$scope.prices_pub_town_data_list.push(response.data.pub[p]);
+					  						$scope.prices_pub_town_data_list.push(response.data.data.pub[p]);
 					  					}
 					  				}
 					  			}
@@ -753,18 +756,18 @@
 				    $http.get('https://2h9xwsp1o4.execute-api.eu-west-2.amazonaws.com/Prod/pub').
 						then(function(response)
 						{
-							for (p in response.data.pub)
+							for (p in response.data.data.pub)
 							{
-								if ((response.data.pub[p].town == $scope.prices_pub_town || $scope.prices_pub_town == null) && (response.data.pub[p].city == $scope.prices_pub_city || $scope.prices_pub_city == null) && response.data.pub[p].country == $scope.prices_pub_country)
+								if ((response.data.data.pub[p].town == $scope.prices_pub_town || $scope.prices_pub_town == null) && (response.data.data.pub[p].city == $scope.prices_pub_city || $scope.prices_pub_city == null) && response.data.data.pub[p].country == $scope.prices_pub_country)
 						    	{ 
 						    		var ex = false;
 						    		for (p2 in $scope.prices_pub_type_data_list)
 						    		{
-						    			ex = ex || $scope.prices_pub_type_data_list[p2].type == response.data.pub[p].type;
+						    			ex = ex || $scope.prices_pub_type_data_list[p2].type == response.data.data.pub[p].type;
 						    		}
 						    		if (!ex)
 						    		{
-					  					$scope.prices_pub_type_data_list.push(response.data.pub[p]);
+					  					$scope.prices_pub_type_data_list.push(response.data.data.pub[p]);
 					  				}
 				  				}
 				  			}
@@ -789,18 +792,18 @@
 					    $http.get('https://2h9xwsp1o4.execute-api.eu-west-2.amazonaws.com/Prod/pub').
 							then(function(response)
 							{
-								for (p in response.data.pub)
+								for (p in response.data.data.pub)
 								{
-									if (response.data.pub[p].type == $scope.prices_pub_type && response.data.pub[p].town == $scope.prices_pub_town && response.data.pub[p].city == $scope.prices_pub_city && response.data.pub[p].country == $scope.prices_pub_country)
+									if (response.data.data.pub[p].type == $scope.prices_pub_type && response.data.data.pub[p].town == $scope.prices_pub_town && response.data.data.pub[p].city == $scope.prices_pub_city && response.data.data.pub[p].country == $scope.prices_pub_country)
 							    	{ 
 							    		var ex = false;
 							    		for (p2 in $scope.prices_pub_data_list)
 							    		{
-							    			ex = ex || $scope.prices_pub_data_list[p2].name == response.data.pub[p].name;
+							    			ex = ex || $scope.prices_pub_data_list[p2].name == response.data.data.pub[p].name;
 							    		}
 							    		if (!ex)
 							    		{
-						  					$scope.prices_pub_data_list.push(response.data.pub[p]);
+						  					$scope.prices_pub_data_list.push(response.data.data.pub[p]);
 										}
 					  				}
 					  			}
@@ -829,11 +832,11 @@
 					    $http.get('https://2h9xwsp1o4.execute-api.eu-west-2.amazonaws.com/Prod/beer').
 							then(function(response)
 							{
-								for (p in response.data.beer)
+								for (p in response.data.data.beer)
 								{
-									if (response.data.beer[p].type == $scope.prices_beer_type)
+									if (response.data.data.beer[p].type == $scope.prices_beer_type)
 							    	{ 
-					  					$scope.prices_beer_data_list.push(response.data.beer[p]);
+					  					$scope.prices_beer_data_list.push(response.data.data.beer[p]);
 					  				}
 					  			}
 								if ($scope.prices_beer_data_list.length == 1)
@@ -861,9 +864,9 @@
 						    $http.get('https://2h9xwsp1o4.execute-api.eu-west-2.amazonaws.com/Prod/fxrate/latest/' + $scope.prices_ccy + $scope.prices_display_ccy).
 								then(function(response)
 								{
-									if (response.data['fx-rate'] !== undefined)
+									if (response.data.data['fx-rate'] !== undefined)
 					  				{
-					  					$scope.prices_display_fxrate = response.data['fx-rate']['rate'];
+					  					$scope.prices_display_fxrate = response.data.data['fx-rate']['rate'];
 						  			}
 						  		}, 
 						  		function(response) 
@@ -971,7 +974,7 @@
 		    		$http.get('https://2h9xwsp1o4.execute-api.eu-west-2.amazonaws.com/Prod/beerpricestats/BeerTypeAndPubTypeAndTown' + params).
 						then(function(response)
 						{
-				  			stats = response.data['beer-price-stats'];
+				  			stats = response.data.data['beer-price-stats'];
 				  			if (stats.length == 0)
 				  			{
 					  			$scope.headline_stat1 = 'Be the first to submit a pub pint price in ';
@@ -980,7 +983,7 @@
 					    		$http.get('https://2h9xwsp1o4.execute-api.eu-west-2.amazonaws.com/Prod/beerpricestats/BeerTypeAndPubTypeAndCity' + params).
 									then(function(response)
 									{
-							  			stats = response.data['beer-price-stats'];
+							  			stats = response.data.data['beer-price-stats'];
 							  		});
 							}
 				  			if (stats.length > 0)
@@ -1017,7 +1020,7 @@
 		    		$http.get('https://2h9xwsp1o4.execute-api.eu-west-2.amazonaws.com/Prod/beerprice?page=1&pageSize=5&pubCountry=' + $scope.home_country).
 						then(function(response)
 						{
-				  			prices = response.data['beer-price'];
+				  			prices = response.data.data['beer-price'];
 				  			c = 0
 				  			for (p in prices.sort(function(a, b){return a.date < b.date ? 1 : a.date > b.date ? -1 : 1 }))
 				  			{
@@ -1066,8 +1069,8 @@
 	        		$http.get('https://2h9xwsp1o4.execute-api.eu-west-2.amazonaws.com/Prod/beer' + params).
 						then(function(response)
 						{
-			  				$scope.beer_data = response.data;
-							$scope.add_beer_info = response.data['beer'].length + ' beer(s) - ';
+			  				$scope.beer_data = response.data.data;
+							$scope.add_beer_info = response.data.data['beer'].length + ' beer(s) - ';
 							$scope.add_beer_info = $scope.add_beer_info + ($scope.add_beer_name.length > 0 ? ' ' + $scope.add_beer_name + ($scope.add_beer_type != null ? ' (' + $scope.add_beer_type + ')' : '') : ($scope.add_beer_type != null ? ' ' + $scope.add_beer_type : ''));
 							var tags = $scope.add_beer_tags.split(' ');
 							for (t in tags)
@@ -1119,8 +1122,8 @@
 	        		$http.get('https://2h9xwsp1o4.execute-api.eu-west-2.amazonaws.com/Prod/pub' + params).
 						then(function(response)
 						{
-			  				$scope.pub_data = response.data;
-							$scope.add_pub_info = response.data['pub'].length + ' pub(s) - ';
+			  				$scope.pub_data = response.data.data;
+							$scope.add_pub_info = response.data.data['pub'].length + ' pub(s) - ';
 							$scope.add_pub_info = $scope.add_pub_info + ($scope.add_pub_name.length > 0 ? ' ' + $scope.add_pub_name + ($scope.add_pub_type != null ? ' (' + $scope.add_pub_type + ')' : '') : ($scope.add_pub_type != null ? ' ' + $scope.add_pub_type : ''));
 							$scope.add_pub_info = $scope.add_pub_info + ', ' + ($scope.add_pub_town.length > 0 ? $scope.add_pub_town + ', ': '') + ($scope.add_pub_city.length > 0 ? $scope.add_pub_city + ', ' : '') + $scope.add_pub_country;
 							var tags = $scope.add_pub_tags.split(' ');
@@ -1194,22 +1197,22 @@
 	        		$http.get('https://2h9xwsp1o4.execute-api.eu-west-2.amazonaws.com/Prod/beerpricestats/BeerTypeAndPubTypeAndCountry' + params).
 						then(function(response)
 						{
-			  				$scope.price_stat_data = response.data;
+			  				$scope.price_stat_data = response.data.data;
 			  				var tot = 0;
 			  				var yrtot = 0;
 							yr = new Date().getFullYear()
-			  				for (p in response.data['beer-price-stats'])
+			  				for (p in response.data.data['beer-price-stats'])
 			  				{
-				  				for (s in response.data['beer-price-stats'][p]['by-year'])
+				  				for (s in response.data.data['beer-price-stats'][p]['by-year'])
 				  				{
-				  					if (yr - response.data['beer-price-stats'][p]['by-year'][s].year == 0)
+				  					if (yr - response.data.data['beer-price-stats'][p]['by-year'][s].year == 0)
 				  					{
-				  						yrtot = yrtot + response.data['beer-price-stats'][p]['by-year'][s].count;
+				  						yrtot = yrtot + response.data.data['beer-price-stats'][p]['by-year'][s].count;
 				  					}
 				  				}
-			  					tot = tot + response.data['beer-price-stats'][p].count;
+			  					tot = tot + response.data.data['beer-price-stats'][p].count;
 			  				}
-			  				$scope.get_prices_info = response.data['beer-price-stats'].length + ' average(s) from ' + tot + ' price(s) (' + yrtot + ' in the last year) ' + $scope.prices_criteria();
+			  				$scope.get_prices_info = response.data.data['beer-price-stats'].length + ' average(s) from ' + tot + ' price(s) (' + yrtot + ' in the last year) ' + $scope.prices_criteria();
 							$scope.working_prices = false;
 				  		}, 
 				  		function(response) 
@@ -1231,8 +1234,8 @@
 	        		$http.get('https://2h9xwsp1o4.execute-api.eu-west-2.amazonaws.com/Prod/beerprice' + params).
 						then(function(response)
 						{
-			  				$scope.price_data = response.data;
-			  				$scope.get_prices_info = response.data['beer-price'].length + ' prices(s) ' + $scope.prices_criteria();
+			  				$scope.price_data = response.data.data;
+			  				$scope.get_prices_info = response.data.data['beer-price'].length + ' prices(s) ' + $scope.prices_criteria();
 							$scope.working_prices = false;
 				  		}, 
 				  		function(response) 
@@ -1266,7 +1269,7 @@
 				    $http.get('https://2h9xwsp1o4.execute-api.eu-west-2.amazonaws.com/Prod/refdata/country').
 						then(function(response)
 						{
-			  				$scope.country_data_list = response.data;
+			  				$scope.country_data_list = response.data.data;
 				  		}, 
 				  		function(response) 
 				  		{
@@ -1274,7 +1277,7 @@
 				    $http.get('https://2h9xwsp1o4.execute-api.eu-west-2.amazonaws.com/Prod/refdata/ccy').
 						then(function(response)
 						{
-			  				$scope.ccy_data_list = response.data;
+			  				$scope.ccy_data_list = response.data.data;
 				  		}, 
 				  		function(response) 
 				  		{
@@ -1282,7 +1285,7 @@
 				    $http.get('https://2h9xwsp1o4.execute-api.eu-west-2.amazonaws.com/Prod/refdata/pubtype').
 						then(function(response)
 						{
-			  				$scope.pub_type_data_list = response.data;
+			  				$scope.pub_type_data_list = response.data.data;
 				  		}, 
 				  		function(response) 
 				  		{
@@ -1290,27 +1293,27 @@
 				    $http.get('https://2h9xwsp1o4.execute-api.eu-west-2.amazonaws.com/Prod/pub').
 						then(function(response)
 						{
-							for (i = 0; i < response.data.pub.length; i++)
+							for (i = 0; i < response.data.data.pub.length; i++)
 							{
-								for (t = 0; t < response.data.pub[i].tags.length; t++)
+								for (t = 0; t < response.data.data.pub[i].tags.length; t++)
 								{
 						    		var ex = false;
 						    		for (t2 in $scope.all_tags)
 						    		{
-						    			ex = ex || $scope.all_tags[t2] == response.data.pub[i].tags[t];
+						    			ex = ex || $scope.all_tags[t2] == response.data.data.pub[i].tags[t];
 						    		}
 						    		if (!ex)
 						    		{
-					  					$scope.all_tags.push(response.data.pub[i].tags[t]);
+					  					$scope.all_tags.push(response.data.data.pub[i].tags[t]);
 					  				}
 						    		var ex = false;
 						    		for (t2 in $scope.pub_tags)
 						    		{
-						    			ex = ex || $scope.pub_tags[t2] == response.data.pub[i].tags[t];
+						    			ex = ex || $scope.pub_tags[t2] == response.data.data.pub[i].tags[t];
 						    		}
 						    		if (!ex)
 						    		{
-				  						$scope.pub_tags.push(response.data.pub[i].tags[t]);
+				  						$scope.pub_tags.push(response.data.data.pub[i].tags[t]);
 				  					}
 				  					
 			  					}
@@ -1322,7 +1325,7 @@
 				    $http.get('https://2h9xwsp1o4.execute-api.eu-west-2.amazonaws.com/Prod/refdata/beertype').
 						then(function(response)
 						{
-			  				$scope.beer_type_data_list = response.data;
+			  				$scope.beer_type_data_list = response.data.data;
 				  		}, 
 				  		function(response) 
 				  		{
@@ -1330,27 +1333,27 @@
 	        		$http.get('https://2h9xwsp1o4.execute-api.eu-west-2.amazonaws.com/Prod/beer').
 						then(function(response)
 						{
-							for (i = 0; i < response.data.beer.length; i++)
+							for (i = 0; i < response.data.data.beer.length; i++)
 							{
-								for (t = 0; t < response.data.beer[i].tags.length; t++)
+								for (t = 0; t < response.data.data.beer[i].tags.length; t++)
 								{
 						    		var ex = false;
 						    		for (t2 in $scope.all_tags)
 						    		{
-						    			ex = ex || $scope.all_tags[t2] == response.data.beer[i].tags[t];
+						    			ex = ex || $scope.all_tags[t2] == response.data.data.beer[i].tags[t];
 						    		}
 						    		if (!ex)
 						    		{
-				  						$scope.all_tags.push(response.data.beer[i].tags[t]);
+				  						$scope.all_tags.push(response.data.data.beer[i].tags[t]);
 				  					}
 						    		var ex = false;
 						    		for (t2 in $scope.beer_tags)
 						    		{
-						    			ex = ex || $scope.beer_tags[t2] == response.data.beer[i].tags[t];
+						    			ex = ex || $scope.beer_tags[t2] == response.data.data.beer[i].tags[t];
 						    		}
 						    		if (!ex)
 						    		{
-				  						$scope.beer_tags.push(response.data.beer[i].tags[t]);
+				  						$scope.beer_tags.push(response.data.data.beer[i].tags[t]);
 				  					}
 			  					}
 		  					}
@@ -1361,27 +1364,27 @@
 				    $http.get('https://2h9xwsp1o4.execute-api.eu-west-2.amazonaws.com/Prod/beerprice?tags=unverified').
 						then(function(response)
 						{
-							for (i = 0; i < response.data['beer-price'].length; i++)
+							for (i = 0; i < response.data.data['beer-price'].length; i++)
 							{
-								for (t = 0; t < response.data['beer-price'][i].tags.length; t++)
+								for (t = 0; t < response.data.data['beer-price'][i].tags.length; t++)
 								{
 						    		var ex = false;
 						    		for (t2 in $scope.all_tags)
 						    		{
-						    			ex = ex || $scope.all_tags[t2] == response.data['beer-price'][i].tags[t];
+						    			ex = ex || $scope.all_tags[t2] == response.data.data['beer-price'][i].tags[t];
 						    		}
 						    		if (!ex)
 						    		{
-				  						$scope.all_tags.push(response.data['beer-price'][i].tags[t]);
+				  						$scope.all_tags.push(response.data.data['beer-price'][i].tags[t]);
 				  					}
 						    		var ex = false;
 						    		for (t2 in $scope.price_tags)
 						    		{
-						    			ex = ex || $scope.price_tags[t2] == response.data['beer-price'][i].tags[t];
+						    			ex = ex || $scope.price_tags[t2] == response.data.data['beer-price'][i].tags[t];
 						    		}
 						    		if (!ex)
 						    		{
-				  						$scope.price_tags.push(response.data['beer-price'][i].tags[t]);
+				  						$scope.price_tags.push(response.data.data['beer-price'][i].tags[t]);
 				  					}
 			  					}
 		  					}	
@@ -1422,24 +1425,24 @@
 							}
 						}
 				    	msg = msg + '}}';
-		        		$http.post('https://2h9xwsp1o4.execute-api.eu-west-2.amazonaws.com/Prod/beer', msg, {'headers': {'Access-Control-Allow-Origin': '*'}}).
+		        		$http.post('https://2h9xwsp1o4.execute-api.eu-west-2.amazonaws.com/Prod/beer', msg).
 							then(function(response)
 							{
 								console.log(response)
 				  				if (response.data.status == "OK")
 				  				{
-							    	$scope.add_beer_info = $scope.get_beer_desc(response.data.beer, true);
+							    	$scope.add_beer_info = $scope.get_beer_desc(response.data.data.beer, true);
 
 					  				$scope.add_beer_name = '';
 					  				$scope.add_beer_tags = '';
 
-					  				$scope.prices_beer_type = response.data.beer[0].type;
+					  				$scope.prices_beer_type = response.data.data.beer[0].type;
 					  				$scope.upd_prices_beer_type();
-					  				$scope.prices_beer = response.data.beer[0];
+					  				$scope.prices_beer = response.data.data.beer[0];
 					  			}
 					  			else if (response.data.status.indexOf("ERROR") > -1)
 					  			{
-									$scope.add_beer_err = response.data["error-message"];
+									$scope.add_beer_err = response.data.info;
 					  			}
 					  		}, 
 					  		function(response) 
@@ -1488,19 +1491,19 @@
 					  				$scope.add_pub_name = '';
 					  				$scope.add_pub_tags = '';
 
-					  				$scope.prices_pub_country = response.data.pub.country;
+					  				$scope.prices_pub_country = response.data.data.pub.country;
 					  				$scope.upd_prices_pub_country();
-					  				$scope.prices_pub_city = response.data.pub.city;
+					  				$scope.prices_pub_city = response.data.data.pub.city;
 					  				$scope.upd_prices_pub_city();
-					  				$scope.prices_pub_town = response.data.pub.town;
+					  				$scope.prices_pub_town = response.data.data.pub.town;
 					  				$scope.upd_prices_pub_town();
-					  				$scope.prices_pub_type = response.data.pub.type;
+					  				$scope.prices_pub_type = response.data.data.pub.type;
 					  				$scope.upd_prices_pub_type();
-					  				$scope.prices_pub = response.data.pub;
+					  				$scope.prices_pub = response.data.data.pub;
 					  			}
 					  			else if (response.data.status.indexOf("ERROR") > -1)
 					  			{
-									$scope.add_pub_err = response.data["error-message"];
+									$scope.add_pub_err = response.data.info;
 					  			}
 					  		}, 
 					  		function(response) 
@@ -1573,14 +1576,14 @@
 							{
 				  				if (response.data.status == "OK")
 				  				{
-							    	$scope.add_price_info = $scope.get_price_desc(response.data["beer-price"], true);
+							    	$scope.add_price_info = $scope.get_price_desc(response.data.data["beer-price"], true);
 
 					  				$scope.add_price_amount = 0.00;
 					  				$scope.prices_tags = '';
 					  			}
 					  			else if (response.data.status.indexOf("ERROR") > -1)
 					  			{
-									$scope.add_price_err = response.data["error-message"];
+									$scope.add_price_err = response.data.info;
 					  			}
 					  		}, 
 					  		function(response) 
