@@ -1470,13 +1470,13 @@
 			    	{
 						$scope.add_pub_err = 'Incomplete - pub type, name, country, city, town and post code (UK only) required';
 			    	}
-			    	else if ($scope.user_type=='GUEST' && (!document.getElementById("input_pub_email").checkValidity() || $scope.guest_email.length == 0)) 	
+			    	else if ($scope.user_type=='GUEST' && (!document.getElementById("input_pub_email").checkValidity() || $scope.add_pub_guest_email.length == 0)) 	
 			    	{
 						$scope.add_pub_err = 'Valid guest email is required';
 			    	}
 			    	else
 			    	{
-			    		var msg = '{' + ($scope.user_type=='GUEST' ? '"guest-email":"' + $scope.guest_email : '"token":"' + user_token) + '","pub":{"type":"' + $scope.add_pub_type + '","name":"' + $scope.add_pub_name + '","country":"' + $scope.add_pub_country + '","city":"' + $scope.add_pub_city + '","town":"' + $scope.add_pub_town + '","post-code":"' + $scope.add_pub_pc + '"';
+			    		var msg = '{' + ($scope.user_type=='GUEST' ? '"guest-email":"' + $scope.add_pub_guest_email : '"token":"' + user_token) + '","pub":{"type":"' + $scope.add_pub_type + '","name":"' + $scope.add_pub_name + '","country":"' + $scope.add_pub_country + '","city":"' + $scope.add_pub_city + '","town":"' + $scope.add_pub_town + '","post-code":"' + $scope.add_pub_pc + '"';
 			    		if ($scope.add_pub_tags.length > 0)
 			    		{ 
 					    	msg = msg + ',"tags":[';
@@ -1540,7 +1540,7 @@
 			    }
 			    $scope.add_tagalert = function(ename, tora)
 			    {
-	        		$http.post('https://www.howmuchisapint.com:8443/beerprices/service/manage/v1/' + ename + '/' + tora, '{' + ($scope.user_type=='GUEST' ? '"guest-email":"' + $scope.guest_email : '"token":"' + user_token) + '","' + ename + '-id":' + id + '","tag":"' + tag + '"}').
+	        		$http.post('https://www.howmuchisapint.com:8443/beerprices/service/manage/v1/' + ename + '/' + tora, '{' + ($scope.user_type=='GUEST' ? '"guest-email":"' + $scope.add_tag_guest_email : '"token":"' + user_token) + '","' + ename + '-id":' + id + '","tag":"' + tag + '"}').
 						then(function(response)
 						{
 			  				if (response.data.status == "OK")
@@ -1566,7 +1566,7 @@
 			    	{
 						$scope.add_price_err = 'Incomplete - pub, beer and price required';
 			    	}
-			    	else if ($scope.user_type=='GUEST' && (!document.getElementById("input_price_email").checkValidity() || $scope.guest_email.length == 0))	
+			    	else if ($scope.user_type=='GUEST' && (!document.getElementById("input_price_email").checkValidity() || $scope.add_price_guest_email.length == 0))	
 			    	{
 						$scope.add_price_err = 'Valid guest email is required';
 			    	}
@@ -1574,7 +1574,7 @@
 			    	{
 					    var today = new Date();
 					    var date = today.getFullYear() + (today.getMonth()>8 ? '' : '0') + (today.getMonth() + 1) + (today.getDate()>9 ? '' : '0') + today.getDate();
-			    		var msg = '{' + ($scope.user_type=='GUEST' ? '"guest-email":"' + $scope.guest_email : '"token":"' + user_token) + '","beer-price":{"date":"' + date + '","price":' + $scope.add_price_amount + ',"pub":{"audit":{"id":' + $scope.prices_pub.audit.id + '}},"beer":{"audit":{"id":' + $scope.prices_beer.audit.id + '}}';
+			    		var msg = '{' + ($scope.user_type=='GUEST' ? '"guest-email":"' + $scope.add_price_guest_email : '"token":"' + user_token) + '","beer-price":{"date":"' + date + '","price":' + $scope.add_price_amount + ',"pub":{"audit":{"id":' + $scope.prices_pub.audit.id + '}},"beer":{"audit":{"id":' + $scope.prices_beer.audit.id + '}}';
 			    		if ($scope.prices_tags.length > 0)
 			    		{ 
 							msg = msg + ',"tags":[';
