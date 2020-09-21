@@ -632,13 +632,13 @@
 			    $scope.set_user = function(id, name)
 			    {
 	  				$scope.user_name = name;
-	        		$http.get('https://api.howmuchisapint.com/service/drinker' + id).
+	        		$http.get('https://api.howmuchisapint.com/service/drinker/' + id).
 						then(function(response)
 						{
-							if (response.data.data['drinker'].length == 1)	
+							if (response.data.data.drinker !== undefined)	
 							{
-				  				$scope.user_type = response.data.data.drinker[0].type;
-				  				$scope.user_name = response.data.data.drinker[0].name;
+				  				$scope.user_type = response.data.data.drinker.type;
+				  				$scope.user_name = response.data.data.drinker.name;
 				  				console.log($scope.user_type);
 				  				console.log($scope.user_name);
 				  				
