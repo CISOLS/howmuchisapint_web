@@ -14,7 +14,6 @@
 		<meta property="og:description" content="Ale, Stout or Lager How much does a good old British pint really cost?"/>  
 		<meta property="og:image" content="img/howmuchisapint_logo_big.png"/>  
 	   
-		<!--meta name="google-signin-client_id" content="490641715774-ntgjldqmhbr5uiginnts2nk1ack0nprj.apps.googleusercontent.com"-->
 		<meta name="google-signin-client_id" content="389489146001-u67dreuh6gjbnofpmg0qtg7urtl2344r.apps.googleusercontent.com">
 		
     	<link rel="icon" type="image/png" href="img/pint.png"/>
@@ -37,7 +36,7 @@
 				<div class="col-md-12">
 			        <h1 class="text-primary">How much is a pint?</h1>
 					<img src="img/howmuchisapint_logo.png"  class="float-right">
-			        <h4>Ale, Stout or Lager <span class="text-muted">how much does a good old British pint really cost?</span></h4>
+			        <h4>Ale, Stout or Lager <span class="text-muted">How much does a good old British pint really cost?</span></h4>
 			        <h5>{{headline_stat1}}<span class="text-muted">{{headline_stat2}}</span></h5>
 				</div>
 
@@ -132,7 +131,7 @@
 	
 										<div class="form-row">
 											<div class="col">
-												<input id="input_pub_email" class="form-control form-control-danger" type="email" ng-model="guest_email" ng-change="upd_pub_email()" placeholder="Guest Email"/>
+												<input id="input_pub_email" class="form-control form-control-danger" type="email" ng-model="add_pub_guest_email" ng-change="upd_pub_email()" placeholder="Guest Email"/>
 									  		</div>
 											<div class="col">
 												<button type="button" class="btn btn-primary" ng-click="add_pub()">Add Pub</button>
@@ -228,7 +227,7 @@
 
 									<div class="wsite-spacer" style="height:20px;"></div>
 
-							  		<!--span ng-if="user_type=='GUEST'"-->
+							  		<span ng-if="user_type=='GUEST'">
 										<div class="form-row">
 											<div class="col">
 												<button type="button" class="btn btn-primary" ng-click="get_beers()">List Beers</button>
@@ -245,7 +244,7 @@
 												<button type="button" class="btn btn-primary" ng-click="add_beer()">Add Beer</button>
 									  		</div>
 								  		</div>
-							  		<!--/span-->
+							  		</span>
 
 							  		<span ng-show="user_type!='GUEST'">
 										<div class="form-row">
@@ -394,7 +393,7 @@
 	
 										<div class="form-row">
 											<div class="col">
-												<input id="input_price_email" class="form-control form-control-danger" type="email" ng-model="guest_email" ng-change="upd_price_email()" placeholder="Guest Email"/>
+												<input id="input_price_email" class="form-control form-control-danger" type="email" ng-model="add_price_guest_email" ng-change="upd_price_email()" placeholder="Guest Email"/>
 									  		</div>
 											<div class="col">
 												<button type="button" class="btn btn-primary" ng-click="add_price()">Add Price</button>
@@ -560,8 +559,6 @@
 				$scope.user_type = 'GUEST';
 				$scope.user_ip = '';
 				
-				$scope.guest_email = '';
-
 				$scope.add_beer_name = '';
 				$scope.add_beer_tags = '';
 				$scope.add_beer_guest_email = '';
@@ -572,8 +569,10 @@
 				$scope.add_pub_town = '';
 				$scope.add_pub_pc = '';
 				$scope.add_pub_tags = '';
+				$scope.add_pub_guest_email = '';
 	
 				$scope.add_price_amount = 0.00;
+				$scope.add_price_guest_email = '';
 				$scope.prices_tags = '';
 				$scope.prices_pub_country = 'United Kingdom';
 				$scope.prices_pub_town = null;
@@ -629,7 +628,7 @@
 
 				$scope.get_ip();
 
-			    $scope.set_user = function(id, name)
+			    $scope.set_user = function(id, name, email)
 			    {
 	  				$scope.user_name = name;
 	        		$http.get('https://api.howmuchisapint.com/service/drinker/' + id).
@@ -639,6 +638,9 @@
 							{
 				  				$scope.user_type = response.data.data.drinker.type;
 				  				$scope.user_name = response.data.data.drinker.name;
+				  				$scope.add_price_guest_email = email;
+				  				$scope.add_pub_guest_email = email;
+				  				$scope.add_beer_guest_email = email;
 				  				console.log($scope.user_type);
 				  				console.log($scope.user_name);
 				  				
@@ -1413,16 +1415,17 @@
 			    		var msg = '{' + ($scope.user_type=='GUEST' ? '"guest-email":"' + $scope.add_beer_guest_email : '"token":"' + user_token) + '","beer":{"type":"' + $scope.add_beer_type + '","name":"' + $scope.add_beer_name + '"';
 			    		if ($scope.add_beer_tags.length > 0)
 			    		{ 
-				    		var tags = $scope.add_beer_tags.split(' ');
+					    	msg = msg + ',"tags":[';
+							var tags = $scope.add_beer_tags.split(' ');
 				    		if (tags.length > 0)
 				    		{
-					    		msg = msg + ',"tags":[';
 					    		for (i = 0; i < tags.length; i++)
 					    		{
 					    			msg = msg + '"' + tags[i] + '",';
 					    		}
-								msg = msg.substring(0,msg.length-1) + ']';
+								msg = msg.substring(0,msg.length-1);
 							}
+							msg = msg + '],"alerts":[]';
 						}
 				    	msg = msg + '}}';
 		        		$http.post('https://api.howmuchisapint.com/service/beer', msg).
@@ -1447,7 +1450,14 @@
 					  		}, 
 					  		function(response) 
 					  		{
-								$scope.add_beer_err = (response.statusText == '' ? 'Unknown' : response.statusText) + " [" + response.status + "]";
+					  			if (response.data.status.indexOf("ERROR") > -1)
+								{
+									$scope.add_price_err = response.data.info;
+								}
+								else
+								{
+									$scope.add_price_err = (response.statusText == '' ? 'Unknown' : response.statusText) + " [" + response.status + "]";
+								}
 							});
 					}
 			    }
@@ -1469,16 +1479,17 @@
 			    		var msg = '{' + ($scope.user_type=='GUEST' ? '"guest-email":"' + $scope.guest_email : '"token":"' + user_token) + '","pub":{"type":"' + $scope.add_pub_type + '","name":"' + $scope.add_pub_name + '","country":"' + $scope.add_pub_country + '","city":"' + $scope.add_pub_city + '","town":"' + $scope.add_pub_town + '","post-code":"' + $scope.add_pub_pc + '"';
 			    		if ($scope.add_pub_tags.length > 0)
 			    		{ 
+					    	msg = msg + ',"tags":[';
 				    		var tags = $scope.add_pub_tags.split(' ');
 				    		if (tags.length > 0)
 				    		{
-					    		msg = msg + ',"tags":[';
 					    		for (i = 0; i < tags.length; i++)
 					    		{
 					    			msg = msg + '"' + tags[i] + '",';
 					    		}
-								msg = msg.substring(0,msg.length-1) + ']';
+								msg = msg.substring(0,msg.length-1);
 							}
+							msg = msg + '],"alerts":[]';
 						}
 				    	msg = msg + '}}';
 		        		$http.post('https://api.howmuchisapint.com/service/pub', msg).
@@ -1508,7 +1519,14 @@
 					  		}, 
 					  		function(response) 
 					  		{
-								$scope.add_pub_err = (response.statusText == '' ? 'Unknown' : response.statusText) + " [" + response.status + "]";
+					  			if (response.data.status.indexOf("ERROR") > -1)
+								{
+									$scope.add_price_err = response.data.info;
+								}
+								else
+								{
+									$scope.add_price_err = (response.statusText == '' ? 'Unknown' : response.statusText) + " [" + response.status + "]";
+								}
 							});
 			    	}
 			    }
@@ -1559,17 +1577,18 @@
 			    		var msg = '{' + ($scope.user_type=='GUEST' ? '"guest-email":"' + $scope.guest_email : '"token":"' + user_token) + '","beer-price":{"date":"' + date + '","price":' + $scope.add_price_amount + ',"pub":{"audit":{"id":' + $scope.prices_pub.audit.id + '}},"beer":{"audit":{"id":' + $scope.prices_beer.audit.id + '}}';
 			    		if ($scope.prices_tags.length > 0)
 			    		{ 
+							msg = msg + ',"tags":[';
 				    		var tags = $scope.prices_tags.split(' ');
 				    		if (tags.length > 0)
 				    		{
-					    		msg = msg + ',"tags":[';
 					    		for (i = 0; i < tags.length; i++)
 					    		{
 					    			msg = msg + '"' + tags[i] + '",';
 					    		}
-								msg = msg.substring(0,msg.length-1) + ']';
+								msg = msg.substring(0,msg.length-1);
 							}
 						}
+						msg = msg + '],"alerts":[]';
 				    	msg = msg + '}}';
 		        		$http.post('https://api.howmuchisapint.com/service/beerprice', msg).
 							then(function(response)
@@ -1588,7 +1607,14 @@
 					  		}, 
 					  		function(response) 
 					  		{
-								$scope.add_price_err = (response.statusText == '' ? 'Unknown' : response.statusText) + " [" + response.status + "]";
+					  			if (response.data.status.indexOf("ERROR") > -1)
+								{
+									$scope.add_price_err = response.data.info;
+								}
+								else
+								{
+									$scope.add_price_err = (response.statusText == '' ? 'Unknown' : response.statusText) + " [" + response.status + "]";
+								}
 							});
 			    	}
 			    }
@@ -1798,7 +1824,7 @@
 			  	console.log('Email: ' + profile.getEmail());
 		        console.log("ID Token: " + user_token);
 				
-				angular.element(document.querySelector('[ng-controller="appCtrl"]')).scope().set_user(profile.getId(), profile.getName()); 
+				angular.element(document.querySelector('[ng-controller="appCtrl"]')).scope().set_user(profile.getId(), profile.getName(), profile.getEmail()); 
 			}
 		</script>
 	</body>
