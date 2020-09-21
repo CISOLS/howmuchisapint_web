@@ -132,7 +132,7 @@
 	
 										<div class="form-row">
 											<div class="col">
-												<input id="input_pub_email" class="form-control form-control-danger" type="email" ng-model="guest_email" ng-change="upd_pub_email()" placeholder="Guest Email"/>
+												<input id="input_pub_email" class="form-control form-control-danger" type="email" ng-model="add_pub_guest_email" ng-change="upd_pub_email()" placeholder="Guest Email"/>
 									  		</div>
 											<div class="col">
 												<button type="button" class="btn btn-primary" ng-click="add_pub()">Add Pub</button>
@@ -394,7 +394,7 @@
 	
 										<div class="form-row">
 											<div class="col">
-												<input id="input_price_email" class="form-control form-control-danger" type="email" ng-model="guest_email" ng-change="upd_price_email()" placeholder="Guest Email"/>
+												<input id="input_price_email" class="form-control form-control-danger" type="email" ng-model="add_price_guest_email" ng-change="upd_price_email()" placeholder="Guest Email"/>
 									  		</div>
 											<div class="col">
 												<button type="button" class="btn btn-primary" ng-click="add_price()">Add Price</button>
@@ -560,8 +560,6 @@
 				$scope.user_type = 'GUEST';
 				$scope.user_ip = '';
 				
-				$scope.guest_email = '';
-
 				$scope.add_beer_name = '';
 				$scope.add_beer_tags = '';
 				$scope.add_beer_guest_email = '';
@@ -572,8 +570,10 @@
 				$scope.add_pub_town = '';
 				$scope.add_pub_pc = '';
 				$scope.add_pub_tags = '';
+				$scope.add_pub_guest_email = '';
 	
 				$scope.add_price_amount = 0.00;
+				$scope.add_price_guest_email = '';
 				$scope.prices_tags = '';
 				$scope.prices_pub_country = 'United Kingdom';
 				$scope.prices_pub_town = null;
@@ -629,7 +629,7 @@
 
 				$scope.get_ip();
 
-			    $scope.set_user = function(id, name)
+			    $scope.set_user = function(id, name, enail)
 			    {
 	  				$scope.user_name = name;
 	        		$http.get('https://api.howmuchisapint.com/test/drinker/' + id).
@@ -639,6 +639,9 @@
 							{
 				  				$scope.user_type = response.data.data.drinker.type;
 				  				$scope.user_name = response.data.data.drinker.name;
+				  				$scope.add_price_guest_email = email;
+				  				$scope.add_pub_guest_email = email;
+				  				$scope.add_beer_guest_email = email;
 				  				console.log($scope.user_type);
 				  				console.log($scope.user_name);
 				  				
@@ -1798,7 +1801,7 @@
 			  	console.log('Email: ' + profile.getEmail());
 		        console.log("ID Token: " + user_token);
 				
-				angular.element(document.querySelector('[ng-controller="appCtrl"]')).scope().set_user(profile.getId(), profile.getName()); 
+				angular.element(document.querySelector('[ng-controller="appCtrl"]')).scope().set_user(profile.getId(), profile.getName(), profile.getEmail()); 
 			}
 		</script>
 	</body>
