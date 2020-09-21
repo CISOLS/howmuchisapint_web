@@ -1443,14 +1443,21 @@
 					  				$scope.upd_prices_beer_type();
 					  				$scope.prices_beer = response.data.data.beer[0];
 					  			}
-					  			else if (response.status.indexOf("ERROR") > -1)
+					  			else if (response.data.status.indexOf("ERROR") > -1)
 					  			{
 									$scope.add_beer_err = response.data.info;
 					  			}
 					  		}, 
 					  		function(response) 
 					  		{
-								$scope.add_beer_err = (response.statusText == '' ? 'Unknown' : response.statusText) + " [" + response.status + "]";
+					  			if (response.data.status.indexOf("ERROR") > -1)
+								{
+									$scope.add_price_err = response.data.info;
+								}
+								else
+								{
+									$scope.add_price_err = (response.statusText == '' ? 'Unknown' : response.statusText) + " [" + response.status + "]";
+								}
 							});
 					}
 			    }
@@ -1505,14 +1512,21 @@
 					  				$scope.upd_prices_pub_type();
 					  				$scope.prices_pub = response.data.data.pub;
 					  			}
-					  			else if (response.status.indexOf("ERROR") > -1)
+					  			else if (response.data.status.indexOf("ERROR") > -1)
 					  			{
 									$scope.add_pub_err = response.data.info;
 					  			}
 					  		}, 
 					  		function(response) 
 					  		{
-								$scope.add_pub_err = (response.statusText == '' ? 'Unknown' : response.statusText) + " [" + response.status + "]";
+					  			if (response.data.status.indexOf("ERROR") > -1)
+								{
+									$scope.add_price_err = response.data.info;
+								}
+								else
+								{
+									$scope.add_price_err = (response.statusText == '' ? 'Unknown' : response.statusText) + " [" + response.status + "]";
+								}
 							});
 			    	}
 			    }
@@ -1532,7 +1546,7 @@
 			  				if (response.data.status == "OK")
 			  				{
 				  			}
-				  			else if (response.status.indexOf("ERROR") > -1)
+				  			else if (response.data.status.indexOf("ERROR") > -1)
 				  			{
 				  			}
 				  		}, 
@@ -1586,15 +1600,21 @@
 					  				$scope.add_price_amount = 0.00;
 					  				$scope.prices_tags = '';
 					  			}
-					  			else if (response.status.indexOf("ERROR") > -1)
+					  			else if (response.data.status.indexOf("ERROR") > -1)
 					  			{
 									$scope.add_price_err = response.data.info;
 					  			}
 					  		}, 
 					  		function(response) 
 					  		{
-								console.log(response)
-								$scope.add_price_err = (response.statusText == '' ? 'Unknown' : response.statusText) + " [" + response.status + "]";
+					  			if (response.data.status.indexOf("ERROR") > -1)
+								{
+									$scope.add_price_err = response.data.info;
+								}
+								else
+								{
+									$scope.add_price_err = (response.statusText == '' ? 'Unknown' : response.statusText) + " [" + response.status + "]";
+								}
 							});
 			    	}
 			    }
