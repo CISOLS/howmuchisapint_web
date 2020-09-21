@@ -1413,9 +1413,9 @@
 			    	else
 			    	{
 			    		var msg = '{' + ($scope.user_type=='GUEST' ? '"guest-email":"' + $scope.add_beer_guest_email : '"token":"' + user_token) + '","beer":{"type":"' + $scope.add_beer_type + '","name":"' + $scope.add_beer_name + '"';
+						msg = msg + ',"tags":[';
 			    		if ($scope.add_beer_tags.length > 0)
 			    		{ 
-					    	msg = msg + ',"tags":[';
 							var tags = $scope.add_beer_tags.split(' ');
 				    		if (tags.length > 0)
 				    		{
@@ -1425,8 +1425,8 @@
 					    		}
 								msg = msg.substring(0,msg.length-1);
 							}
-							msg = msg + '],"alerts":[]';
 						}
+						msg = msg + '],"alerts":[]';
 				    	msg = msg + '}}';
 		        		$http.post('https://api.howmuchisapint.com/service/beer', msg).
 							then(function(response)
@@ -1477,9 +1477,9 @@
 			    	else
 			    	{
 			    		var msg = '{' + ($scope.user_type=='GUEST' ? '"guest-email":"' + $scope.add_pub_guest_email : '"token":"' + user_token) + '","pub":{"type":"' + $scope.add_pub_type + '","name":"' + $scope.add_pub_name + '","country":"' + $scope.add_pub_country + '","city":"' + $scope.add_pub_city + '","town":"' + $scope.add_pub_town + '","post-code":"' + $scope.add_pub_pc + '"';
+						msg = msg + ',"tags":[';
 			    		if ($scope.add_pub_tags.length > 0)
 			    		{ 
-					    	msg = msg + ',"tags":[';
 				    		var tags = $scope.add_pub_tags.split(' ');
 				    		if (tags.length > 0)
 				    		{
@@ -1489,8 +1489,8 @@
 					    		}
 								msg = msg.substring(0,msg.length-1);
 							}
-							msg = msg + '],"alerts":[]';
 						}
+						msg = msg + '],"alerts":[]';
 				    	msg = msg + '}}';
 		        		$http.post('https://api.howmuchisapint.com/service/pub', msg).
 							then(function(response)
@@ -1575,9 +1575,9 @@
 					    var today = new Date();
 					    var date = today.getFullYear() + (today.getMonth()>8 ? '' : '0') + (today.getMonth() + 1) + (today.getDate()>9 ? '' : '0') + today.getDate();
 			    		var msg = '{' + ($scope.user_type=='GUEST' ? '"guest-email":"' + $scope.add_price_guest_email : '"token":"' + user_token) + '","beer-price":{"date":"' + date + '","price":' + $scope.add_price_amount + ',"pub":{"audit":{"id":' + $scope.prices_pub.audit.id + '}},"beer":{"audit":{"id":' + $scope.prices_beer.audit.id + '}}';
+						msg = msg + ',"tags":[';
 			    		if ($scope.prices_tags.length > 0)
 			    		{ 
-							msg = msg + ',"tags":[';
 				    		var tags = $scope.prices_tags.split(' ');
 				    		if (tags.length > 0)
 				    		{
