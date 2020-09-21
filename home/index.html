@@ -36,7 +36,7 @@
 				<div class="col-md-12">
 			        <h1 class="text-primary">How much is a pint?</h1>
 					<img src="img/howmuchisapint_logo.png"  class="float-right">
-			        <h4>Ale, Stout or Lager <span class="text-muted">how much does a good old British pint really cost?</span></h4>
+			        <h4>Ale, Stout or Lager <span class="text-muted">How much does a good old British pint really cost?</span></h4>
 			        <h5>{{headline_stat1}}<span class="text-muted">{{headline_stat2}}</span></h5>
 				</div>
 
@@ -1425,7 +1425,7 @@
 					    		}
 								msg = msg.substring(0,msg.length-1);
 							}
-							msg =  + '],"alerts":[]';
+							msg = msg + '],"alerts":[]';
 						}
 				    	msg = msg + '}}';
 		        		$http.post('https://api.howmuchisapint.com/test/beer', msg).
@@ -1489,7 +1489,7 @@
 					    		}
 								msg = msg.substring(0,msg.length-1);
 							}
-							msg =  + '],"alerts":[]';
+							msg = msg + '],"alerts":[]';
 						}
 				    	msg = msg + '}}';
 		        		$http.post('https://api.howmuchisapint.com/test/pub', msg).
@@ -1588,7 +1588,7 @@
 								msg = msg.substring(0,msg.length-1);
 							}
 						}
-						msg =  + ']';
+						msg = msg + '],"alerts":[]';
 				    	msg = msg + '}}';
 		        		$http.post('https://api.howmuchisapint.com/test/beerprice', msg).
 							then(function(response)
