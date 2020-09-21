@@ -632,11 +632,7 @@
 			    $scope.set_user = function(id, name)
 			    {
 	  				$scope.user_name = name;
-<<<<<<< Updated upstream
-	        		$http.get('https://api.howmuchisapint.com/service_dev/drinker' + id).
-=======
 	        		$http.get('https://api.howmuchisapint.com/service/drinker/' + id).
->>>>>>> Stashed changes
 						then(function(response)
 						{
 							if (response.data.data['drinker'].length == 1)	
