@@ -641,8 +641,7 @@
 				  				$scope.add_price_guest_email = email;
 				  				$scope.add_pub_guest_email = email;
 				  				$scope.add_beer_guest_email = email;
-				  				console.log($scope.user_type);
-				  				console.log($scope.user_name);
+				  				console.log($scope.user_name + 'is a ' + $scope.user_type + ' user');
 				  				
 				  			}
 				  			else
@@ -1819,11 +1818,11 @@
 			 	var profile = googleUser.getBasicProfile();
 		        user_token = googleUser.getAuthResponse().id_token;
 	
-				console.log('ID: ' + profile.getId());
-			  	console.log('Name: ' + profile.getName());
-			  	console.log('Image URL: ' + profile.getImageUrl());
-			  	console.log('Email: ' + profile.getEmail());
-		        console.log("ID Token: " + user_token);
+				console.log('google id: ' + profile.getId());
+			  	console.log('google name: ' + profile.getName());
+			  	console.log('google image: ' + profile.getImageUrl());
+			  	console.log('google email: ' + profile.getEmail());
+		        console.log("google id token: " + user_token);
 				
 				angular.element(document.querySelector('[ng-controller="appCtrl"]')).scope().set_user(profile.getId(), profile.getName(), profile.getEmail()); 
 			}
