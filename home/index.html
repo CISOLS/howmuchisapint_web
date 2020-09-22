@@ -1427,19 +1427,19 @@
 		        		$http.post('https://api.howmuchisapint.com/test/beer', msg).
 							then(function(response)
 							{
-								console.log(response)
 								$scope.add_beer_info = $scope.get_beer_desc(response.data.beer, true);
 
 								$scope.add_beer_name = '';
 								$scope.add_beer_tags = '';
 
-								$scope.prices_beer_type = response.data.beer[0].type;
+								$scope.prices_beer_type = response.data.beer.type;
 								$scope.upd_prices_beer_type();
-								$scope.prices_beer = response.data.beer[0];
+								$scope.prices_beer = response.data.beer;
 								$scope.beer_err = response.statusText;
 					  		}, 
 					  		function(response) 
 					  		{
+								console.log(response)
 								$scope.beer_err = (response.statusText == '' ? 'Unknown' : response.statusText) + " [" + response.status + "]";
 							});
 					}
