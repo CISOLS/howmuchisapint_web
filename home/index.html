@@ -1408,6 +1408,7 @@
 			    	}
 			    	else
 			    	{
+						$scope.working_beer = true;
 			    		var msg = '{' + ($scope.user_type=='GUEST' ? '"guest-email":"' + $scope.add_beer_guest_email : '"token":"' + user_token) + '","beer":{"type":"' + $scope.add_beer_type + '","name":"' + $scope.add_beer_name + '"';
 						msg = msg + ',"tags":[';
 			    		if ($scope.add_beer_tags.length > 0)
@@ -1436,11 +1437,12 @@
 								$scope.upd_prices_beer_type();
 								$scope.prices_beer = response.data.beer;
 								$scope.beer_err = response.statusText;
+								$scope.working_beer = false;
 					  		}, 
 					  		function(response) 
 					  		{
-								console.log(response)
 								$scope.beer_err = (response.statusText == '' ? 'Unknown' : response.statusText) + " [" + response.status + "]";
+								$scope.working_beer = false;
 							});
 					}
 			    }
@@ -1459,6 +1461,7 @@
 			    	}
 			    	else
 			    	{
+						$scope.working_pub = true;
 			    		var msg = '{' + ($scope.user_type=='GUEST' ? '"guest-email":"' + $scope.add_pub_guest_email : '"token":"' + user_token) + '","pub":{"type":"' + $scope.add_pub_type + '","name":"' + $scope.add_pub_name + '","country":"' + $scope.add_pub_country + '","city":"' + $scope.add_pub_city + '","town":"' + $scope.add_pub_town + '","post-code":"' + $scope.add_pub_pc + '"';
 						msg = msg + ',"tags":[';
 			    		if ($scope.add_pub_tags.length > 0)
@@ -1494,10 +1497,12 @@
 								$scope.upd_prices_pub_type();
 								$scope.prices_pub = response.data.pub;
 								$scope.pub_err = response.statusText;
+								$scope.working_pub = false;
 					  		}, 
 					  		function(response) 
 					  		{
 								$scope.pub_err = (response.statusText == '' ? 'Unknown' : response.statusText) + " [" + response.status + "]";
+								$scope.working_pub = false;
 							});
 			    	}
 			    }
@@ -1536,6 +1541,7 @@
 			    	}
 			    	else
 			    	{
+						$scope.working_prices = true;
 					    var today = new Date();
 					    var date = today.getFullYear() + (today.getMonth()>8 ? '' : '0') + (today.getMonth() + 1) + (today.getDate()>9 ? '' : '0') + today.getDate();
 			    		var msg = '{' + ($scope.user_type=='GUEST' ? '"guest-email":"' + $scope.add_price_guest_email : '"token":"' + user_token) + '","beer-price":{"date":"' + date + '","price":' + $scope.add_price_amount + ',"pub":{"audit":{"id":' + $scope.prices_pub.audit.id + '}},"beer":{"audit":{"id":' + $scope.prices_beer.audit.id + '}}';
@@ -1562,10 +1568,12 @@
 								$scope.add_price_amount = 0.00;
 								$scope.prices_tags = '';
 								$scope.price_err = response.statusText;
-					  		}, 
+								$scope.working_prices = false;
+				  		}, 
 					  		function(response) 
 					  		{
 								$scope.price_err = (response.statusText == '' ? 'Unknown' : response.statusText) + " [" + response.status + "]";
+								$scope.working_prices = false;
 							});
 			    	}
 			    }
