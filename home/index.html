@@ -1478,7 +1478,8 @@
 		        		$http.post('https://api.howmuchisapint.com/test/pub', msg).
 							then(function(response)
 							{
-								$scope.add_pub_info = $scope.get_pub_desc(response.pub, true);
+								colnsole.log(
+								$scope.add_pub_info = $scope.get_pub_desc(response.data.pub, true);
 
 								$scope.add_pub_name = '';
 								$scope.add_pub_tags = '';
