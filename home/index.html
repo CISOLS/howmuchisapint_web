@@ -641,7 +641,8 @@
 				  				$scope.add_price_guest_email = email;
 				  				$scope.add_pub_guest_email = email;
 				  				$scope.add_beer_guest_email = email;
-				  				console.log($scope.user_name + 'is a ' + $scope.user_type + ' user');
+				  				console.log($scope.user_type);
+				  				console.log($scope.user_name);
 				  				
 				  			}
 				  			else
@@ -1494,10 +1495,11 @@
 		        		$http.post('https://api.howmuchisapint.com/test/pub', msg).
 							then(function(response)
 							{
+								console.log("A")
 								console.log(response)
 				  				if (response.data.status == "OK")
 				  				{
-							    	$scope.add_pub_info = $scope.get_pub_desc(response.data.data.pub, true);
+							    	$scope.add_pub_info = $scope.get_pub_desc(response.pub, true);
 
 					  				$scope.add_pub_name = '';
 					  				$scope.add_pub_tags = '';
@@ -1519,6 +1521,8 @@
 					  		}, 
 					  		function(response) 
 					  		{
+								console.log("B")
+								console.log(response)
 					  			if (response.data.status.indexOf("ERROR") > -1)
 								{
 									$scope.add_price_err = response.data.info;
@@ -1818,11 +1822,11 @@
 			 	var profile = googleUser.getBasicProfile();
 		        user_token = googleUser.getAuthResponse().id_token;
 	
-				console.log('google id: ' + profile.getId());
-			  	console.log('google name: ' + profile.getName());
-			  	console.log('google image: ' + profile.getImageUrl());
-			  	console.log('google email: ' + profile.getEmail());
-		        console.log("google id token: " + user_token);
+				console.log('ID: ' + profile.getId());
+			  	console.log('Name: ' + profile.getName());
+			  	console.log('Image URL: ' + profile.getImageUrl());
+			  	console.log('Email: ' + profile.getEmail());
+		        console.log("ID Token: " + user_token);
 				
 				angular.element(document.querySelector('[ng-controller="appCtrl"]')).scope().set_user(profile.getId(), profile.getName(), profile.getEmail()); 
 			}
