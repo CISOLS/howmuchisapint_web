@@ -1084,7 +1084,14 @@
 				  		}, 
 				  		function(response) 
 				  		{
-							$scope.beer_err = (response.statusText == '' ? 'Unknown' : response.statusText) + " [" + response.status + "]";
+							if (parseInt(response.status) > 399 && parseInt(response.status) < 500)
+							{  
+								$scope.beer_err = response.data['error-message'];
+							}
+							else
+							{
+								$scope.beer_err = response.status + " " + response.data['error-message'];
+							}
 							$scope.working_beer = false;
 						});
 			    }
@@ -1138,7 +1145,14 @@
 				  		}, 
 				  		function(response) 
 				  		{
-							$scope.pub_err = (response.statusText == '' ? 'Unknown' : response.statusText) + " [" + response.status + "]";
+							if (parseInt(response.status) > 399 && parseInt(response.status) < 500)
+							{  
+								$scope.pub_err = response.data['error-message'];
+							}
+							else
+							{
+								$scope.pub_err = response.status + " " + response.data['error-message'];
+							}
 							$scope.working_pub = false;
 						});
 				}
@@ -1216,7 +1230,14 @@
 				  		}, 
 				  		function(response) 
 				  		{
-							$scope.price_err = (response.statusText == '' ? 'Unknown' : response.statusText) + " [" + response.status + "]";
+							if (parseInt(response.status) > 399 && parseInt(response.status) < 500)
+							{  
+								$scope.price_err = response.data['error-message'];
+							}
+							else
+							{
+								$scope.price_err = response.status + " " + response.data['error-message'];
+							}
 							$scope.working_prices = false;
 						});
 			    }
@@ -1238,7 +1259,14 @@
 				  		}, 
 				  		function(response) 
 				  		{
-							$scope.price_err = (response.statusText == '' ? 'Unknown' : response.statusText) + " [" + response.status + "]";
+							if (parseInt(response.status) > 399 && parseInt(response.status) < 500)
+							{  
+								$scope.price_err = response.data['error-message'];
+							}
+							else
+							{
+								$scope.price_err = response.status + " " + response.data['error-message'];
+							}
 							$scope.working_prices = false;
 						});
 			    }
@@ -1441,7 +1469,14 @@
 					  		}, 
 					  		function(response) 
 					  		{
-								$scope.beer_err = (response.statusText == '' ? 'Unknown' : response.statusText) + " [" + response.status + "]";
+								if (parseInt(response.status) > 399 && parseInt(response.status) < 500)
+								{  
+									$scope.beer_err = response.data['error-message'];
+								}
+								else
+								{
+									$scope.beer_err = response.status + " " + response.data['error-message'];
+								}
 								$scope.working_beer = false;
 							});
 					}
@@ -1500,7 +1535,14 @@
 					  		}, 
 					  		function(response) 
 					  		{
-								$scope.pub_err = (response.statusText == '' ? 'Unknown' : response.statusText) + " [" + response.status + "]";
+								if (parseInt(response.status) > 399 && parseInt(response.status) < 500)
+								{  
+									$scope.pub_err = response.data['error-message'];
+								}
+								else
+								{
+									$scope.pub_err = response.status + " " + response.data['error-message'];
+								}
 								$scope.working_pub = false;
 							});
 			    	}
@@ -1571,7 +1613,14 @@
 				  		}, 
 					  		function(response) 
 					  		{
-								$scope.price_err = (response.statusText == '' ? 'Unknown' : response.statusText) + " [" + response.status + "]";
+								if (parseInt(response.status) > 399 && parseInt(response.status) < 500)
+								{  
+									$scope.price_err = response.data['error-message'];
+								}
+								else
+								{
+									$scope.price_err = response.status + " " + response.data['error-message'];
+								}
 								$scope.working_prices = false;
 							});
 			    	}
