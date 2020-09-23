@@ -629,7 +629,7 @@
 			    $scope.set_user = function(id, name, email)
 			    {
 	  				$scope.user_name = name;
-	        		$http.get('https://api.howmuchisapint.com/test/drinker/' + id).
+	        		$http.get('https://api.howmuchisapint.com/service/drinker/' + id).
 						then(function(response)
 						{
 							if (response.data.drinker !== undefined)	
@@ -666,7 +666,7 @@
 					$scope.prices_pub_type_data_list = [];
 					if ($scope.prices_pub_country != null)
 					{
-					    $http.get('https://api.howmuchisapint.com/test/pub').
+					    $http.get('https://api.howmuchisapint.com/service/pub').
 							then(function(response)
 							{
 								for (p in response.data.pub)
@@ -716,7 +716,7 @@
 					$scope.prices_pub_type_data_list = [];
 					if ($scope.prices_pub_country != null)
 					{
-					    $http.get('https://api.howmuchisapint.com/test/pub').
+					    $http.get('https://api.howmuchisapint.com/service/pub').
 							then(function(response)
 							{
 								for (p in response.data.pub)
@@ -753,7 +753,7 @@
 					$scope.prices_pub = null;
 					$scope.prices_pub_type_data_list = [];
 					$scope.prices_pub_data_list = [];
-				    $http.get('https://api.howmuchisapint.com/test/pub').
+				    $http.get('https://api.howmuchisapint.com/service/pub').
 						then(function(response)
 						{
 							for (p in response.data.pub)
@@ -789,7 +789,7 @@
 					$scope.prices_pub_data_list = [];
 					if ($scope.prices_pub_type != null)
 					{
-					    $http.get('https://api.howmuchisapint.com/test/pub').
+					    $http.get('https://api.howmuchisapint.com/service/pub').
 							then(function(response)
 							{
 								for (p in response.data.pub)
@@ -829,7 +829,7 @@
 					$scope.prices_beer_data_list = [];
 					if ($scope.prices_beer_type != null)
 					{
-					    $http.get('https://api.howmuchisapint.com/test/beer').
+					    $http.get('https://api.howmuchisapint.com/service/beer').
 							then(function(response)
 							{
 								for (p in response.data.beer)
@@ -861,7 +861,7 @@
 				    	$scope.prices_display_fxrate = 1;
 						if ($scope.prices_ccy != $scope.prices_display_ccy)
 						{
-						    $http.get('https://api.howmuchisapint.com/test/fxrate/latest/' + $scope.prices_ccy + $scope.prices_display_ccy).
+						    $http.get('https://api.howmuchisapint.com/service/fxrate/latest/' + $scope.prices_ccy + $scope.prices_display_ccy).
 								then(function(response)
 								{
 									if (response.data['fx-rate'] !== undefined)
@@ -971,7 +971,7 @@
 					var stats = [];
 		  			$scope.headline_stat1 = '';
 		  			$scope.headline_stat2 = '';
-		    		$http.get('https://api.howmuchisapint.com/test/beerpricestats/BeerTypeAndPubTypeAndTown' + params).
+		    		$http.get('https://api.howmuchisapint.com/service/beerpricestats/BeerTypeAndPubTypeAndTown' + params).
 						then(function(response)
 						{
 				  			stats = response.data['beer-price-stats'];
@@ -980,7 +980,7 @@
 					  			$scope.headline_stat1 = 'Be the first to submit a pub pint price in ';
 					  			$scope.headline_stat2 = $scope.home_town;
 					  			
-					    		$http.get('https://api.howmuchisapint.com/test/beerpricestats/BeerTypeAndPubTypeAndCity' + params).
+					    		$http.get('https://api.howmuchisapint.com/service/beerpricestats/BeerTypeAndPubTypeAndCity' + params).
 									then(function(response)
 									{
 							  			stats = response.data['beer-price-stats'];
@@ -1017,7 +1017,7 @@
 						});
 		  			$scope.headline_latest = [];
 		  			$scope.headline_latest_ccy_symbol = [];
-		    		$http.get('https://api.howmuchisapint.com/test/beerprice?page=1&pageSize=5&pubCountry=' + $scope.home_country).
+		    		$http.get('https://api.howmuchisapint.com/service/beerprice?page=1&pageSize=5&pubCountry=' + $scope.home_country).
 						then(function(response)
 						{
 				  			prices = response.data['beer-price'];
@@ -1066,7 +1066,7 @@
 					{
 						params = params + '&name=' + $scope.add_beer_name;
 					}				
-	        		$http.get('https://api.howmuchisapint.com/test/beer' + params).
+	        		$http.get('https://api.howmuchisapint.com/service/beer' + params).
 						then(function(response)
 						{
 			  				$scope.beer_data = response.data;
@@ -1126,7 +1126,7 @@
 					{
 						params = params + '&name=' + $scope.add_pub_name;
 					}				
-	        		$http.get('https://api.howmuchisapint.com/test/pub' + params).
+	        		$http.get('https://api.howmuchisapint.com/service/pub' + params).
 						then(function(response)
 						{
 			  				$scope.pub_data = response.data;
@@ -1207,7 +1207,7 @@
 					$scope.price_data = '';
 					$scope.working_prices = true;
 					var params = $scope.get_prices_params(true);
-	        		$http.get('https://api.howmuchisapint.com/test/beerpricestats/BeerTypeAndPubTypeAndCountry' + params).
+	        		$http.get('https://api.howmuchisapint.com/service/beerpricestats/BeerTypeAndPubTypeAndCountry' + params).
 						then(function(response)
 						{
 			  				$scope.price_stat_data = response.data;
@@ -1250,7 +1250,7 @@
 					$scope.price_data = '';
 					$scope.working_prices = true;
 					var params = $scope.get_prices_params();
-	        		$http.get('https://api.howmuchisapint.com/test/beerprice' + params).
+	        		$http.get('https://api.howmuchisapint.com/service/beerprice' + params).
 						then(function(response)
 						{
 			  				$scope.price_data = response.data;
@@ -1292,7 +1292,7 @@
 			    	$scope.price_tags = [];
 			    	$scope.pub_tags = [];
 			    	$scope.beer_tags = [];
-				    $http.get('https://api.howmuchisapint.com/test/refdata/country').
+				    $http.get('https://api.howmuchisapint.com/service/refdata/country').
 						then(function(response)
 						{
 			  				$scope.country_data_list = response.data;
@@ -1300,7 +1300,7 @@
 				  		function(response) 
 				  		{
 						});
-				    $http.get('https://api.howmuchisapint.com/test/refdata/ccy').
+				    $http.get('https://api.howmuchisapint.com/service/refdata/ccy').
 						then(function(response)
 						{
 			  				$scope.ccy_data_list = response.data;
@@ -1308,7 +1308,7 @@
 				  		function(response) 
 				  		{
 						});
-				    $http.get('https://api.howmuchisapint.com/test/refdata/pubtype').
+				    $http.get('https://api.howmuchisapint.com/service/refdata/pubtype').
 						then(function(response)
 						{
 			  				$scope.pub_type_data_list = response.data;
@@ -1316,7 +1316,7 @@
 				  		function(response) 
 				  		{
 						});
-				    $http.get('https://api.howmuchisapint.com/test/pub').
+				    $http.get('https://api.howmuchisapint.com/service/pub').
 						then(function(response)
 						{
 							for (i = 0; i < response.data.pub.length; i++)
@@ -1348,7 +1348,7 @@
 				  		function(response) 
 				  		{
 						});
-				    $http.get('https://api.howmuchisapint.com/test/refdata/beertype').
+				    $http.get('https://api.howmuchisapint.com/service/refdata/beertype').
 						then(function(response)
 						{
 			  				$scope.beer_type_data_list = response.data;
@@ -1356,7 +1356,7 @@
 				  		function(response) 
 				  		{
 						});
-	        		$http.get('https://api.howmuchisapint.com/test/beer').
+	        		$http.get('https://api.howmuchisapint.com/service/beer').
 						then(function(response)
 						{
 							for (i = 0; i < response.data.beer.length; i++)
@@ -1387,7 +1387,7 @@
 				  		function(response) 
 				  		{
 						});
-				    $http.get('https://api.howmuchisapint.com/test/beerprice?tags=unverified').
+				    $http.get('https://api.howmuchisapint.com/service/beerprice?tags=unverified').
 						then(function(response)
 						{
 							for (i = 0; i < response.data['beer-price'].length; i++)
@@ -1453,7 +1453,7 @@
 						}
 						msg = msg + '],"alerts":[]';
 				    	msg = msg + '}}';
-		        		$http.post('https://api.howmuchisapint.com/test/beer', msg).
+		        		$http.post('https://api.howmuchisapint.com/service/beer', msg).
 							then(function(response)
 							{
 								$scope.add_beer_info = $scope.get_beer_desc(response.data.beer, true);
@@ -1513,7 +1513,7 @@
 						}
 						msg = msg + '],"alerts":[]';
 				    	msg = msg + '}}';
-		        		$http.post('https://api.howmuchisapint.com/test/pub', msg).
+		        		$http.post('https://api.howmuchisapint.com/service/pub', msg).
 							then(function(response)
 							{
 								$scope.add_pub_info = $scope.get_pub_desc(response.data.pub, true);
@@ -1601,7 +1601,7 @@
 						}
 						msg = msg + '],"alerts":[]';
 				    	msg = msg + '}}';
-		        		$http.post('https://api.howmuchisapint.com/test/beerprice', msg).
+		        		$http.post('https://api.howmuchisapint.com/service/beerprice', msg).
 							then(function(response)
 							{
 								$scope.add_price_info = $scope.get_price_desc(response.data["beer-price"], true);
