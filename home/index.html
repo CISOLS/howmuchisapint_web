@@ -630,6 +630,9 @@
 			    {
 	  				$scope.user_name = name;
 					$scope.user_type = 'GUEST';
+					$scope.add_price_guest_email = email;
+					$scope.add_pub_guest_email = email;
+					$scope.add_beer_guest_email = email;
 	        		$http.get('https://api.howmuchisapint.com/service/drinker/' + id).
 						then(function(response)
 						{
