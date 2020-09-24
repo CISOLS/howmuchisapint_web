@@ -56,7 +56,7 @@
 
 				<div class="col-md-12">
 					<span ng-if="user_name!=''">
-				  		<p>{{user_name}} <span class="text-muted">{{user_type}} user<span ng-if="user_type=='GUEST'"> - please supply a contact email address with each submission</span></span></p>
+				  		<p>{{user_name}} <span class="text-muted">{{user_type}} user<span ng-hide="user_type!='GUEST'"> - please supply a contact email address with each submission</span></span></p>
 				  	</span>
 					<span ng-if="user_name==''">
 			  			<p>Sign-in is required to submit new pint prices</p>
@@ -65,7 +65,7 @@
 				</div>
 				<div class="wsite-spacer" style="height:10px;"></div>
 				<div class="col-md-12">
-					<span ng-if="user_type=='GUEST' || user_type=='NEW'">
+					<span ng-hide="user_type!='GUEST' || user_type=='NEW'">
 						<p><i><span class="text-muted">
 			  			IMPORTANT: All guest and signed-in new users are able to add new pubs, add new beers and submit pint prices, use the tag 'unverified' to see them - only signed-in approved beer price submissions will be included in pint price analysis by default. A super user will review and approve beer price submissions until trusted user status is obtained. Trusted user status will be obtained upon a series of successfully beer price submissions
 		  				</span></i></p>
@@ -227,7 +227,7 @@
 
 									<div class="wsite-spacer" style="height:20px;"></div>
 
-							  		<span ng-if="user_type=='GUEST'">
+							  		<span ng-hide="user_type!='GUEST'">
 										<div class="form-row">
 											<div class="col">
 												<button type="button" class="btn btn-primary" ng-click="get_beers()">List Beers</button>
@@ -629,6 +629,7 @@
 			    $scope.set_user = function(id, name, email)
 			    {
 	  				$scope.user_name = name;
+					$scope.user_type = 'GUEST';
 	        		$http.get('https://api.howmuchisapint.com/service/drinker/' + id).
 						then(function(response)
 						{
@@ -1084,14 +1085,12 @@
 				  		}, 
 				  		function(response) 
 				  		{
-							if (parseInt(response.status) > 399 && parseInt(response.status) < 500)
+							errMsg = response.data.message;
+							if (response.status.substring(0,1) != '4' && response.status.substring(0,1) != '2')
 							{  
-								$scope.beer_err = response.data['error-message'];
+								errMsg = response.status + " " + errMsg;
 							}
-							else
-							{
-								$scope.beer_err = response.status + " " + response.data['error-message'];
-							}
+							$scope.beer_err = errMsg
 							$scope.working_beer = false;
 						});
 			    }
@@ -1145,14 +1144,12 @@
 				  		}, 
 				  		function(response) 
 				  		{
-							if (parseInt(response.status) > 399 && parseInt(response.status) < 500)
+							errMsg = response.data.message;
+							if (response.status.substring(0,1) != '4' && response.status.substring(0,1) != '2')
 							{  
-								$scope.pub_err = response.data['error-message'];
+								errMsg = response.status + " " + errMsg;
 							}
-							else
-							{
-								$scope.pub_err = response.status + " " + response.data['error-message'];
-							}
+							$scope.pub_err = errMsg
 							$scope.working_pub = false;
 						});
 				}
@@ -1230,14 +1227,12 @@
 				  		}, 
 				  		function(response) 
 				  		{
-							if (parseInt(response.status) > 399 && parseInt(response.status) < 500)
+							errMsg = response.data.message;
+							if (response.status.substring(0,1) != '4' && response.status.substring(0,1) != '2')
 							{  
-								$scope.price_err = response.data['error-message'];
+								errMsg = response.status + " " + errMsg;
 							}
-							else
-							{
-								$scope.price_err = response.status + " " + response.data['error-message'];
-							}
+							$scope.price_err = errMsg
 							$scope.working_prices = false;
 						});
 			    }
@@ -1259,14 +1254,12 @@
 				  		}, 
 				  		function(response) 
 				  		{
-							if (parseInt(response.status) > 399 && parseInt(response.status) < 500)
+							errMsg = response.data.message;
+							if (response.status.substring(0,1) != '4' && response.status.substring(0,1) != '2')
 							{  
-								$scope.price_err = response.data['error-message'];
+								errMsg = response.status + " " + errMsg;
 							}
-							else
-							{
-								$scope.price_err = response.status + " " + response.data['error-message'];
-							}
+							$scope.price_err = errMsg
 							$scope.working_prices = false;
 						});
 			    }
@@ -1469,14 +1462,12 @@
 					  		}, 
 					  		function(response) 
 					  		{
-								if (parseInt(response.status) > 399 && parseInt(response.status) < 500)
+								errMsg = response.data.message;
+								if (response.status.substring(0,1) != '4' && response.status.substring(0,1) != '2')
 								{  
-									$scope.beer_err = response.data['error-message'];
+									errMsg = response.status + " " + errMsg;
 								}
-								else
-								{
-									$scope.beer_err = response.status + " " + response.data['error-message'];
-								}
+								$scope.beer_err = errMsg
 								$scope.working_beer = false;
 							});
 					}
@@ -1535,14 +1526,12 @@
 					  		}, 
 					  		function(response) 
 					  		{
-								if (parseInt(response.status) > 399 && parseInt(response.status) < 500)
+								errMsg = response.data.message;
+								if (response.status.substring(0,1) != '4' && response.status.substring(0,1) != '2')
 								{  
-									$scope.pub_err = response.data['error-message'];
+									errMsg = response.status + " " + errMsg;
 								}
-								else
-								{
-									$scope.pub_err = response.status + " " + response.data['error-message'];
-								}
+								$scope.pub_err = errMsg
 								$scope.working_pub = false;
 							});
 			    	}
@@ -1613,14 +1602,12 @@
 				  		}, 
 					  		function(response) 
 					  		{
-								if (parseInt(response.status) > 399 && parseInt(response.status) < 500)
+								errMsg = response.data.message;
+								if (response.status.substring(0,1) != '4' && response.status.substring(0,1) != '2')
 								{  
-									$scope.price_err = response.data['error-message'];
+									errMsg = response.status + " " + errMsg;
 								}
-								else
-								{
-									$scope.price_err = response.status + " " + response.data['error-message'];
-								}
+								$scope.price_err = errMsg
 								$scope.working_prices = false;
 							});
 			    	}
