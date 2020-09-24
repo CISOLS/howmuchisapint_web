@@ -1089,7 +1089,7 @@
 				  		function(response) 
 				  		{
 							errMsg = response.data.message;
-							if (response.status.substring(0,1) != '4' && response.status.substring(0,1) != '2')
+							if (!((response.status >= 400 && response.status < 500) || (response.status >= 200 && response.status < 300)))
 							{  
 								errMsg = response.status + " " + errMsg;
 							}
@@ -1148,7 +1148,7 @@
 				  		function(response) 
 				  		{
 							errMsg = response.data.message;
-							if (response.status.substring(0,1) != '4' && response.status.substring(0,1) != '2')
+							if (!((response.status >= 400 && response.status < 500) || (response.status >= 200 && response.status < 300)))
 							{  
 								errMsg = response.status + " " + errMsg;
 							}
@@ -1231,7 +1231,7 @@
 				  		function(response) 
 				  		{
 							errMsg = response.data.message;
-							if (response.status.substring(0,1) != '4' && response.status.substring(0,1) != '2')
+							if (!((response.status >= 400 && response.status < 500) || (response.status >= 200 && response.status < 300)))
 							{  
 								errMsg = response.status + " " + errMsg;
 							}
@@ -1258,7 +1258,7 @@
 				  		function(response) 
 				  		{
 							errMsg = response.data.message;
-							if (response.status.substring(0,1) != '4' && response.status.substring(0,1) != '2')
+							if (!((response.status >= 400 && response.status < 500) || (response.status >= 200 && response.status < 300)))
 							{  
 								errMsg = response.status + " " + errMsg;
 							}
@@ -1466,7 +1466,8 @@
 					  		function(response) 
 					  		{
 								errMsg = response.data.message;
-								if (response.status.substring(0,1) != '4' && response.status.substring(0,1) != '2')
+								console.log(response)
+								if (!((response.status >= 400 && response.status < 500) || (response.status >= 200 && response.status < 300)))
 								{  
 									errMsg = response.status + " " + errMsg;
 								}
@@ -1530,7 +1531,7 @@
 					  		function(response) 
 					  		{
 								errMsg = response.data.message;
-								if (response.status.substring(0,1) != '4' && response.status.substring(0,1) != '2')
+								if (!((response.status >= 400 && response.status < 500) || (response.status >= 200 && response.status < 300)))
 								{  
 									errMsg = response.status + " " + errMsg;
 								}
@@ -1606,7 +1607,7 @@
 					  		function(response) 
 					  		{
 								errMsg = response.data.message;
-								if (response.status.substring(0,1) != '4' && response.status.substring(0,1) != '2')
+								if (!((response.status >= 400 && response.status < 500) || (response.status >= 200 && response.status < 300)))
 								{  
 									errMsg = response.status + " " + errMsg;
 								}
