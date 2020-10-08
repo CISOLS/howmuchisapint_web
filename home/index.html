@@ -1466,7 +1466,6 @@
 					  		function(response) 
 					  		{
 								errMsg = response.data.message;
-								console.log(response)
 								if (!((response.status >= 400 && response.status < 500) || (response.status >= 200 && response.status < 300)))
 								{  
 									errMsg = response.status + " " + errMsg;
@@ -1565,7 +1564,7 @@
 					$scope.get_prices_info = '';
 					$scope.price_stat_data = '';
 					$scope.price_data = '';
-			    	if ($scope.add_price_amount == 0 || $scope.prices_pub.audit.id == 0 || $scope.prices_beer.audit.id == 0)	
+			    	if ($scope.add_price_amount == 0 || $scope.prices_pub.audit.id == "0" || $scope.prices_beer.audit.id == "0")	
 			    	{
 						$scope.price_err = 'Incomplete - pub, beer and price required';
 			    	}
@@ -1578,7 +1577,7 @@
 						$scope.working_prices = true;
 					    var today = new Date();
 					    var date = today.getFullYear() + (today.getMonth()>8 ? '' : '0') + (today.getMonth() + 1) + (today.getDate()>9 ? '' : '0') + today.getDate();
-			    		var msg = '{' + ($scope.user_type=='GUEST' ? '"guest-email":"' + $scope.add_price_guest_email : '"token":"' + user_token) + '","beer-price":{"date":"' + date + '","price":' + $scope.add_price_amount + ',"pub":{"audit":{"id":' + $scope.prices_pub.audit.id + '}},"beer":{"audit":{"id":' + $scope.prices_beer.audit.id + '}}';
+			    		var msg = '{' + ($scope.user_type=='GUEST' ? '"guest-email":"' + $scope.add_price_guest_email : '"token":"' + user_token) + '","beer-price":{"date":"' + date + '","price":' + $scope.add_price_amount + ',"pub":{"audit":{"id":"' + $scope.prices_pub.audit.id + '"}},"beer":{"audit":{"id":"' + $scope.prices_beer.audit.id + '"}}';
 						msg = msg + ',"tags":[';
 			    		if ($scope.prices_tags.length > 0)
 			    		{ 
@@ -1816,11 +1815,11 @@
 			 	var profile = googleUser.getBasicProfile();
 		        user_token = googleUser.getAuthResponse().id_token;
 	
-				console.log('ID: ' + profile.getId());
-			  	console.log('Name: ' + profile.getName());
-			  	console.log('Image URL: ' + profile.getImageUrl());
-			  	console.log('Email: ' + profile.getEmail());
-		        console.log("ID Token: " + user_token);
+				console.log('id is ' + profile.getId());
+			  	console.log('name is ' + profile.getName());
+			  	console.log('image is ' + profile.getImageUrl());
+			  	console.log('email is ' + profile.getEmail());
+		        console.log("token is " + user_token);
 				
 				angular.element(document.querySelector('[ng-controller="appCtrl"]')).scope().set_user(profile.getId(), profile.getName(), profile.getEmail()); 
 			}
