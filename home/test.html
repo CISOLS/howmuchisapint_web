@@ -640,7 +640,7 @@
 					$scope.add_price_guest_email = email;
 					$scope.add_pub_guest_email = email;
 					$scope.add_beer_guest_email = email;
-	        		$http.get('https://api.howmuchisapint.com/test/drinker/' + id + '?token=' & $scope.token).
+	        		$http.get('https://api.howmuchisapint.com/test/drinker/' + id + '?token=' + $scope.token).
 						then(function(response)
 						{
 				  			console.log(response.data);
