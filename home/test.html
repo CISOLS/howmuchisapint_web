@@ -42,7 +42,7 @@
 					<div ng:repeat="r in sorted_price_data = (headline_latest | orderBy: 'date':true)">
 						<span class="text-muted">
 							<div ng:if="$index == 0 || r.date != sorted_price_data[$index - 1].date || r.pub.town != sorted_price_data[$index - 1].pub.town">
-								<h6>{{get_date_display(r.date)}} {{r.pub.country}}, {{r.pub.city}}, {{r.pub.town}}</h6>
+								<p><h6>{{get_date_display(r.date)}} {{r.pub.country}}, {{r.pub.city}}, {{r.pub.town}}</h6>
 							</div>
 						</span>  
 						{{get_pub_title(r.pub)}} ({{r.pub.type}}), {{r.beer.name}} ({{r.beer.type}}) {{headline_latest_ccy_symbol[$index]}}{{get_number_display(r.price, 2)}}
@@ -1442,7 +1442,7 @@
 			    	else
 			    	{
 						$scope.working_beer = true;
-			    		var msg = '{' + ($scope.user_type=='GUEST' ? '"guest-email":"' + $scope.add_beer_guest_email : '"token":"' + user_token) + '","beer":{"type":"' + $scope.add_beer_type + '","name":"' + $scope.add_beer_name + '"';
+			    		var msg = '{' + ($scope.user_type=='GUEST' ? '"guest-email":"' + $scope.add_beer_guest_email : '"token":"' + $scope.token) + '","beer":{"type":"' + $scope.add_beer_type + '","name":"' + $scope.add_beer_name + '"';
 						msg = msg + ',"tags":[';
 			    		if ($scope.add_beer_tags.length > 0)
 			    		{ 
@@ -1500,7 +1500,7 @@
 			    	else
 			    	{
 						$scope.working_pub = true;
-			    		var msg = '{' + ($scope.user_type=='GUEST' ? '"guest-email":"' + $scope.add_pub_guest_email : '"token":"' + user_token) + '","pub":{"type":"' + $scope.add_pub_type + '","name":"' + $scope.add_pub_name + '","country":"' + $scope.add_pub_country + '","city":"' + $scope.add_pub_city + '","town":"' + $scope.add_pub_town + '","post-code":"' + $scope.add_pub_pc + '"';
+			    		var msg = '{' + ($scope.user_type=='GUEST' ? '"guest-email":"' + $scope.add_pub_guest_email : '"token":"' + $scope.token) + '","pub":{"type":"' + $scope.add_pub_type + '","name":"' + $scope.add_pub_name + '","country":"' + $scope.add_pub_country + '","city":"' + $scope.add_pub_city + '","town":"' + $scope.add_pub_town + '","post-code":"' + $scope.add_pub_pc + '"';
 						msg = msg + ',"tags":[';
 			    		if ($scope.add_pub_tags.length > 0)
 			    		{ 
@@ -1558,7 +1558,7 @@
 			    }
 			    $scope.add_tagalert = function(ename, tora)
 			    {
-	        		$http.post('https://www.howmuchisapint.com:8443/beerprices/test/manage/v1/' + ename + '/' + tora, '{' + ($scope.user_type=='GUEST' ? '"guest-email":"' + $scope.add_tag_guest_email : '"token":"' + user_token) + '","' + ename + '-id":' + id + '","tag":"' + tag + '"}').
+	        		$http.post('https://www.howmuchisapint.com:8443/beerprices/test/manage/v1/' + ename + '/' + tora, '{' + ($scope.user_type=='GUEST' ? '"guest-email":"' + $scope.add_tag_guest_email : '"token":"' + $scope.token) + '","' + ename + '-id":' + id + '","tag":"' + tag + '"}').
 						then(function(response)
 						{
 				  		}, 
@@ -1586,7 +1586,7 @@
 						$scope.working_prices = true;
 					    var today = new Date();
 					    var date = today.getFullYear() + (today.getMonth()>8 ? '' : '0') + (today.getMonth() + 1) + (today.getDate()>9 ? '' : '0') + today.getDate();
-			    		var msg = '{' + ($scope.user_type=='GUEST' ? '"guest-email":"' + $scope.add_price_guest_email : '"token":"' + user_token) + '","beer-price":{"date":"' + date + '","price":' + $scope.add_price_amount + ',"pub":{"audit":{"id":"' + $scope.prices_pub.audit.id + '"}},"beer":{"audit":{"id":"' + $scope.prices_beer.audit.id + '"}}';
+			    		var msg = '{' + ($scope.user_type=='GUEST' ? '"guest-email":"' + $scope.add_price_guest_email : '"token":"' + $scope.token) + '","beer-price":{"date":"' + date + '","price":' + $scope.add_price_amount + ',"pub":{"audit":{"id":"' + $scope.prices_pub.audit.id + '"}},"beer":{"audit":{"id":"' + $scope.prices_beer.audit.id + '"}}';
 						msg = msg + ',"tags":[';
 			    		if ($scope.prices_tags.length > 0)
 			    		{ 
@@ -1823,7 +1823,7 @@
 			  	console.log('google name is ' + profile.getName());
 			  	console.log('google image is ' + profile.getImageUrl());
 			  	console.log('google email is ' + profile.getEmail());
-		        console.log("google token is " + user_token);
+		        console.log("google token is " + googleUser.getAuthResponse().id_token);
 				
 				angular.element(document.querySelector('[ng-controller="appCtrl"]')).scope().set_google_user(googleUser.getAuthResponse().id_token, profile.getId(), profile.getName(), profile.getEmail()); 
 			}
