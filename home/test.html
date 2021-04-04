@@ -643,6 +643,7 @@
 	        		$http.get('https://api.howmuchisapint.com/test/drinker/' + id + '?token=' & $scope.token).
 						then(function(response)
 						{
+				  			console.log(response.data);
 							if (response.data.drinker !== undefined)	
 							{
 				  				$scope.user_type = response.data.drinker.type;
@@ -662,6 +663,9 @@
 				  		function(response) 
 				  		{
 						});
+					//initialise
+					//$scope.get_lists();
+					//$scope.set_to_home()
 			    }
 
 			    $scope.upd_prices_pub_country = function()
