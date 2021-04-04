@@ -630,9 +630,6 @@
 						{
 							$scope.token = response.data.token 
 				  			console.log('howmuchisapint token is ' + $scope.token);
-							//initialise
-							$scope.get_lists();
-							$scope.set_to_home()
 				  		}, 
 				  		function(response) 
 				  		{
@@ -665,6 +662,9 @@
 				  		function(response) 
 				  		{
 						});
+					//initialise
+					$scope.get_lists();
+					$scope.set_to_home()
 			    }
 
 			    $scope.upd_prices_pub_country = function()
