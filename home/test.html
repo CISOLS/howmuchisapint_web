@@ -623,13 +623,15 @@
 				$scope.get_ip();
 
 				$scope.token = null;
-			    $scope.set_google_user = function(token, id, name, email)
+			    $scope.set_google_user = function(google_token, id, name, email)
 			    {
-	        		$http.get('https://api.howmuchisapint.com/test/authenticate?user=' + token).
+	        		$http.get('https://api.howmuchisapint.com/test/authenticate?user=' + google_token).
 						then(function(response)
 						{
 							$scope.token = response.data.token 
 				  			console.log('howmuchisapint token is ' + $scope.token);
+							//initialise
+							$scope.get_lists();
 				  		}, 
 				  		function(response) 
 				  		{
@@ -1295,7 +1297,7 @@
 			    	$scope.price_tags = [];
 			    	$scope.pub_tags = [];
 			    	$scope.beer_tags = [];
-				    $http.get('https://api.howmuchisapint.com/test/refdata/country').
+				    $http.get('https://api.howmuchisapint.com/test/refdata/country?token=' + $scope.token).
 						then(function(response)
 						{
 			  				$scope.country_data_list = response.data;
@@ -1804,8 +1806,6 @@
 					}
 				}
 				
-				//initialise
-			    $scope.get_lists();
 			});
 			
 	        navigator.geolocation.getCurrentPosition(showPosition);
