@@ -42,7 +42,7 @@
 					<div ng:repeat="r in sorted_price_data = (headline_latest | orderBy: 'date':true)">
 						<span class="text-muted">
 							<div ng:if="$index == 0 || r.date != sorted_price_data[$index - 1].date || r.pub.town != sorted_price_data[$index - 1].pub.town">
-								<p><h6>{{get_date_display(r.date)}} {{r.pub.country}}, {{r.pub.city}}, {{r.pub.town}}</h6>
+								<h6>{{get_date_display(r.date)}} {{r.pub.country}}, {{r.pub.city}}, {{r.pub.town}}</h6>
 							</div>
 						</span>  
 						{{get_pub_title(r.pub)}} ({{r.pub.type}}), {{r.beer.name}} ({{r.beer.type}}) {{headline_latest_ccy_symbol[$index]}}{{get_number_display(r.price, 2)}}
@@ -622,8 +622,19 @@
 
 				$scope.get_ip();
 
-			    $scope.set_user = function(id, name, email)
+				$scope.token = null;
+			    $scope.set_google_user = function(token, id, name, email)
 			    {
+	        		$http.get('https://api.howmuchisapint.com/test/authenticate?user=' + token).
+						then(function(response)
+						{
+							$scope.token = response.data.token 
+				  			console.log('howmuchisapint token is ' + $scope.token);
+				  		}, 
+				  		function(response) 
+				  		{
+						});
+
 	  				$scope.user_name = name;
 					$scope.user_type = 'GUEST';
 					$scope.add_price_guest_email = email;
@@ -639,8 +650,8 @@
 				  				$scope.add_price_guest_email = email;
 				  				$scope.add_pub_guest_email = email;
 				  				$scope.add_beer_guest_email = email;
-				  				console.log($scope.user_type);
-				  				console.log($scope.user_name);
+				  				console.log('howmuchisapint user name is ' + $scope.user_name);
+				  				console.log('howmuchisapint user type is ' + $scope.user_type);
 				  				
 				  			}
 				  			else
@@ -1811,13 +1822,13 @@
 			 	var profile = googleUser.getBasicProfile();
 		        user_token = googleUser.getAuthResponse().id_token;
 	
-				console.log('id is ' + profile.getId());
-			  	console.log('name is ' + profile.getName());
-			  	console.log('image is ' + profile.getImageUrl());
-			  	console.log('email is ' + profile.getEmail());
-		        console.log("token is " + user_token);
+				console.log('google id is ' + profile.getId());
+			  	console.log('google name is ' + profile.getName());
+			  	console.log('google image is ' + profile.getImageUrl());
+			  	console.log('google email is ' + profile.getEmail());
+		        console.log("google token is " + user_token);
 				
-				angular.element(document.querySelector('[ng-controller="appCtrl"]')).scope().set_user(profile.getId(), profile.getName(), profile.getEmail()); 
+				angular.element(document.querySelector('[ng-controller="appCtrl"]')).scope().set_google_user(googleUser.getAuthResponse().id_token, profile.getId(), profile.getName(), profile.getEmail()); 
 			}
 		</script>
 	</body>
