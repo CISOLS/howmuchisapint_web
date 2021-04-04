@@ -642,7 +642,7 @@
 					$scope.add_price_guest_email = email;
 					$scope.add_pub_guest_email = email;
 					$scope.add_beer_guest_email = email;
-	        		$http.get('https://api.howmuchisapint.com/test/drinker/' + id).
+	        		$http.get('https://api.howmuchisapint.com/test/drinker/' + id + '?token=' & $scope.token).
 						then(function(response)
 						{
 							if (response.data.drinker !== undefined)	
@@ -1816,12 +1816,9 @@
 				angular.element(document.querySelector('[ng-controller="appCtrl"]')).scope().set_location(coords);
 			}
 
-			var user_token = 'none';
 			function onSignIn(googleUser) 
 			{
 			 	var profile = googleUser.getBasicProfile();
-		        user_token = googleUser.getAuthResponse().id_token;
-	
 				console.log('google id is ' + profile.getId());
 			  	console.log('google name is ' + profile.getName());
 			  	console.log('google image is ' + profile.getImageUrl());
