@@ -625,44 +625,46 @@
 				$scope.token = null;
 			    $scope.set_google_user = function(google_token, id, name, email)
 			    {
-	        		$http.get('https://api.howmuchisapint.com/test/authenticate?user=' + google_token).
-						then(function(response)
-						{
-							$scope.token = response.data.token 
-				  			console.log('howmuchisapint token is ' + $scope.token);
-				  		}, 
-				  		function(response) 
-				  		{
-						});
-
 	  				$scope.user_name = name;
 					$scope.user_type = 'GUEST';
 					$scope.add_price_guest_email = email;
 					$scope.add_pub_guest_email = email;
 					$scope.add_beer_guest_email = email;
-	        		$http.get('https://api.howmuchisapint.com/test/drinker/' + id + '?token=' + $scope.token).
+
+	        		$http.get('https://api.howmuchisapint.com/test/authenticate?user=' + google_token).
 						then(function(response)
 						{
-				  			console.log(response.data);
-							if (response.data.drinker !== undefined)	
-							{
-				  				$scope.user_type = response.data.drinker.type;
-				  				$scope.user_name = response.data.drinker.name;
-				  				$scope.add_price_guest_email = email;
-				  				$scope.add_pub_guest_email = email;
-				  				$scope.add_beer_guest_email = email;
-				  				console.log('howmuchisapint user name is ' + $scope.user_name);
-				  				console.log('howmuchisapint user type is ' + $scope.user_type);
-				  				
-				  			}
-				  			else
-				  			{
-					  			return null;
-					  		}
+							$scope.token = response.data.token 
+				  			console.log('howmuchisapint token is ' + $scope.token);
+
+							$http.get('https://api.howmuchisapint.com/test/drinker/' + id + '?token=' + $scope.token).
+								then(function(response)
+								{
+									console.log(response.data);
+									if (response.data.drinker !== undefined)	
+									{
+										$scope.user_type = response.data.drinker.type;
+										$scope.user_name = response.data.drinker.name;
+										$scope.add_price_guest_email = email;
+										$scope.add_pub_guest_email = email;
+										$scope.add_beer_guest_email = email;
+										console.log('howmuchisapint user name is ' + $scope.user_name);
+										console.log('howmuchisapint user type is ' + $scope.user_type);
+										
+									}
+									else
+									{
+										return null;
+									}
+								}, 
+								function(response) 
+								{
+								});
 				  		}, 
 				  		function(response) 
 				  		{
 						});
+
 					//initialise
 					//$scope.get_lists();
 					//$scope.set_to_home()
