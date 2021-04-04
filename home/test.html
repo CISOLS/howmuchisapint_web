@@ -640,7 +640,6 @@
 							$http.get('https://api.howmuchisapint.com/test/drinker/' + id + '?token=' + $scope.token).
 								then(function(response)
 								{
-									console.log(response.data);
 									if (response.data.drinker !== undefined)	
 									{
 										$scope.user_type = response.data.drinker.type;
