@@ -632,6 +632,7 @@
 				  			console.log('howmuchisapint token is ' + $scope.token);
 							//initialise
 							$scope.get_lists();
+							$scope.set_to_home()
 				  		}, 
 				  		function(response) 
 				  		{
@@ -934,7 +935,7 @@
 			  		function(response) 
 			  		{
 					});
-					setTimeout($scope.set_to_home, 2000);
+					//setTimeout($scope.set_to_home, 5000);
 				}
 				$scope.set_to_home = function()
 				{
