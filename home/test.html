@@ -1309,7 +1309,7 @@
 				  		function(response) 
 				  		{
 						});
-				    $http.get('https://api.howmuchisapint.com/test/refdata/ccy').
+				    $http.get('https://api.howmuchisapint.com/test/refdata/ccy?token=' + $scope.token).
 						then(function(response)
 						{
 			  				$scope.ccy_data_list = response.data;
@@ -1317,7 +1317,7 @@
 				  		function(response) 
 				  		{
 						});
-				    $http.get('https://api.howmuchisapint.com/test/refdata/pubtype').
+				    $http.get('https://api.howmuchisapint.com/test/refdata/pubtype?token=' + $scope.token).
 						then(function(response)
 						{
 			  				$scope.pub_type_data_list = response.data;
@@ -1325,7 +1325,7 @@
 				  		function(response) 
 				  		{
 						});
-				    $http.get('https://api.howmuchisapint.com/test/pub').
+				    $http.get('https://api.howmuchisapint.com/test/pub?token=' + $scope.token).
 						then(function(response)
 						{
 							for (i = 0; i < response.data.pub.length; i++)
@@ -1357,7 +1357,7 @@
 				  		function(response) 
 				  		{
 						});
-				    $http.get('https://api.howmuchisapint.com/test/refdata/beertype').
+				    $http.get('https://api.howmuchisapint.com/test/refdata/beertype?token=' + $scope.token).
 						then(function(response)
 						{
 			  				$scope.beer_type_data_list = response.data;
@@ -1365,7 +1365,7 @@
 				  		function(response) 
 				  		{
 						});
-	        		$http.get('https://api.howmuchisapint.com/test/beer').
+	        		$http.get('https://api.howmuchisapint.com/test/beer?token=' + $scope.token).
 						then(function(response)
 						{
 							for (i = 0; i < response.data.beer.length; i++)
