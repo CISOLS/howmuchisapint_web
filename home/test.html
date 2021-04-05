@@ -1015,7 +1015,7 @@
 								{
 									max = 5;
 								}
-								$scope.headline_stat1 = tot + ' prices in ' + stats[0]['pub']['town'] + ' ' + stats[0]['pub']['type'] + 's ';
+								$scope.headline_stat1 = tot + ' prices in ' + stats[0]['pub']['pub']['town'] + ' ' + stats[0]['pub']['type'] + 's ';
 								for (i = 0; i < stats.length; i++)
 								{
 									if (stats[i]['tags'].length == 0 && stats[i]['count'] >= max)
@@ -1038,16 +1038,13 @@
 				  			prices = response.data['beer-price'];
 							console.log(prices)
 				  			c = 0
-				  			for (p in prices) //.sort(function(a, b){return a.date < b.date ? 1 : a.date > b.date ? -1 : 1 }))
+				  			for (p in prices.sort(function(a, b){return a.date < b.date ? 1 : a.date > b.date ? -1 : 1 }))
 				  			{
 					  			$scope.headline_latest[c] = prices[p];
 					  			price_ccy = ''
 								for (ctry in $scope.country_data_list['ref-data-country'])
 								{
-									console.log(p)
-									console.log(prices[p])
-									console.log(prices[p].pub)
-									if ($scope.country_data_list['ref-data-country'][ctry].name == prices[p].pub.country)
+									if ($scope.country_data_list['ref-data-country'][ctry].name == prices[p]['pub'].country)
 									{
 										price_ccy = $scope.country_data_list['ref-data-country'][ctry].ccy;
 									}
