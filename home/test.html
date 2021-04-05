@@ -1460,7 +1460,7 @@
 						}
 						msg = msg + '],"alerts":[]';
 				    	msg = msg + '}}';
-		        		$http.post('https://api.howmuchisapint.com/test/beer', msg).
+		        		$http.post('https://api.howmuchisapint.com/test/beer?token=' + $scope.token, msg).
 							then(function(response)
 							{
 								$scope.add_beer_info = $scope.get_beer_desc(response.data.beer, true);
@@ -1518,7 +1518,7 @@
 						}
 						msg = msg + '],"alerts":[]';
 				    	msg = msg + '}}';
-		        		$http.post('https://api.howmuchisapint.com/test/pub', msg).
+		        		$http.post('https://api.howmuchisapint.com/test/pub?token=' + $scope.token, msg).
 							then(function(response)
 							{
 								$scope.add_pub_info = $scope.get_pub_desc(response.data.pub, true);
@@ -1604,7 +1604,7 @@
 						}
 						msg = msg + '],"alerts":[]';
 				    	msg = msg + '}}';
-		        		$http.post('https://api.howmuchisapint.com/test/beerprice', msg).
+		        		$http.post('https://api.howmuchisapint.com/test/beerprice?token=' + $scope.token, msg).
 							then(function(response)
 							{
 								$scope.add_price_info = $scope.get_price_desc(response.data["beer-price"], true);
