@@ -877,7 +877,7 @@
 				    	$scope.prices_display_fxrate = 1;
 						if ($scope.prices_ccy != $scope.prices_display_ccy)
 						{
-						    $http.get('https://api.howmuchisapint.com/test/fxrate/latest/' + $scope.prices_ccy + $scope.prices_display_ccy + '?token=' + $scope.token).
+						    $http.get('https://api.howmuchisapint.com/test/fxrate/' + $scope.prices_ccy + $scope.prices_display_ccy + '?latest=Y&token=' + $scope.token).
 								then(function(response)
 								{
 									if (response.data['fx-rate'] !== undefined)
@@ -1015,7 +1015,7 @@
 								{
 									max = 5;
 								}
-								$scope.headline_stat1 = tot + ' prices in ' + stats[0]['pub']['pub']['town'] + ' ' + stats[0]['pub']['type'] + 's ';
+								$scope.headline_stat1 = tot + ' prices in ' + stats[0]['pub']['town'] + ' ' + stats[0]['pub']['type'] + 's ';
 								for (i = 0; i < stats.length; i++)
 								{
 									if (stats[i]['tags'].length == 0 && stats[i]['count'] >= max)
@@ -1036,7 +1036,6 @@
 						then(function(response)
 						{
 				  			prices = response.data['beer-price'];
-							console.log(prices)
 				  			c = 0
 				  			for (p in prices.sort(function(a, b){return a.date < b.date ? 1 : a.date > b.date ? -1 : 1 }))
 				  			{
@@ -1044,7 +1043,7 @@
 					  			price_ccy = ''
 								for (ctry in $scope.country_data_list['ref-data-country'])
 								{
-									if ($scope.country_data_list['ref-data-country'][ctry].name == prices[p]['pub'].country)
+									if ($scope.country_data_list['ref-data-country'][ctry].name == prices[p].pub.country)
 									{
 										price_ccy = $scope.country_data_list['ref-data-country'][ctry].ccy;
 									}
