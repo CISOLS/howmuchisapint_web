@@ -1040,6 +1040,7 @@
 				  			for (p in prices.sort(function(a, b){return a.date < b.date ? 1 : a.date > b.date ? -1 : 1 }))
 				  			{
 					  			$scope.headline_latest[c] = prices[p];
+								console.log(prices[p])
 					  			price_ccy = ''
 								for (ctry in $scope.country_data_list['ref-data-country'])
 								{
