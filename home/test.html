@@ -1044,6 +1044,9 @@
 					  			price_ccy = ''
 								for (ctry in $scope.country_data_list['ref-data-country'])
 								{
+									console.log(p)
+									console.log(prices[p])
+									console.log(prices[p].pub)
 									if ($scope.country_data_list['ref-data-country'][ctry].name == prices[p].pub.country)
 									{
 										price_ccy = $scope.country_data_list['ref-data-country'][ctry].ccy;
