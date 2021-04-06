@@ -27,6 +27,8 @@
 		<script src="js/popper.min.js"></script>
 		<script src="js/bootstrap.min.js"></script>
 		<script src="js/jquery.min.js"></script>
+		<script src="js/moment.js"></script>
+		<script src="js/moment-timezone.js"></script>
 
 		<div class="container" ng-app="app">
 			<div ng-controller="appCtrl">
@@ -117,25 +119,6 @@
 
 									<div class="wsite-spacer" style="height:20px;"></div>
 									
-							  		<span ng-show="user_type=='GUEST'">
-										<div class="form-row">
-											<div class="col">
-												<button type="button" class="btn btn-primary" ng-click="get_pubs()">List Pubs</button>
-											</div>
-										</div>
-	
-										<div class="wsite-spacer" style="height:10px;"></div>
-	
-										<div class="form-row">
-											<div class="col">
-												<input id="input_pub_email" class="form-control form-control-danger" type="email" ng-model="add_pub_guest_email" ng-change="upd_pub_email()" placeholder="Guest Email"/>
-									  		</div>
-											<div class="col">
-												<button type="button" class="btn btn-primary" ng-click="add_pub()">Add Pub</button>
-									  		</div>
-								  		</div>
-									</span>
-
 							  		<span ng-show="user_type!='GUEST'">
 										<div class="form-row">
 											<div class="col">
@@ -223,25 +206,6 @@
 									</div>
 
 									<div class="wsite-spacer" style="height:20px;"></div>
-
-							  		<span ng-hide="user_type!='GUEST'">
-										<div class="form-row">
-											<div class="col">
-												<button type="button" class="btn btn-primary" ng-click="get_beers()">List Beers</button>
-											</div>
-										</div>
-										
-										<div class="wsite-spacer" style="height:10px;"></div>
-	
-										<div class="form-row">
-											<div class="col">
-												<input id="input_beer_email" class="form-control" type="email" ng-model="add_beer_guest_email" placeholder="Guest Email"/>
-									  		</div>
-											<div class="col">
-												<button type="button" class="btn btn-primary" ng-click="add_beer()">Add Beer</button>
-									  		</div>
-								  		</div>
-							  		</span>
 
 							  		<span ng-show="user_type!='GUEST'">
 										<div class="form-row">
@@ -374,30 +338,6 @@
 
 									<div class="wsite-spacer" style="height:10px;"></div>
 	
-							  		<span ng-show="user_type=='GUEST'">
-										<div class="form-row">
-											<div class="col">
-												<select ng-options="ccy.code as ccy.code + ' - ' + ccy.name for ccy in (ccy_data_list['ref-data-ccy'] | orderBy: ['code'])" class="form-control" ng-change="upd_prices_display_ccy()" ng-model="prices_display_ccy" >
-												</select>
-									  		</div>
-											<div class="col">
-												<button type="button" class="btn btn-primary" ng-click="get_prices()">List Prices</button>
-												<button type="button" class="btn btn-primary" ng-click="get_avg_prices()">Average Prices</button>
-									  		</div>
-								  		</div>
-										
-										<div class="wsite-spacer" style="height:10px;"></div>
-	
-										<div class="form-row">
-											<div class="col">
-												<input id="input_price_email" class="form-control form-control-danger" type="email" ng-model="add_price_guest_email" ng-change="upd_price_email()" placeholder="Guest Email"/>
-									  		</div>
-											<div class="col">
-												<button type="button" class="btn btn-primary" ng-click="add_price()">Add Price</button>
-									  		</div>
-								  		</div>
-								  	</span>
-
 							  		<span ng-show="user_type!='GUEST'">
 										<div class="form-row">
 											<div class="col">
@@ -552,11 +492,12 @@
 			app.controller('appCtrl', function($scope, $http, $location, $window) 
 			{
 				$scope.user_type = 'GUEST';
+				$scope.user_name = '';
 				$scope.user_ip = '';
+				$scope.token = null;
 				
 				$scope.add_beer_name = '';
 				$scope.add_beer_tags = '';
-				$scope.add_beer_guest_email = '';
 	
 				$scope.add_pub_name = '';
 				$scope.add_pub_country = 'United Kingdom';
@@ -564,10 +505,8 @@
 				$scope.add_pub_town = '';
 				$scope.add_pub_pc = '';
 				$scope.add_pub_tags = '';
-				$scope.add_pub_guest_email = '';
 	
 				$scope.add_price_amount = 0.00;
-				$scope.add_price_guest_email = '';
 				$scope.prices_tags = '';
 				$scope.prices_pub_country = 'United Kingdom';
 				$scope.prices_pub_town = null;
@@ -590,15 +529,6 @@
 				$scope.working_pub = false;
 				$scope.working_beer = false;
 
-			    $scope.upd_email_pub = function()
-			    {
-			    }
-			    $scope.upd_email_beer = function()
-			    {
-			    }
-			    $scope.upd_email_price = function()
-			    {
-			    }
 				$scope.get_ip = function()
 				{
 	        		$http.get('https://api.ipgeolocation.io/getip?apiKey=7109be59140c4b538dfc3bacb50a241a').
@@ -619,56 +549,58 @@
 				  		{
 						});
 				}
-
 				$scope.get_ip();
 
-				$scope.token = null;
 			    $scope.set_google_user = function(google_token, id, name, email)
 			    {
-	  				$scope.user_name = name;
-					$scope.user_type = 'GUEST';
-					$scope.add_price_guest_email = email;
-					$scope.add_pub_guest_email = email;
-					$scope.add_beer_guest_email = email;
+					$scope.set_user(google_token)
 
-	        		$http.get('https://api.howmuchisapint.com/test/authenticate?user=' + google_token).
+					//initialise
+					$scope.get_lists();
+					setTimeout($scope.set_to_home, 5000);
+
+			    }
+				$scope.set_user = function(user)
+				{
+	  				$scope.user = user;
+					if ($scope.authenticate())
+					{
+						$http.get('https://api.howmuchisapint.com/test/drinker/' + id + '?token=' + $scope.token).
+							then(function(response)
+							{
+								if (response.data.drinker !== undefined)	
+								{
+									$scope.user_type = response.data.drinker.type;
+									$scope.user_name = response.data.drinker.name;
+									console.log('howmuchisapint user name is ' + $scope.user_name);
+									console.log('howmuchisapint user type is ' + $scope.user_type);
+								}
+							}, 
+							function(response) 
+							{
+							});
+					}
+				}
+				$scope.authenticate = function()
+				{
+	        		$http.get('https://api.howmuchisapint.com/test/authenticate?user=' + $scope.user).
 						then(function(response)
 						{
 							$scope.token = response.data.token 
+							$scope.token_exp = response.data.expiry 
 				  			console.log('howmuchisapint token is ' + $scope.token);
-
-							$http.get('https://api.howmuchisapint.com/test/drinker/' + id + '?token=' + $scope.token).
-								then(function(response)
-								{
-									if (response.data.drinker !== undefined)	
-									{
-										$scope.user_type = response.data.drinker.type;
-										$scope.user_name = response.data.drinker.name;
-										$scope.add_price_guest_email = email;
-										$scope.add_pub_guest_email = email;
-										$scope.add_beer_guest_email = email;
-										console.log('howmuchisapint user name is ' + $scope.user_name);
-										console.log('howmuchisapint user type is ' + $scope.user_type);
-										
-									}
-									else
-									{
-										return null;
-									}
-								}, 
-								function(response) 
-								{
-								});
-
-							//initialise
-							$scope.get_lists();
-							setTimeout($scope.set_to_home, 5000);
 				  		}, 
 				  		function(response) 
 				  		{
 						});
-			    }
-
+				}
+				$scope.check_token = function()
+				{
+					if ($scope.token != null && moment().isAfter(moment(token_exp)))
+					{
+						$scope.authenticate();
+					}
+				}
 			    $scope.upd_prices_pub_country = function()
 			    {
 					$scope.price_stat_data = '';
@@ -682,6 +614,7 @@
 					$scope.prices_pub_type_data_list = [];
 					if ($scope.prices_pub_country != null)
 					{
+						$scope.check_token()
 					    $http.get('https://api.howmuchisapint.com/test/pub?token=' + $scope.token).
 							then(function(response)
 							{
@@ -732,6 +665,7 @@
 					$scope.prices_pub_type_data_list = [];
 					if ($scope.prices_pub_country != null)
 					{
+						$scope.check_token()
 					    $http.get('https://api.howmuchisapint.com/test/pub?token=' + $scope.token).
 							then(function(response)
 							{
@@ -769,6 +703,8 @@
 					$scope.prices_pub = null;
 					$scope.prices_pub_type_data_list = [];
 					$scope.prices_pub_data_list = [];
+					
+					$scope.check_token()
 				    $http.get('https://api.howmuchisapint.com/test/pub?token=' + $scope.token).
 						then(function(response)
 						{
@@ -805,6 +741,7 @@
 					$scope.prices_pub_data_list = [];
 					if ($scope.prices_pub_type != null)
 					{
+						$scope.check_token()
 					    $http.get('https://api.howmuchisapint.com/test/pub?token=' + $scope.token).
 							then(function(response)
 							{
@@ -845,6 +782,7 @@
 					$scope.prices_beer_data_list = [];
 					if ($scope.prices_beer_type != null)
 					{
+						$scope.check_token()
 					    $http.get('https://api.howmuchisapint.com/test/beer?token=' + $scope.token).
 							then(function(response)
 							{
@@ -877,6 +815,7 @@
 				    	$scope.prices_display_fxrate = 1;
 						if ($scope.prices_ccy != $scope.prices_display_ccy)
 						{
+							$scope.check_token()
 						    $http.get('https://api.howmuchisapint.com/test/fxrate/' + $scope.prices_ccy + $scope.prices_display_ccy + '?latest=Y&token=' + $scope.token).
 								then(function(response)
 								{
@@ -956,7 +895,7 @@
 							{
 								$scope.home_ccy_symbol = $scope.home_ccy_symbol + ' ';
 							}
-						}
+						}	
 					}
 					$scope.prices_display_ccy = $scope.home_ccy;
 					$scope.prices_display_ccy_symbol = $scope.home_ccy_symbol;
@@ -986,6 +925,8 @@
 					var stats = [];
 		  			$scope.headline_stat1 = '';
 		  			$scope.headline_stat2 = '';
+					
+					$scope.check_token()
 		    		$http.get('https://api.howmuchisapint.com/test/beerpricestats/BeerTypeAndPubTypeAndTown' + params).
 						then(function(response)
 						{
@@ -1032,6 +973,8 @@
 						});
 		  			$scope.headline_latest = [];
 		  			$scope.headline_latest_ccy_symbol = [];
+					
+					$scope.check_token()
 		    		$http.get('https://api.howmuchisapint.com/test/beerprice?token=' + $scope.token + '&page=1&pageSize=5&pubCountry=' + $scope.home_country).
 						then(function(response)
 						{
@@ -1080,7 +1023,9 @@
 					if ($scope.add_beer_name.length > 0)
 					{
 						params = params + '&name=' + $scope.add_beer_name;
-					}				
+					}
+					
+					$scope.check_token()
 	        		$http.get('https://api.howmuchisapint.com/test/beer' + params).
 						then(function(response)
 						{
@@ -1138,7 +1083,9 @@
 					if ($scope.add_pub_name.length > 0)
 					{
 						params = params + '&name=' + $scope.add_pub_name;
-					}				
+					}	
+					
+					$scope.check_token()
 	        		$http.get('https://api.howmuchisapint.com/test/pub' + params).
 						then(function(response)
 						{
@@ -1218,6 +1165,8 @@
 					$scope.price_data = '';
 					$scope.working_prices = true;
 					var params = $scope.get_prices_params(true);
+
+					$scope.check_token()
 	        		$http.get('https://api.howmuchisapint.com/test/beerpricestats/BeerTypeAndPubTypeAndCountry' + params).
 						then(function(response)
 						{
@@ -1259,6 +1208,8 @@
 					$scope.price_data = '';
 					$scope.working_prices = true;
 					var params = $scope.get_prices_params();
+					
+					$scope.check_token()
 	        		$http.get('https://api.howmuchisapint.com/test/beerprice' + params).
 						then(function(response)
 						{
@@ -1299,6 +1250,8 @@
 			    	$scope.price_tags = [];
 			    	$scope.pub_tags = [];
 			    	$scope.beer_tags = [];
+					
+					$scope.check_token()
 				    $http.get('https://api.howmuchisapint.com/test/refdata/country?token=' + $scope.token).
 						then(function(response)
 						{
@@ -1307,6 +1260,7 @@
 				  		function(response) 
 				  		{
 						});
+					$scope.check_token()
 				    $http.get('https://api.howmuchisapint.com/test/refdata/ccy?token=' + $scope.token).
 						then(function(response)
 						{
@@ -1315,6 +1269,7 @@
 				  		function(response) 
 				  		{
 						});
+					$scope.check_token()
 				    $http.get('https://api.howmuchisapint.com/test/refdata/pubtype?token=' + $scope.token).
 						then(function(response)
 						{
@@ -1323,6 +1278,7 @@
 				  		function(response) 
 				  		{
 						});
+					$scope.check_token()
 				    $http.get('https://api.howmuchisapint.com/test/pub?token=' + $scope.token).
 						then(function(response)
 						{
@@ -1355,6 +1311,7 @@
 				  		function(response) 
 				  		{
 						});
+					$scope.check_token()
 				    $http.get('https://api.howmuchisapint.com/test/refdata/beertype?token=' + $scope.token).
 						then(function(response)
 						{
@@ -1363,6 +1320,7 @@
 				  		function(response) 
 				  		{
 						});
+					$scope.check_token()
 	        		$http.get('https://api.howmuchisapint.com/test/beer?token=' + $scope.token).
 						then(function(response)
 						{
@@ -1394,6 +1352,7 @@
 				  		function(response) 
 				  		{
 						});
+					$scope.check_token()
 				    $http.get('https://api.howmuchisapint.com/test/beerprice?token=' + $scope.token + '&tags=unverified').
 						then(function(response)
 						{
@@ -1437,14 +1396,10 @@
 			    	{
 						$scope.beer_err = 'Incomplete - beer type and name required';
 			    	}
-			    	else if ($scope.user_type=='GUEST' && (!document.getElementById("input_beer_email").checkValidity() || $scope.add_beer_guest_email.length == 0))	
-			    	{
-						$scope.beer_err = 'Valid guest email is required';
-			    	}
 			    	else
 			    	{
 						$scope.working_beer = true;
-			    		var msg = '{' + ($scope.user_type=='GUEST' ? '"guest-email":"' + $scope.add_beer_guest_email : '"token":"' + $scope.token) + '","beer":{"type":"' + $scope.add_beer_type + '","name":"' + $scope.add_beer_name + '"';
+			    		var msg = '{"beer":{"type":"' + $scope.add_beer_type + '","name":"' + $scope.add_beer_name + '"';
 						msg = msg + ',"tags":[';
 			    		if ($scope.add_beer_tags.length > 0)
 			    		{ 
@@ -1460,6 +1415,8 @@
 						}
 						msg = msg + '],"alerts":[]';
 				    	msg = msg + '}}';
+						
+						$scope.check_token()
 		        		$http.post('https://api.howmuchisapint.com/test/beer?token=' + $scope.token, msg).
 							then(function(response)
 							{
@@ -1495,14 +1452,10 @@
 			    	{
 						$scope.pub_err = 'Incomplete - pub type, name, country, city, town and post code (UK only) required';
 			    	}
-			    	else if ($scope.user_type=='GUEST' && (!document.getElementById("input_pub_email").checkValidity() || $scope.add_pub_guest_email.length == 0)) 	
-			    	{
-						$scope.pub_err = 'Valid guest email is required';
-			    	}
 			    	else
 			    	{
 						$scope.working_pub = true;
-			    		var msg = '{' + ($scope.user_type=='GUEST' ? '"guest-email":"' + $scope.add_pub_guest_email : '"token":"' + $scope.token) + '","pub":{"type":"' + $scope.add_pub_type + '","name":"' + $scope.add_pub_name + '","country":"' + $scope.add_pub_country + '","city":"' + $scope.add_pub_city + '","town":"' + $scope.add_pub_town + '","post-code":"' + $scope.add_pub_pc + '"';
+			    		var msg = '{"pub":{"type":"' + $scope.add_pub_type + '","name":"' + $scope.add_pub_name + '","country":"' + $scope.add_pub_country + '","city":"' + $scope.add_pub_city + '","town":"' + $scope.add_pub_town + '","post-code":"' + $scope.add_pub_pc + '"';
 						msg = msg + ',"tags":[';
 			    		if ($scope.add_pub_tags.length > 0)
 			    		{ 
@@ -1518,6 +1471,8 @@
 						}
 						msg = msg + '],"alerts":[]';
 				    	msg = msg + '}}';
+						
+						$scope.check_token()
 		        		$http.post('https://api.howmuchisapint.com/test/pub?token=' + $scope.token, msg).
 							then(function(response)
 							{
@@ -1560,13 +1515,6 @@
 			    }
 			    $scope.add_tagalert = function(ename, tora)
 			    {
-	        		$http.post('https://www.howmuchisapint.com:8443/beerprices/test/manage/v1/' + ename + '/' + tora, '{' + ($scope.user_type=='GUEST' ? '"guest-email":"' + $scope.add_tag_guest_email : '"token":"' + $scope.token) + '","' + ename + '-id":' + id + '","tag":"' + tag + '"}').
-						then(function(response)
-						{
-				  		}, 
-				  		function(response) 
-				  		{
-						});
 			    }
 			    $scope.add_price = function()
 			    {
@@ -1579,16 +1527,12 @@
 			    	{
 						$scope.price_err = 'Incomplete - pub, beer and price required';
 			    	}
-			    	else if ($scope.user_type=='GUEST' && (!document.getElementById("input_price_email").checkValidity() || $scope.add_price_guest_email.length == 0))	
-			    	{
-						$scope.price_err = 'Valid guest email is required';
-			    	}
 			    	else
 			    	{
 						$scope.working_prices = true;
 					    var today = new Date();
 					    var date = today.getFullYear() + (today.getMonth()>8 ? '' : '0') + (today.getMonth() + 1) + (today.getDate()>9 ? '' : '0') + today.getDate();
-			    		var msg = '{' + ($scope.user_type=='GUEST' ? '"guest-email":"' + $scope.add_price_guest_email : '"token":"' + $scope.token) + '","beer-price":{"date":"' + date + '","price":' + $scope.add_price_amount + ',"pub":{"audit":{"id":"' + $scope.prices_pub.audit.id + '"}},"beer":{"audit":{"id":"' + $scope.prices_beer.audit.id + '"}}';
+			    		var msg = '{"beer-price":{"date":"' + date + '","price":' + $scope.add_price_amount + ',"pub":{"audit":{"id":"' + $scope.prices_pub.audit.id + '"}},"beer":{"audit":{"id":"' + $scope.prices_beer.audit.id + '"}}';
 						msg = msg + ',"tags":[';
 			    		if ($scope.prices_tags.length > 0)
 			    		{ 
@@ -1604,6 +1548,8 @@
 						}
 						msg = msg + '],"alerts":[]';
 				    	msg = msg + '}}';
+						
+						$scope.check_token()
 		        		$http.post('https://api.howmuchisapint.com/test/beerprice?token=' + $scope.token, msg).
 							then(function(response)
 							{
