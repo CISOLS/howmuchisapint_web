@@ -556,7 +556,7 @@
 					$scope.set_user(google_token)
 
 					//initialise
-					$scope.get_lists();
+					setTimeout($scope.get_lists(), 5000);
 					setTimeout($scope.set_to_home, 5000);
 
 			    }
