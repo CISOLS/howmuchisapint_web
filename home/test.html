@@ -560,51 +560,46 @@
 				$scope.set_user = function(user)
 				{
 	  				$scope.user = user;
-					ok = $scope.authenticate();
-					console.log("user ok = " + ok)
-					if (ok)
+					$scope.authenticate(function()
+						{
+							$http.get('https://api.howmuchisapint.com/test/drinker/' + id + '?token=' + $scope.token).
+								then(function(response)
+								{
+									if (response.data.drinker !== undefined)	
+									{
+										$scope.user_type = response.data.drinker.type;
+										$scope.user_name = response.data.drinker.name;
+										console.log('howmuchisapint user name is ' + $scope.user_name);
+										console.log('howmuchisapint user type is ' + $scope.user_type);
+									}
+								}, 
+								function(response) 
+								{
+								});
+								$scope.initialise()
+						}
+					}
+				}
+				$scope.authenticate = function(doWork)
+				{
+					if ($scope.token != null && moment().isAfter(moment($scope.token_exp)))
 					{
-						$http.get('https://api.howmuchisapint.com/test/drinker/' + id + '?token=' + $scope.token).
+						$http.get('https://api.howmuchisapint.com/test/authenticate?user=' + $scope.user).
 							then(function(response)
 							{
-								if (response.data.drinker !== undefined)	
-								{
-									$scope.user_type = response.data.drinker.type;
-									$scope.user_name = response.data.drinker.name;
-									console.log('howmuchisapint user name is ' + $scope.user_name);
-									console.log('howmuchisapint user type is ' + $scope.user_type);
-								}
+								$scope.token = response.data.token 
+								$scope.token_exp = response.data.expiry 
+								console.log('howmuchisapint token is ' + $scope.token);
+								doWork();
 							}, 
 							function(response) 
 							{
 							});
-							$scope.initialise()
 					}
-				}
-				$scope.authenticate = function()
-				{
-					var ok = false;
-	        		$http.get('https://api.howmuchisapint.com/test/authenticate?user=' + $scope.user).
-						then(function(response)
-						{
-							$scope.token = response.data.token 
-							$scope.token_exp = response.data.expiry 
-				  			console.log('howmuchisapint token is ' + $scope.token);
-							ok = true;
-				  		}, 
-				  		function(response) 
-				  		{
-						});
-					return ok;
-				}
-				$scope.check_token = function()
-				{
-					if ($scope.token != null && moment().isAfter(moment($scope.token_exp)))
+					else
 					{
-						console.log("expired token = " + $scope.token_exp)
-						return $scope.authenticate();
+						doWork();
 					}
-				}
 			    $scope.upd_prices_pub_country = function()
 			    {
 					$scope.price_stat_data = '';
@@ -618,7 +613,7 @@
 					$scope.prices_pub_type_data_list = [];
 					if ($scope.prices_pub_country != null)
 					{
-						if ($scope.check_token())
+						$scope.authenticate(function()
 						{
 							$http.get('https://api.howmuchisapint.com/test/pub?token=' + $scope.token).
 								then(function(response)
@@ -671,7 +666,7 @@
 					$scope.prices_pub_type_data_list = [];
 					if ($scope.prices_pub_country != null)
 					{
-						if ($scope.check_token())
+						$scope.authenticate(function()
 						{
 							$http.get('https://api.howmuchisapint.com/test/pub?token=' + $scope.token).
 								then(function(response)
@@ -712,7 +707,7 @@
 					$scope.prices_pub_type_data_list = [];
 					$scope.prices_pub_data_list = [];
 					
-					if ($scope.check_token())
+					$scope.authenticate(function()
 					{
 						$http.get('https://api.howmuchisapint.com/test/pub?token=' + $scope.token).
 							then(function(response)
@@ -751,7 +746,7 @@
 					$scope.prices_pub_data_list = [];
 					if ($scope.prices_pub_type != null)
 					{
-						if ($scope.check_token())
+						$scope.authenticate(function()
 						{
 							$http.get('https://api.howmuchisapint.com/test/pub?token=' + $scope.token).
 								then(function(response)
@@ -794,7 +789,7 @@
 					$scope.prices_beer_data_list = [];
 					if ($scope.prices_beer_type != null)
 					{
-						if ($scope.check_token())
+						$scope.authenticate(function()
 						{
 							$http.get('https://api.howmuchisapint.com/test/beer?token=' + $scope.token).
 								then(function(response)
@@ -829,7 +824,7 @@
 				    	$scope.prices_display_fxrate = 1;
 						if ($scope.prices_ccy != $scope.prices_display_ccy)
 						{
-							if ($scope.check_token())
+							$scope.authenticate(function()
 							{
 								$http.get('https://api.howmuchisapint.com/test/fxrate/' + $scope.prices_ccy + $scope.prices_display_ccy + '?latest=Y&token=' + $scope.token).
 									then(function(response)
@@ -895,8 +890,7 @@
 				}
 				$scope.initialise = function()
 				{
-					console.log("initialise")
-					if ($scope.check_token())
+					$scope.authenticate(function()
 					{
 						$http.get('https://api.howmuchisapint.com/test/refdata/country?token=' + $scope.token).
 							then(function(response)
@@ -915,7 +909,6 @@
 							function(response) 
 							{
 							});
-						$scope.check_token()
 						$http.get('https://api.howmuchisapint.com/test/refdata/pubtype?token=' + $scope.token).
 							then(function(response)
 							{
@@ -1180,7 +1173,7 @@
 						params = params + '&name=' + $scope.add_beer_name;
 					}
 					
-					if ($scope.check_token())
+					$scope.authenticate(function()
 					{
 						$http.get('https://api.howmuchisapint.com/test/beer' + params).
 							then(function(response)
@@ -1242,7 +1235,7 @@
 						params = params + '&name=' + $scope.add_pub_name;
 					}	
 					
-					if ($scope.check_token())
+					$scope.authenticate(function()
 					{
 						$http.get('https://api.howmuchisapint.com/test/pub' + params).
 							then(function(response)
@@ -1325,7 +1318,7 @@
 					$scope.working_prices = true;
 					var params = $scope.get_prices_params(true);
 
-					if ($scope.check_token())
+					$scope.authenticate(function()
 					{
 						$http.get('https://api.howmuchisapint.com/test/beerpricestats/BeerTypeAndPubTypeAndCountry' + params).
 							then(function(response)
@@ -1370,7 +1363,7 @@
 					$scope.working_prices = true;
 					var params = $scope.get_prices_params();
 					
-					if ($scope.check_token())
+					$scope.authenticate(function()
 					{
 						$http.get('https://api.howmuchisapint.com/test/beerprice' + params).
 							then(function(response)
@@ -1436,7 +1429,7 @@
 						msg = msg + '],"alerts":[]';
 				    	msg = msg + '}}';
 						
-						if ($scope.check_token())
+						$scope.authenticate(function()
 						{
 							$http.post('https://api.howmuchisapint.com/test/beer?token=' + $scope.token, msg).
 								then(function(response)
@@ -1494,7 +1487,7 @@
 						msg = msg + '],"alerts":[]';
 				    	msg = msg + '}}';
 						
-						if ($scope.check_token())
+						$scope.authenticate(function()
 						{
 							$http.post('https://api.howmuchisapint.com/test/pub?token=' + $scope.token, msg).
 								then(function(response)
@@ -1573,7 +1566,7 @@
 						msg = msg + '],"alerts":[]';
 				    	msg = msg + '}}';
 						
-						if ($scope.check_token())
+						$scope.authenticate(function()
 						{
 							$http.post('https://api.howmuchisapint.com/test/beerprice?token=' + $scope.token, msg).
 								then(function(response)
