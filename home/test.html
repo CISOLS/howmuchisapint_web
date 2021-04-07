@@ -582,18 +582,20 @@
 				}
 				$scope.authenticate = function()
 				{
+					boolean ok = false;
 	        		$http.get('https://api.howmuchisapint.com/test/authenticate?user=' + $scope.user).
 						then(function(response)
 						{
 							$scope.token = response.data.token 
 							$scope.token_exp = response.data.expiry 
 				  			console.log('howmuchisapint token is ' + $scope.token);
-							return true;
+							ok = true;
 				  		}, 
 				  		function(response) 
 				  		{
 							return false;
 						});
+					return ok;
 				}
 				$scope.check_token = function()
 				{
@@ -893,7 +895,7 @@
 				}
 				$scope.initialise = function()
 				{
-					console.log("initialise = " + $scope.token)
+					console.log("initialise")
 					if ($scope.check_token())
 					{
 						$http.get('https://api.howmuchisapint.com/test/refdata/country?token=' + $scope.token).
