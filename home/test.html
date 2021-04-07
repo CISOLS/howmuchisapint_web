@@ -582,7 +582,7 @@
 				}
 				$scope.authenticate = function()
 				{
-					boolean ok = false;
+					ok = false;
 	        		$http.get('https://api.howmuchisapint.com/test/authenticate?user=' + $scope.user).
 						then(function(response)
 						{
@@ -593,7 +593,6 @@
 				  		}, 
 				  		function(response) 
 				  		{
-							return false;
 						});
 					return ok;
 				}
