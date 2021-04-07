@@ -562,7 +562,7 @@
 	  				$scope.user = user;
 					$scope.authenticate(function()
 					{
-						$http.get('https://api.howmuchisapint.com/test/drinker/' + id + '?token=' + $scope.token).
+						$http.get('https://api.howmuchisapint.com/test/drinker/' + user + '?token=' + $scope.token).
 							then(function(response)
 							{
 								if (response.data.drinker !== undefined)	
