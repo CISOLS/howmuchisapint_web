@@ -713,7 +713,7 @@
 				}
 				$scope.authenticate = function(doWork)
 				{
-					if ($scope.token != null && moment().isAfter(moment($scope.token_exp)))
+					if ($scope.token == null || moment().isAfter(moment($scope.token_exp)))
 					{
 						$http.get('https://api.howmuchisapint.com/test/authenticate?user=' + $scope.user).
 							then(function(response)
