@@ -496,18 +496,19 @@
 				$scope.user_ip = '';
 				$scope.token = null;
 				
+				$scope.all_tags = [];
+
 				$scope.add_beer_name = '';
-				$scope.add_beer_tags = '';
+				$scope.add_beer_tags = [];
 	
 				$scope.add_pub_name = '';
 				$scope.add_pub_country = 'United Kingdom';
 				$scope.add_pub_city = '';
 				$scope.add_pub_town = '';
 				$scope.add_pub_pc = '';
-				$scope.add_pub_tags = '';
+				$scope.add_pub_tags = [];
 	
 				$scope.add_price_amount = 0.00;
-				$scope.prices_tags = '';
 				$scope.prices_pub_country = 'United Kingdom';
 				$scope.prices_pub_town = null;
 				$scope.prices_pub_pc = null;
@@ -516,6 +517,7 @@
 				$scope.prices_pub = null;
 				$scope.prices_beer_type = null;
 				$scope.prices_beer = null;
+				$scope.prices_tags = [];
 
 			    $scope.price_err = '';
 			    $scope.add_price_info = '';
@@ -891,11 +893,6 @@
 				}
 				$scope.initialise = function()
 				{
-			    	$scope.all_tags = [];
-			    	$scope.price_tags = [];
-			    	$scope.pub_tags = [];
-			    	$scope.beer_tags = [];
-					
 					if ($scope.check_token())
 					{
 						$http.get('https://api.howmuchisapint.com/test/refdata/country?token=' + $scope.token).
@@ -906,9 +903,7 @@
 							function(response) 
 							{
 							});
-					}
-					if ($scope.check_token())
-					{
+
 						$http.get('https://api.howmuchisapint.com/test/refdata/ccy?token=' + $scope.token).
 							then(function(response)
 							{
@@ -926,9 +921,7 @@
 							function(response) 
 							{
 							});
-					}
-					if ($scope.check_token())
-					{
+
 						$http.get('https://api.howmuchisapint.com/test/pub?token=' + $scope.token).
 							then(function(response)
 							{
@@ -961,9 +954,7 @@
 							function(response) 
 							{
 							});
-					}
-					if ($scope.check_token())
-					{
+
 						$http.get('https://api.howmuchisapint.com/test/refdata/beertype?token=' + $scope.token).
 							then(function(response)
 							{
@@ -972,9 +963,7 @@
 							function(response) 
 							{
 							});
-					}
-					if ($scope.check_token())
-					{
+
 						$http.get('https://api.howmuchisapint.com/test/beer?token=' + $scope.token).
 							then(function(response)
 							{
@@ -1006,9 +995,7 @@
 							function(response) 
 							{
 							});
-					}
-					if ($scope.check_token())
-					{
+
 						$http.get('https://api.howmuchisapint.com/test/beerprice?token=' + $scope.token + '&tags=unverified').
 							then(function(response)
 							{
@@ -1040,59 +1027,57 @@
 							function(response) 
 							{
 							});
-					}
-				    $scope.add_beer_type = 'Lager'
-				    $scope.add_pub_type = 'Pub'
 
-					for (ctry in $scope.country_data_list['ref-data-country'])
-					{
-						if ($scope.country_data_list['ref-data-country'][ctry].name == $scope.home_country)
+						$scope.add_beer_type = 'Lager'
+						$scope.add_pub_type = 'Pub'
+
+						for (ctry in $scope.country_data_list['ref-data-country'])
 						{
-							$scope.home_ccy = $scope.country_data_list['ref-data-country'][ctry].ccy;
-						}
-					}
-					for (ccy in $scope.ccy_data_list['ref-data-ccy'])
-					{
-						if ($scope.ccy_data_list['ref-data-ccy'][ccy].code == $scope.home_ccy)
-						{
-							$scope.home_ccy_symbol = $scope.ccy_data_list['ref-data-ccy'][ccy].symbol;
-							if ($scope.home_ccy_symbol.length > 1)
+							if ($scope.country_data_list['ref-data-country'][ctry].name == $scope.home_country)
 							{
-								$scope.home_ccy_symbol = $scope.home_ccy_symbol + ' ';
+								$scope.home_ccy = $scope.country_data_list['ref-data-country'][ctry].ccy;
 							}
-						}	
-					}
-					$scope.prices_display_ccy = $scope.home_ccy;
-					$scope.prices_display_ccy_symbol = $scope.home_ccy_symbol;
-					$scope.prices_display_fxrate = 1
+						}
+						for (ccy in $scope.ccy_data_list['ref-data-ccy'])
+						{
+							if ($scope.ccy_data_list['ref-data-ccy'][ccy].code == $scope.home_ccy)
+							{
+								$scope.home_ccy_symbol = $scope.ccy_data_list['ref-data-ccy'][ccy].symbol;
+								if ($scope.home_ccy_symbol.length > 1)
+								{
+									$scope.home_ccy_symbol = $scope.home_ccy_symbol + ' ';
+								}
+							}	
+						}
+						$scope.prices_display_ccy = $scope.home_ccy;
+						$scope.prices_display_ccy_symbol = $scope.home_ccy_symbol;
+						$scope.prices_display_fxrate = 1
 
-					$scope.add_pub_country = $scope.home_country;
-					$scope.add_pub_city = $scope.home_city;
-					$scope.add_pub_town = $scope.home_town;
-					$scope.add_pub_pc = $scope.home_pc;
-	
-					$scope.prices_pub_country = $scope.home_country;
-				    $scope.upd_prices_pub_country();
-					$scope.prices_pub_city = $scope.home_city;
-				    $scope.upd_prices_pub_city();
-					$scope.prices_pub_town = $scope.home_town;
-				    $scope.upd_prices_pub_town();
-	
-					var params = '?token=' + $scope.token + '&style=small';
-					params = params + '&pubCountry=' + $scope.home_country;
-					params = params + '&pubCity=' + $scope.home_city;
-					params = params + '&pubType=Pub';
-					params = params + '&pubTown=' + $scope.home_town;
-					if ($scope.home_country == 'United Kingdom' )
-					{
-						params = params + '&tags=wetherspoons';
-					}
-					var stats = [];
-		  			$scope.headline_stat1 = '';
-		  			$scope.headline_stat2 = '';
-					
-					if ($scope.check_token())
-					{
+						$scope.add_pub_country = $scope.home_country;
+						$scope.add_pub_city = $scope.home_city;
+						$scope.add_pub_town = $scope.home_town;
+						$scope.add_pub_pc = $scope.home_pc;
+		
+						$scope.prices_pub_country = $scope.home_country;
+						$scope.upd_prices_pub_country();
+						$scope.prices_pub_city = $scope.home_city;
+						$scope.upd_prices_pub_city();
+						$scope.prices_pub_town = $scope.home_town;
+						$scope.upd_prices_pub_town();
+		
+						var params = '?token=' + $scope.token + '&style=small';
+						params = params + '&pubCountry=' + $scope.home_country;
+						params = params + '&pubCity=' + $scope.home_city;
+						params = params + '&pubType=Pub';
+						params = params + '&pubTown=' + $scope.home_town;
+						if ($scope.home_country == 'United Kingdom' )
+						{
+							params = params + '&tags=wetherspoons';
+						}
+						var stats = [];
+						$scope.headline_stat1 = '';
+						$scope.headline_stat2 = '';
+						
 						$http.get('https://api.howmuchisapint.com/test/beerpricestats/BeerTypeAndPubTypeAndTown' + params).
 							then(function(response)
 							{
@@ -1137,12 +1122,9 @@
 									}
 								}
 							});
-					}
-		  			$scope.headline_latest = [];
-		  			$scope.headline_latest_ccy_symbol = [];
-					
-					if ($scope.check_token())
-					{
+						$scope.headline_latest = [];
+						$scope.headline_latest_ccy_symbol = [];
+						
 						$http.get('https://api.howmuchisapint.com/test/beerprice?token=' + $scope.token + '&page=1&pageSize=5&pubCountry=' + $scope.home_country).
 							then(function(response)
 							{
@@ -1174,7 +1156,8 @@
 							});
 					}
 				}
-			    $scope.get_beers = function()
+			    
+				$scope.get_beers = function()
 			    {
 					$scope.working_beer = true;
 					$scope.beer_data = '';
