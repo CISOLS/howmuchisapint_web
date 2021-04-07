@@ -557,8 +557,6 @@
 			    {
 					$scope.set_user(google_token)
 
-					//initialise
-					setTimeout($scope.initialise(), 5000);
 			    }
 				$scope.set_user = function(user)
 				{
@@ -579,6 +577,7 @@
 							function(response) 
 							{
 							});
+							$scope.initialise()
 					}
 				}
 				$scope.authenticate = function()
