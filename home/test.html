@@ -561,24 +561,23 @@
 				{
 	  				$scope.user = user;
 					$scope.authenticate(function()
-						{
-							$http.get('https://api.howmuchisapint.com/test/drinker/' + id + '?token=' + $scope.token).
-								then(function(response)
+					{
+						$http.get('https://api.howmuchisapint.com/test/drinker/' + id + '?token=' + $scope.token).
+							then(function(response)
+							{
+								if (response.data.drinker !== undefined)	
 								{
-									if (response.data.drinker !== undefined)	
-									{
-										$scope.user_type = response.data.drinker.type;
-										$scope.user_name = response.data.drinker.name;
-										console.log('howmuchisapint user name is ' + $scope.user_name);
-										console.log('howmuchisapint user type is ' + $scope.user_type);
-									}
-								}, 
-								function(response) 
-								{
-								});
-								$scope.initialise()
-						}
-					}
+									$scope.user_type = response.data.drinker.type;
+									$scope.user_name = response.data.drinker.name;
+									console.log('howmuchisapint user name is ' + $scope.user_name);
+									console.log('howmuchisapint user type is ' + $scope.user_type);
+								}
+							}, 
+							function(response) 
+							{
+							});
+							$scope.initialise()
+					})
 				}
 				$scope.authenticate = function(doWork)
 				{
@@ -600,6 +599,7 @@
 					{
 						doWork();
 					}
+				}
 			    $scope.upd_prices_pub_country = function()
 			    {
 					$scope.price_stat_data = '';
@@ -651,7 +651,7 @@
 									}
 								}
 								$scope.upd_prices_display_ccy()
-						}
+						})
 					}
 			    } 
 			    $scope.upd_prices_pub_city = function()
@@ -695,7 +695,7 @@
 								function(response) 
 								{
 								});
-						}
+						})
 					}
 				} 
 			    $scope.upd_prices_pub_town = function()
@@ -736,7 +736,7 @@
 							function(response) 
 							{
 							});
-					}
+					})
 			    } 
 			    $scope.upd_prices_pub_type = function()
 			    {
@@ -774,7 +774,7 @@
 								function(response) 
 								{
 								});
-						}
+						})
 					}
 			    } 
 			    $scope.upd_prices_pub = function()
@@ -809,7 +809,7 @@
 								function(response) 
 								{
 								});
-						}
+						})
 					}
 			    } 
 			    $scope.upd_prices_beer = function()
@@ -837,7 +837,7 @@
 									function(response) 
 									{
 									});
-							}
+							})
 						}
 						for (ccy in $scope.ccy_data_list['ref-data-ccy'])
 						{
@@ -1150,7 +1150,7 @@
 							function(response) 
 							{
 							});
-					}
+					})
 				}
 			    
 				$scope.get_beers = function()
@@ -1264,7 +1264,7 @@
 								$scope.pub_err = errMsg
 								$scope.working_pub = false;
 							});
-					}
+					})
 				}
 			    $scope.get_prices_params = function(wethers)
 			    {
@@ -1351,7 +1351,7 @@
 								$scope.price_err = errMsg
 								$scope.working_prices = false;
 							});
-					}
+					})
 			    }
 			    $scope.get_prices = function()
 			    {
@@ -1382,7 +1382,7 @@
 								$scope.price_err = errMsg
 								$scope.working_prices = false;
 							});
-					}
+					})
 			    }
 			    $scope.prices_criteria = function()
 			    {
@@ -1455,7 +1455,7 @@
 									$scope.beer_err = errMsg
 									$scope.working_beer = false;
 								});
-						}
+						})
 					}
 			    }
 			    $scope.add_pub = function()
@@ -1519,7 +1519,7 @@
 									$scope.pub_err = errMsg
 									$scope.working_pub = false;
 								});
-						}
+						})
 					}
 			    }
 			    $scope.add_tag = function(ename)
@@ -1588,7 +1588,7 @@
 									$scope.price_err = errMsg
 									$scope.working_prices = false;
 								});
-						}
+						})
 			    	}
 			    }
 				$scope.get_years_ago_display = function(year)
