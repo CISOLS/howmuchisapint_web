@@ -557,14 +557,14 @@
 
 			    $scope.set_google_user = function(google_token, id, name, email)
 			    {
+	  				$scope.user = user;
 					$scope.set_user(google_token)
 			    }
 				$scope.set_user = function(user)
 				{
-	  				$scope.user = user;
 					$scope.authenticate(function()
 					{
-						$http.get('https://api.howmuchisapint.com/test/drinker/' + user + '?token=' + $scope.token).
+						$http.get('https://api.howmuchisapint.com/test/drinker/' + $scope.user + '?token=' + $scope.token).
 							then(function(response)
 							{
 								if (response.data.drinker !== undefined)	
