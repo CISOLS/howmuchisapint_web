@@ -598,8 +598,9 @@
 				}
 				$scope.check_token = function()
 				{
-					if ($scope.token != null && moment().isAfter(moment(token_exp)))
+					if ($scope.token != null && moment().isAfter(moment($scope.token_exp)))
 					{
+						console.log("expired token = " + $scope.token_exp)
 						return $scope.authenticate();
 					}
 				}
@@ -893,6 +894,7 @@
 				}
 				$scope.initialise = function()
 				{
+					console.log("initialise = " + $scope.token)
 					if ($scope.check_token())
 					{
 						$http.get('https://api.howmuchisapint.com/test/refdata/country?token=' + $scope.token).
