@@ -576,8 +576,140 @@
 							function(response) 
 							{
 							});
-							$scope.initialise()
+
+						$http.get('https://api.howmuchisapint.com/test/refdata/country?token=' + $scope.token).
+							then(function(response)
+							{
+								$scope.country_data_list = response.data;
+							}, 
+							function(response) 
+							{
+							});
+
+						$http.get('https://api.howmuchisapint.com/test/refdata/ccy?token=' + $scope.token).
+							then(function(response)
+							{
+								$scope.ccy_data_list = response.data;
+							}, 
+							function(response) 
+							{
+							});
+						$http.get('https://api.howmuchisapint.com/test/refdata/pubtype?token=' + $scope.token).
+							then(function(response)
+							{
+								$scope.pub_type_data_list = response.data;
+							}, 
+							function(response) 
+							{
+							});
+
+						$http.get('https://api.howmuchisapint.com/test/pub?token=' + $scope.token).
+							then(function(response)
+							{
+								for (i = 0; i < response.data.pub.length; i++)
+								{
+									for (t = 0; t < response.data.pub[i].tags.length; t++)
+									{
+										var ex = false;
+										for (t2 in $scope.all_tags)
+										{
+											ex = ex || $scope.all_tags[t2] == response.data.pub[i].tags[t];
+										}
+										if (!ex)
+										{
+											$scope.all_tags.push(response.data.pub[i].tags[t]);
+										}
+										var ex = false;
+										for (t2 in $scope.pub_tags)
+										{
+											ex = ex || $scope.pub_tags[t2] == response.data.pub[i].tags[t];
+										}
+										if (!ex)
+										{
+											$scope.pub_tags.push(response.data.pub[i].tags[t]);
+										}
+										
+									}
+								}
+							}, 
+							function(response) 
+							{
+							});
+
+						$http.get('https://api.howmuchisapint.com/test/refdata/beertype?token=' + $scope.token).
+							then(function(response)
+							{
+								$scope.beer_type_data_list = response.data;
+							}, 
+							function(response) 
+							{
+							});
+
+						$http.get('https://api.howmuchisapint.com/test/beer?token=' + $scope.token).
+							then(function(response)
+							{
+								for (i = 0; i < response.data.beer.length; i++)
+								{
+									for (t = 0; t < response.data.beer[i].tags.length; t++)
+									{
+										var ex = false;
+										for (t2 in $scope.all_tags)
+										{
+											ex = ex || $scope.all_tags[t2] == response.data.beer[i].tags[t];
+										}
+										if (!ex)
+										{
+											$scope.all_tags.push(response.data.beer[i].tags[t]);
+										}
+										var ex = false;
+										for (t2 in $scope.beer_tags)
+										{
+											ex = ex || $scope.beer_tags[t2] == response.data.beer[i].tags[t];
+										}
+										if (!ex)
+										{
+											$scope.beer_tags.push(response.data.beer[i].tags[t]);
+										}
+									}
+								}
+							}, 
+							function(response) 
+							{
+							});
+
+						$http.get('https://api.howmuchisapint.com/test/beerprice?token=' + $scope.token + '&tags=unverified').
+							then(function(response)
+							{
+								for (i = 0; i < response.data['beer-price'].length; i++)
+								{
+									for (t = 0; t < response.data['beer-price'][i].tags.length; t++)
+									{
+										var ex = false;
+										for (t2 in $scope.all_tags)
+										{
+											ex = ex || $scope.all_tags[t2] == response.data['beer-price'][i].tags[t];
+										}
+										if (!ex)
+										{
+											$scope.all_tags.push(response.data['beer-price'][i].tags[t]);
+										}
+										var ex = false;
+										for (t2 in $scope.price_tags)
+										{
+											ex = ex || $scope.price_tags[t2] == response.data['beer-price'][i].tags[t];
+										}
+										if (!ex)
+										{
+											$scope.price_tags.push(response.data['beer-price'][i].tags[t]);
+										}
+									}
+								}	
+							}, 
+							function(response) 
+							{
+							});
 					});
+					setTimeout(function(){ $scope.initialise();},5000)
 				}
 				$scope.authenticate = function(doWork)
 				{
@@ -890,267 +1022,132 @@
 				}
 				$scope.initialise = function()
 				{
-					$scope.authenticate(function()
+					$scope.add_beer_type = 'Lager'
+					$scope.add_pub_type = 'Pub'
+
+					for (ctry in $scope.country_data_list['ref-data-country'])
 					{
-						$http.get('https://api.howmuchisapint.com/test/refdata/country?token=' + $scope.token).
-							then(function(response)
-							{
-								$scope.country_data_list = response.data;
-							}, 
-							function(response) 
-							{
-							});
-
-						$http.get('https://api.howmuchisapint.com/test/refdata/ccy?token=' + $scope.token).
-							then(function(response)
-							{
-								$scope.ccy_data_list = response.data;
-							}, 
-							function(response) 
-							{
-							});
-						$http.get('https://api.howmuchisapint.com/test/refdata/pubtype?token=' + $scope.token).
-							then(function(response)
-							{
-								$scope.pub_type_data_list = response.data;
-							}, 
-							function(response) 
-							{
-							});
-
-						$http.get('https://api.howmuchisapint.com/test/pub?token=' + $scope.token).
-							then(function(response)
-							{
-								for (i = 0; i < response.data.pub.length; i++)
-								{
-									for (t = 0; t < response.data.pub[i].tags.length; t++)
-									{
-										var ex = false;
-										for (t2 in $scope.all_tags)
-										{
-											ex = ex || $scope.all_tags[t2] == response.data.pub[i].tags[t];
-										}
-										if (!ex)
-										{
-											$scope.all_tags.push(response.data.pub[i].tags[t]);
-										}
-										var ex = false;
-										for (t2 in $scope.pub_tags)
-										{
-											ex = ex || $scope.pub_tags[t2] == response.data.pub[i].tags[t];
-										}
-										if (!ex)
-										{
-											$scope.pub_tags.push(response.data.pub[i].tags[t]);
-										}
-										
-									}
-								}
-							}, 
-							function(response) 
-							{
-							});
-
-						$http.get('https://api.howmuchisapint.com/test/refdata/beertype?token=' + $scope.token).
-							then(function(response)
-							{
-								$scope.beer_type_data_list = response.data;
-							}, 
-							function(response) 
-							{
-							});
-
-						$http.get('https://api.howmuchisapint.com/test/beer?token=' + $scope.token).
-							then(function(response)
-							{
-								for (i = 0; i < response.data.beer.length; i++)
-								{
-									for (t = 0; t < response.data.beer[i].tags.length; t++)
-									{
-										var ex = false;
-										for (t2 in $scope.all_tags)
-										{
-											ex = ex || $scope.all_tags[t2] == response.data.beer[i].tags[t];
-										}
-										if (!ex)
-										{
-											$scope.all_tags.push(response.data.beer[i].tags[t]);
-										}
-										var ex = false;
-										for (t2 in $scope.beer_tags)
-										{
-											ex = ex || $scope.beer_tags[t2] == response.data.beer[i].tags[t];
-										}
-										if (!ex)
-										{
-											$scope.beer_tags.push(response.data.beer[i].tags[t]);
-										}
-									}
-								}
-							}, 
-							function(response) 
-							{
-							});
-
-						$http.get('https://api.howmuchisapint.com/test/beerprice?token=' + $scope.token + '&tags=unverified').
-							then(function(response)
-							{
-								for (i = 0; i < response.data['beer-price'].length; i++)
-								{
-									for (t = 0; t < response.data['beer-price'][i].tags.length; t++)
-									{
-										var ex = false;
-										for (t2 in $scope.all_tags)
-										{
-											ex = ex || $scope.all_tags[t2] == response.data['beer-price'][i].tags[t];
-										}
-										if (!ex)
-										{
-											$scope.all_tags.push(response.data['beer-price'][i].tags[t]);
-										}
-										var ex = false;
-										for (t2 in $scope.price_tags)
-										{
-											ex = ex || $scope.price_tags[t2] == response.data['beer-price'][i].tags[t];
-										}
-										if (!ex)
-										{
-											$scope.price_tags.push(response.data['beer-price'][i].tags[t]);
-										}
-									}
-								}	
-							}, 
-							function(response) 
-							{
-							});
-
-						$scope.add_beer_type = 'Lager'
-						$scope.add_pub_type = 'Pub'
-
-						for (ctry in $scope.country_data_list['ref-data-country'])
+						if ($scope.country_data_list['ref-data-country'][ctry].name == $scope.home_country)
 						{
-							if ($scope.country_data_list['ref-data-country'][ctry].name == $scope.home_country)
+							$scope.home_ccy = $scope.country_data_list['ref-data-country'][ctry].ccy;
+						}
+					}
+					for (ccy in $scope.ccy_data_list['ref-data-ccy'])
+					{
+						if ($scope.ccy_data_list['ref-data-ccy'][ccy].code == $scope.home_ccy)
+						{
+							$scope.home_ccy_symbol = $scope.ccy_data_list['ref-data-ccy'][ccy].symbol;
+							if ($scope.home_ccy_symbol.length > 1)
 							{
-								$scope.home_ccy = $scope.country_data_list['ref-data-country'][ctry].ccy;
+								$scope.home_ccy_symbol = $scope.home_ccy_symbol + ' ';
 							}
-						}
-						for (ccy in $scope.ccy_data_list['ref-data-ccy'])
-						{
-							if ($scope.ccy_data_list['ref-data-ccy'][ccy].code == $scope.home_ccy)
-							{
-								$scope.home_ccy_symbol = $scope.ccy_data_list['ref-data-ccy'][ccy].symbol;
-								if ($scope.home_ccy_symbol.length > 1)
-								{
-									$scope.home_ccy_symbol = $scope.home_ccy_symbol + ' ';
-								}
-							}	
-						}
-						$scope.prices_display_ccy = $scope.home_ccy;
-						$scope.prices_display_ccy_symbol = $scope.home_ccy_symbol;
-						$scope.prices_display_fxrate = 1
+						}	
+					}
+					$scope.prices_display_ccy = $scope.home_ccy;
+					$scope.prices_display_ccy_symbol = $scope.home_ccy_symbol;
+					$scope.prices_display_fxrate = 1
 
-						$scope.add_pub_country = $scope.home_country;
-						$scope.add_pub_city = $scope.home_city;
-						$scope.add_pub_town = $scope.home_town;
-						$scope.add_pub_pc = $scope.home_pc;
-		
-						$scope.prices_pub_country = $scope.home_country;
-						$scope.upd_prices_pub_country();
-						$scope.prices_pub_city = $scope.home_city;
-						$scope.upd_prices_pub_city();
-						$scope.prices_pub_town = $scope.home_town;
-						$scope.upd_prices_pub_town();
-		
-						var params = '?token=' + $scope.token + '&style=small';
-						params = params + '&pubCountry=' + $scope.home_country;
-						params = params + '&pubCity=' + $scope.home_city;
-						params = params + '&pubType=Pub';
-						params = params + '&pubTown=' + $scope.home_town;
-						if ($scope.home_country == 'United Kingdom' )
+					$scope.add_pub_country = $scope.home_country;
+					$scope.add_pub_city = $scope.home_city;
+					$scope.add_pub_town = $scope.home_town;
+					$scope.add_pub_pc = $scope.home_pc;
+	
+					$scope.prices_pub_country = $scope.home_country;
+					$scope.upd_prices_pub_country();
+					$scope.prices_pub_city = $scope.home_city;
+					$scope.upd_prices_pub_city();
+					$scope.prices_pub_town = $scope.home_town;
+					$scope.upd_prices_pub_town();
+	
+					var params = '?token=' + $scope.token + '&style=small';
+					params = params + '&pubCountry=' + $scope.home_country;
+					params = params + '&pubCity=' + $scope.home_city;
+					params = params + '&pubType=Pub';
+					params = params + '&pubTown=' + $scope.home_town;
+					if ($scope.home_country == 'United Kingdom' )
+					{
+						params = params + '&tags=wetherspoons';
+					}
+					var stats = [];
+					$scope.headline_stat1 = '';
+					$scope.headline_stat2 = '';
+					
+					$http.get('https://api.howmuchisapint.com/test/beerpricestats/BeerTypeAndPubTypeAndTown' + params).
+						then(function(response)
 						{
-							params = params + '&tags=wetherspoons';
-						}
-						var stats = [];
-						$scope.headline_stat1 = '';
-						$scope.headline_stat2 = '';
-						
-						$http.get('https://api.howmuchisapint.com/test/beerpricestats/BeerTypeAndPubTypeAndTown' + params).
-							then(function(response)
+							stats = response.data['beer-price-stats'];
+							if (stats.length == 0)
 							{
-								stats = response.data['beer-price-stats'];
-								if (stats.length == 0)
+								$scope.headline_stat1 = 'Be the first to submit a pub pint price in ';
+								$scope.headline_stat2 = $scope.home_town;
+								
+								$http.get('https://api.howmuchisapint.com/test/beerpricestats/BeerTypeAndPubTypeAndCity' + params).
+									then(function(response)
+									{
+										stats = response.data['beer-price-stats'];
+									});
+							}
+							if (stats.length > 0)
+							{
+								var frst = true;
+								var max = 0;
+								var tot = 0;
+								for (i = 0; i < stats.length; i++)
 								{
-									$scope.headline_stat1 = 'Be the first to submit a pub pint price in ';
-									$scope.headline_stat2 = $scope.home_town;
-									
-									$http.get('https://api.howmuchisapint.com/test/beerpricestats/BeerTypeAndPubTypeAndCity' + params).
-										then(function(response)
-										{
-											stats = response.data['beer-price-stats'];
-										});
+									tot = tot + stats[i]['count'];
+									max = (stats[i]['count'] > max ? stats[i]['count'] : max);
 								}
-								if (stats.length > 0)
+								if (max > 5)
 								{
-									var frst = true;
-									var max = 0;
-									var tot = 0;
-									for (i = 0; i < stats.length; i++)
+									max = 5;
+								}
+								$scope.headline_stat1 = tot + ' prices in ' + stats[0]['pub']['town'] + ' ' + stats[0]['pub']['type'] + 's ';
+								for (i = 0; i < stats.length; i++)
+								{
+									if (stats[i]['tags'].length == 0 && stats[i]['count'] >= max)
 									{
-										tot = tot + stats[i]['count'];
-										max = (stats[i]['count'] > max ? stats[i]['count'] : max);
-									}
-									if (max > 5)
-									{
-										max = 5;
-									}
-									$scope.headline_stat1 = tot + ' prices in ' + stats[0]['pub']['town'] + ' ' + stats[0]['pub']['type'] + 's ';
-									for (i = 0; i < stats.length; i++)
-									{
-										if (stats[i]['tags'].length == 0 && stats[i]['count'] >= max)
-										{
-											if (!frst)
-											{	
-												$scope.headline_stat2 = $scope.headline_stat2 + ', ';
-											}
-											$scope.headline_stat2 = $scope.headline_stat2 + stats[i]['beer']['type'] + ' is ' + $scope.home_ccy_symbol + $scope.get_number_display(stats[i]['avg-price'], 2);
-											frst = false;
+										if (!frst)
+										{	
+											$scope.headline_stat2 = $scope.headline_stat2 + ', ';
 										}
+										$scope.headline_stat2 = $scope.headline_stat2 + stats[i]['beer']['type'] + ' is ' + $scope.home_ccy_symbol + $scope.get_number_display(stats[i]['avg-price'], 2);
+										frst = false;
 									}
 								}
-							});
-						$scope.headline_latest = [];
-						$scope.headline_latest_ccy_symbol = [];
-						
-						$http.get('https://api.howmuchisapint.com/test/beerprice?token=' + $scope.token + '&page=1&pageSize=5&pubCountry=' + $scope.home_country).
-							then(function(response)
+							}
+						});
+					$scope.headline_latest = [];
+					$scope.headline_latest_ccy_symbol = [];
+					
+					$http.get('https://api.howmuchisapint.com/test/beerprice?token=' + $scope.token + '&page=1&pageSize=5&pubCountry=' + $scope.home_country).
+						then(function(response)
+						{
+							prices = response.data['beer-price'];
+							c = 0
+							for (p in prices.sort(function(a, b){return a.date < b.date ? 1 : a.date > b.date ? -1 : 1 }))
 							{
-								prices = response.data['beer-price'];
-								c = 0
-								for (p in prices.sort(function(a, b){return a.date < b.date ? 1 : a.date > b.date ? -1 : 1 }))
+								$scope.headline_latest[c] = prices[p];
+								price_ccy = ''
+								for (ctry in $scope.country_data_list['ref-data-country'])
 								{
-									$scope.headline_latest[c] = prices[p];
-									price_ccy = ''
-									for (ctry in $scope.country_data_list['ref-data-country'])
+									if ($scope.country_data_list['ref-data-country'][ctry].name == prices[p].pub.country)
 									{
-										if ($scope.country_data_list['ref-data-country'][ctry].name == prices[p].pub.country)
-										{
-											price_ccy = $scope.country_data_list['ref-data-country'][ctry].ccy;
-										}
+										price_ccy = $scope.country_data_list['ref-data-country'][ctry].ccy;
 									}
-									for (ccy in $scope.ccy_data_list['ref-data-ccy'])
-									{
-										if ($scope.ccy_data_list['ref-data-ccy'][ccy].code == price_ccy)
-										{
-											$scope.headline_latest_ccy_symbol[c] = $scope.ccy_data_list['ref-data-ccy'][ccy].symbol;
-										}
-									}
-									c = c + 1;
 								}
-							},
-							function(response) 
-							{
-							});
-					});
+								for (ccy in $scope.ccy_data_list['ref-data-ccy'])
+								{
+									if ($scope.ccy_data_list['ref-data-ccy'][ccy].code == price_ccy)
+									{
+										$scope.headline_latest_ccy_symbol[c] = $scope.ccy_data_list['ref-data-ccy'][ccy].symbol;
+									}
+								}
+								c = c + 1;
+							}
+						},
+						function(response) 
+						{
+						});
 				}
 			    
 				$scope.get_beers = function()
