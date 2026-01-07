@@ -1,0 +1,8 @@
+.form-check-input input[type="radio"] + label::after {
+  background-color: #5bc0de;
+}
+.form-check-input input[type="radio"]:checked + label::before {
+  border-color: #5bc0de;
+}
+.form-check-input input[type="radio"]:checked + label::after {
+  background-color: #5bc0de;
