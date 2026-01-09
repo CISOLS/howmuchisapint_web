@@ -1475,7 +1475,7 @@
 						return num2.toFixed(dp).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 					}
 				}
-				
+				$scope.set_user('guest'); 
 			});
 			
 	        navigator.geolocation.getCurrentPosition(showPosition);
@@ -1486,7 +1486,6 @@
 				angular.element(document.querySelector('[ng-controller="appCtrl"]')).scope().set_location(coords);
 			}
 			
-			$scope.set_user('guest'); 
 		</script>
 	</body>
 </html>
