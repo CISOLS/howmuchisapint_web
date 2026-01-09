@@ -62,8 +62,6 @@
 										</div>
 									</div>
 								</div>
-							</div>
-							<div class="shadow p-3 mb-4 text-light bg-dark bg-opacity-75">
 								<div class="row mt-2">
 									<div class="col">
 										<h4><span class="text-warning">Latest prices ({{home_country}})</span></h4>
@@ -149,7 +147,7 @@
 			var app = angular.module('app', []);
 			app.controller('appCtrl', function($scope, $http, $location, $window) 
 			{
-				$scope.api_path = "api.mynutpile.com/service";
+				$scope.api_path = "api.howmuchisapint.com/service";
 				$scope.service_path = "https://" + $scope.api_path;
 				$scope.env_msg = "";
 				$scope.request_error = "";
@@ -159,9 +157,6 @@
 				$scope.frm_login = {"id": "", "pwd": "", "remember":false};
 				$scope.frm_signup = {email: "", "pwd": ""};
 				$scope.token = "";
-				
-				$scope.user_type = 'GUEST';
-				$scope.user_name = '';
 				$scope.user_ip = '';
 				$scope.token = null;
 				
@@ -265,27 +260,28 @@
 					}
 				}
 				$scope.check_cookies();
-			    $scope.set_google_user = function(google_token, id, name, email)
+				
+			    $scope.set_user = function(uid)
 			    {
-	  				$scope.user = google_token;
+	  				$scope.user = uid;
 					$scope.authenticate(function()
 					{
-						$http.get('https://api.howmuchisapint.com/test/drinker/' + id + '?token=' + $scope.token).
-							then(function(response)
-							{
-								if (response.data.drinker !== undefined)	
-								{
-									$scope.user_type = response.data.drinker.type;
-									$scope.user_name = response.data.drinker.name;
-									console.log('howmuchisapint user name is ' + $scope.user_name);
-									console.log('howmuchisapint user type is ' + $scope.user_type);
-								}
-							}, 
-							function(response) 
-							{
-							});
+//						$http.get($scope.service_path + '/drinker/' + id + '?token=' + $scope.token).
+//							then(function(response)
+//							{
+//								if (response.data.drinker !== undefined)	
+//								{
+//									$scope.user_type = response.data.drinker.type;
+//									$scope.user_name = response.data.drinker.name;
+//									console.log('howmuchisapint user name is ' + $scope.user_name);
+//									console.log('howmuchisapint user type is ' + $scope.user_type);
+//								}
+//							}, 
+//							function(response) 
+//							{
+//							});
 
-						$http.get('https://api.howmuchisapint.com/test/refdata/country?token=' + $scope.token).
+						$http.get($scope.service_path + '/refdata/country?token=' + $scope.token).
 							then(function(response)
 							{
 								$scope.country_data_list = response.data;
@@ -294,7 +290,7 @@
 							{
 							});
 
-						$http.get('https://api.howmuchisapint.com/test/refdata/ccy?token=' + $scope.token).
+						$http.get($scope.service_path + '/refdata/ccy?token=' + $scope.token).
 							then(function(response)
 							{
 								$scope.ccy_data_list = response.data;
@@ -302,7 +298,7 @@
 							function(response) 
 							{
 							});
-						$http.get('https://api.howmuchisapint.com/test/refdata/pubtype?token=' + $scope.token).
+						$http.get($scope.service_path + '/refdata/pubtype?token=' + $scope.token).
 							then(function(response)
 							{
 								$scope.pub_type_data_list = response.data;
@@ -311,7 +307,7 @@
 							{
 							});
 
-						$http.get('https://api.howmuchisapint.com/test/pub?token=' + $scope.token).
+						$http.get($scope.service_path + '/pub?token=' + $scope.token).
 							then(function(response)
 							{
 								for (i = 0; i < response.data.pub.length; i++)
@@ -344,7 +340,7 @@
 							{
 							});
 
-						$http.get('https://api.howmuchisapint.com/test/refdata/beertype?token=' + $scope.token).
+						$http.get($scope.service_path + '/refdata/beertype?token=' + $scope.token).
 							then(function(response)
 							{
 								$scope.beer_type_data_list = response.data;
@@ -353,7 +349,7 @@
 							{
 							});
 
-						$http.get('https://api.howmuchisapint.com/test/beer?token=' + $scope.token).
+						$http.get($scope.service_path + '/beer?token=' + $scope.token).
 							then(function(response)
 							{
 								for (i = 0; i < response.data.beer.length; i++)
@@ -385,7 +381,7 @@
 							{
 							});
 
-						$http.get('https://api.howmuchisapint.com/test/beerprice?token=' + $scope.token + '&tags=unverified').
+						$http.get($scope.service_path + '/beerprice?token=' + $scope.token + '&tags=unverified').
 							then(function(response)
 							{
 								for (i = 0; i < response.data['beer-price'].length; i++)
@@ -423,7 +419,7 @@
 				{
 					if ($scope.token == null || moment().isAfter(moment($scope.token_exp)))
 					{
-						$http.get('https://api.howmuchisapint.com/test/authenticate?user=' + $scope.user).
+						$http.get($scope.service_path + '/authenticate?uid=' + $scope.user).
 							then(function(response)
 							{
 								$scope.token = response.data.token 
@@ -455,7 +451,7 @@
 					{
 						$scope.authenticate(function()
 						{
-							$http.get('https://api.howmuchisapint.com/test/pub?token=' + $scope.token).
+							$http.get($scope.service_path + '/pub?token=' + $scope.token).
 								then(function(response)
 								{
 									for (p in response.data.pub)
@@ -508,7 +504,7 @@
 					{
 						$scope.authenticate(function()
 						{
-							$http.get('https://api.howmuchisapint.com/test/pub?token=' + $scope.token).
+							$http.get($scope.service_path + '/pub?token=' + $scope.token).
 								then(function(response)
 								{
 									for (p in response.data.pub)
@@ -549,7 +545,7 @@
 					
 					$scope.authenticate(function()
 					{
-						$http.get('https://api.howmuchisapint.com/test/pub?token=' + $scope.token).
+						$http.get($scope.service_path + '/pub?token=' + $scope.token).
 							then(function(response)
 							{
 								for (p in response.data.pub)
@@ -588,7 +584,7 @@
 					{
 						$scope.authenticate(function()
 						{
-							$http.get('https://api.howmuchisapint.com/test/pub?token=' + $scope.token).
+							$http.get($scope.service_path + '/pub?token=' + $scope.token).
 								then(function(response)
 								{
 									for (p in response.data.pub)
@@ -631,7 +627,7 @@
 					{
 						$scope.authenticate(function()
 						{
-							$http.get('https://api.howmuchisapint.com/test/beer?token=' + $scope.token).
+							$http.get($scope.service_path + '/beer?token=' + $scope.token).
 								then(function(response)
 								{
 									for (p in response.data.beer)
@@ -666,7 +662,7 @@
 						{
 							$scope.authenticate(function()
 							{
-								$http.get('https://api.howmuchisapint.com/test/fxrate/' + $scope.prices_ccy + $scope.prices_display_ccy + '?latest=Y&token=' + $scope.token).
+								$http.get($scope.service_path + '/fxrate/' + $scope.prices_ccy + $scope.prices_display_ccy + '?latest=Y&token=' + $scope.token).
 									then(function(response)
 									{
 										if (response.data['fx-rate'] !== undefined)
@@ -780,7 +776,7 @@
 					$scope.headline_stat1 = '';
 					$scope.headline_stat2 = '';
 					
-					$http.get('https://api.howmuchisapint.com/test/beerpricestats/BeerTypeAndPubTypeAndTown' + params).
+					$http.get($scope.service_path + '/beerpricestats/BeerTypeAndPubTypeAndTown' + params).
 						then(function(response)
 						{
 							stats = response.data['beer-price-stats'];
@@ -789,7 +785,7 @@
 								$scope.headline_stat1 = 'Be the first to submit a pub pint price in ';
 								$scope.headline_stat2 = $scope.home_town;
 								
-								$http.get('https://api.howmuchisapint.com/test/beerpricestats/BeerTypeAndPubTypeAndCity' + params).
+								$http.get($scope.service_path + '/beerpricestats/BeerTypeAndPubTypeAndCity' + params).
 									then(function(response)
 									{
 										stats = response.data['beer-price-stats'];
@@ -827,7 +823,7 @@
 					$scope.headline_latest = [];
 					$scope.headline_latest_ccy_symbol = [];
 					
-					$http.get('https://api.howmuchisapint.com/test/beerprice?token=' + $scope.token + '&page=1&pageSize=5&pubCountry=' + $scope.home_country).
+					$http.get($scope.service_path + '/beerprice?token=' + $scope.token + '&page=1&pageSize=5&pubCountry=' + $scope.home_country).
 						then(function(response)
 						{
 							prices = response.data['beer-price'];
@@ -880,7 +876,7 @@
 					
 					$scope.authenticate(function()
 					{
-						$http.get('https://api.howmuchisapint.com/test/beer' + params).
+						$http.get($scope.service_path + '/beer' + params).
 							then(function(response)
 							{
 								$scope.beer_data = response.data;
@@ -942,7 +938,7 @@
 					
 					$scope.authenticate(function()
 					{
-						$http.get('https://api.howmuchisapint.com/test/pub' + params).
+						$http.get($scope.service_path + '/pub' + params).
 							then(function(response)
 							{
 								$scope.pub_data = response.data;
@@ -1025,7 +1021,7 @@
 
 					$scope.authenticate(function()
 					{
-						$http.get('https://api.howmuchisapint.com/test/beerpricestats/BeerTypeAndPubTypeAndCountry' + params).
+						$http.get($scope.service_path + '/beerpricestats/BeerTypeAndPubTypeAndCountry' + params).
 							then(function(response)
 							{
 								$scope.price_stat_data = response.data;
@@ -1070,7 +1066,7 @@
 					
 					$scope.authenticate(function()
 					{
-						$http.get('https://api.howmuchisapint.com/test/beerprice' + params).
+						$http.get($scope.service_path + '/beerprice' + params).
 							then(function(response)
 							{
 								$scope.price_data = response.data;
@@ -1136,7 +1132,7 @@
 						
 						$scope.authenticate(function()
 						{
-							$http.post('https://api.howmuchisapint.com/test/beer?token=' + $scope.token, msg).
+							$http.post($scope.service_path + '/beer?token=' + $scope.token, msg).
 								then(function(response)
 								{
 									$scope.add_beer_info = $scope.get_beer_desc(response.data.beer, true);
@@ -1194,7 +1190,7 @@
 						
 						$scope.authenticate(function()
 						{
-							$http.post('https://api.howmuchisapint.com/test/pub?token=' + $scope.token, msg).
+							$http.post($scope.service_path + '/pub?token=' + $scope.token, msg).
 								then(function(response)
 								{
 									$scope.add_pub_info = $scope.get_pub_desc(response.data.pub, true);
@@ -1273,7 +1269,7 @@
 						
 						$scope.authenticate(function()
 						{
-							$http.post('https://api.howmuchisapint.com/test/beerprice?token=' + $scope.token, msg).
+							$http.post($scope.service_path + '/beerprice?token=' + $scope.token, msg).
 								then(function(response)
 								{
 									$scope.add_price_info = $scope.get_price_desc(response.data["beer-price"], true);
@@ -1477,7 +1473,7 @@
 						return num2.toFixed(dp).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 					}
 				}
-				
+				$scope.set_user('guest'); 
 			});
 			
 	        navigator.geolocation.getCurrentPosition(showPosition);
@@ -1487,18 +1483,7 @@
 			    console.log('coords=' + coords)
 				angular.element(document.querySelector('[ng-controller="appCtrl"]')).scope().set_location(coords);
 			}
-
-			function onSignIn(googleUser) 
-			{
-			 	var profile = googleUser.getBasicProfile();
-				console.log('google id is ' + profile.getId());
-			  	console.log('google name is ' + profile.getName());
-			  	console.log('google image is ' + profile.getImageUrl());
-			  	console.log('google email is ' + profile.getEmail());
-		        console.log("google token is " + googleUser.getAuthResponse().id_token);
-				
-				angular.element(document.querySelector('[ng-controller="appCtrl"]')).scope().set_google_user(googleUser.getAuthResponse().id_token, profile.getId(), profile.getName(), profile.getEmail()); 
-			}
+			
 		</script>
 	</body>
 </html>
