@@ -1,0 +1,1489 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<title>How Much Is a Pint</title>
+
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+		<meta name="author" content="Martin Keys">
+		<meta property="og:title" content="How Much Is a Pint"/>
+		<meta name="description" content="How much is a good old British pint of beer" />
+		<meta property="og:description" content="How much is a good old British pint of beer"/>
+		<meta property="og:image" content="img/logo.png"/>
+
+		<link rel="icon" type="image/png" href="img/logo.png"/>
+	</head>
+	<body>
+ 		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/js/bootstrap.bundle.min.js"></script>
+		<script src="js/moment.js"></script>
+
+
+    	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+		<link href="css/custom.css" rel="stylesheet" type="text/css" >
+
+		<span ng-app="app">
+			<span ng-controller="appCtrl">
+				<div class="p-3 text-light bg-dark">
+					<div class="row">
+						<div class="col">
+				    		<h2><span class="align-middle text-warning">H O W  M U C H!</span><span class="align-middle text-secondary"> is a good old British pint of beer?</span><span class="align-middle text-danger ms-2"><i>{{env_msg}}</i></span></h2>
+						</div>
+					</div>
+					<div class="row mt">
+						<div class="col">
+							<h6><span class="text-secondary"><i>version 0.9 beta</i></span></h6>
+						</div>
+					</div>
+				</div>
+				<div class="bg-image" style="background-size:cover;background-image:url('img/logo.png');">
+			  		<div class="mask" style="min-height: 70.9vh;background-color:rgba(0, 0, 0, 0.8);">
+						<div class="p-3">
+							<div ng-if="!loggedin">
+								<div class="shadow p-3 mb-4 text-light bg-dark bg-opacity-75">
+									<div ng-if="logginin">
+										<div class="row">
+										</div>
+									</div>
+									<div ng-if="!logginin">
+										<div class="row mt-3">
+											<div class="col">
+												<h6>
+													<span class="text-secondary">Continue annonymously or </span>
+													<a href="#" class="link-info text-decoration-none" ng-click="signup()">Sign in
+														<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
+														  <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+														</svg>
+													</a>
+													<span class="text-secondary">to track your own prices.</span>
+												</h6>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row mt-2">
+									<div class="col">
+										<h4><span class="text-warning">Latest prices ({{home_country}})</span></h4>
+									</div>
+								</div>
+								<div ng:repeat="r in sorted_price_data = (headline_latest | orderBy: 'date':true)">
+									<span class="text-muted">
+										<div ng:if="$index == 0 || r.date != sorted_price_data[$index - 1].date || r.pub.town != sorted_price_data[$index - 1].pub.town">
+											<h6><span class="text-light">{{get_date_display(r.date)}} {{r.pub.country}}, {{r.pub.city}}, {{r.pub.town}</span></h6>
+										</div>
+									</span>  
+									<h6><span class="text-secondary ms-1">{{get_pub_title(r.pub)}} ({{r.pub.type}}), {{r.beer.name}} ({{r.beer.type}}) {{headline_latest_ccy_symbol[$index]}}{{get_number_display(r.price, 2)}}</span></h6>
+								</div>
+							</div>
+							<div ng-if="loggedin">
+								<div class="shadow p-3 mb-4 text-light bg-dark bg-opacity-75">
+									<div ng-if="logginin">
+										<div class="row">
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="bg-image" style="background-size:cover;background-image:url('img/logo.png');">
+							<div class="mask" style="min-height: 70.9vh;background-color:rgba(0, 0, 0, 0.8);">
+								<div class="modal fade" id="frm_request_error">
+									<div class="modal-dialog">
+										<div class="modal-content text-light bg-dark bg-opacity-75">
+											<div class="modal-header">
+												<h4 class="modal-title text-warning">Fatal Error</h4>
+												<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+											</div>
+											<div class="modal-body">
+												<div class="p-2">
+													<div class="alert alert-danger">
+													  <strong>{{request_error}}</strong>
+													</div>							
+												</div>
+												<div class="modal-footer">
+													<button type="submit" class="btn btn-light" data-bs-dismiss="modal" ng-click="request_signin()">OK</button>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+			  		<div class="mask" style="background-color:rgba(0, 0, 0, 0.8);">
+						<div ng-if="use_cookies">
+							<div class="p-5">
+								<div class="row mt-2">
+								</div>
+							</div>
+						</div>
+						<div ng-if="!use_cookies" class="text-center">
+							<div class="p-4">
+								<div class="p-2 ms-5 me-5 bg-light">
+							    <span class="text-dark"><b>Do you like cookies?</b></span> &#x1F36A; <span class="text-dark ms-2">Cookies are in use to ensure the best experience</span>
+							    <button type="button" class="btn btn-md btn-info ms-2" ng-click="accept_cookies()">I agree</button>
+							    <!--a class="link-info text-decoration-none ms-1" href="https://cookiesandyou.com/" target="_blank">Learn more
+									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
+									  <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+									</svg>
+							    </a-->
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="p-3 text-light bg-dark">
+				<div class="row mb-1">
+					<div class="col">
+						<span class="float-start"><a href="mailto:hello@conceptintegral.com" class="link-secondary text-decoration-none">hello@conceptintegral.com</a></span>
+					</div>
+					<div class="col">
+						<span class="float-end text-secondary">&copy; 2022 <a href="https://www.conceptintegral.com" class="link-secondary text-decoration-none">Concept Integral</a></span>
+					</div>
+				</div>
+			</span>
+		</span>
+		<script>
+			var app = angular.module('app', []);
+			app.controller('appCtrl', function($scope, $http, $location, $window) 
+			{
+				$scope.api_path = "api.howmuchisapint.com/service";
+				$scope.service_path = "https://" + $scope.api_path;
+				$scope.env_msg = "";
+				$scope.request_error = "";
+				$scope.loggedin = false;
+				$scope.logginin = false;
+
+				$scope.frm_login = {"id": "", "pwd": "", "remember":false};
+				$scope.frm_signup = {email: "", "pwd": ""};
+				$scope.token = "";
+				$scope.user_ip = '';
+				$scope.token = null;
+				
+				$scope.all_tags = [];
+				$scope.beer_tags = [];
+				$scope.pub_tags = [];
+
+				$scope.add_beer_name = '';
+				$scope.add_beer_tags = '';
+	
+				$scope.add_pub_name = '';
+				$scope.add_pub_country = 'United Kingdom';
+				$scope.add_pub_city = '';
+				$scope.add_pub_town = '';
+				$scope.add_pub_pc = '';
+				$scope.add_pub_tags = '';
+	
+				$scope.add_price_amount = 0.00;
+				$scope.prices_pub_country = 'United Kingdom';
+				$scope.prices_pub_town = null;
+				$scope.prices_pub_pc = null;
+				$scope.prices_pub_city = null;
+				$scope.prices_pub_type = null;
+				$scope.prices_pub = null;
+				$scope.prices_beer_type = null;
+				$scope.prices_beer = null;
+				$scope.prices_tags = '';
+
+			    $scope.price_err = '';
+			    $scope.add_price_info = '';
+			    $scope.pub_err = '';
+			    $scope.add_pub_info = '';
+			    $scope.beer_err = '';
+			    $scope.add_beer_info = '';
+				$scope.get_prices_info = '';
+
+				$scope.working_prices = false;
+				$scope.working_pub = false;
+				$scope.working_beer = false;
+
+				$scope.get_ip = function()
+				{
+	        		$http.get('https://api.ipgeolocation.io/getip?apiKey=7109be59140c4b538dfc3bacb50a241a').
+						then(function(response)
+						{
+							console.log('ip is ' + response.data.ip);
+			  				$scope.user_ip = response.data.ip;
+			        		$http.get('https://api.ipgeolocation.io/ipgeo?ip=' + response.data.ip + '&apiKey=7109be59140c4b538dfc3bacb50a241a').
+								then(function(response)
+								{
+									console.log('ip geo is ' + response.data.country_name + ',' + response.data.city + ',' + response.data.zipcode + ' (' + response.data.isp + ')');
+						  		}, 
+						  		function(response) 
+						  		{
+								});
+				  		}, 
+				  		function(response) 
+				  		{
+						});
+				}
+				$scope.get_ip();
+
+				$http.get("https://api.ipify.org?format=json").then(function(resp) {$scope.ip = resp.data.ip;console.log("ip="+$scope.ip);}, function(resp) {console.log(resp)});
+
+				$scope.accept_cookies = function()
+				{
+					$scope.use_cookies = true;
+					d = new Date();
+		  			d.setTime(d.getTime() + (100*24*60*60*1000));
+					document.cookie = "cookies=true;expires="+d.toUTCString()+";path=/";
+				}
+				$scope.read_cookie = function(cname) 
+				{
+					name = cname + "=";
+					cookie = decodeURIComponent(document.cookie);
+					ca = cookie.split(';');
+					for(i = 0; i < ca.length; i++) 
+					{
+						c = ca[i];
+						while (c.charAt(0) == ' ') 
+						{
+							c = c.substring(1);
+						}
+					   	if (c.indexOf(name) == 0) 
+						{
+					      return c.substring(name.length, c.length);
+					   	}
+					}
+					return "";
+				}
+				$scope.check_cookies = function()
+				{
+					$scope.use_cookies=$scope.read_cookie("cookies")=="true";
+					if ($scope.use_cookies)
+					{
+						$scope.frm_login.id=$scope.read_cookie("uid");
+						if ($scope.frm_login.id!="")
+						{
+							$scope.frm_login.remember=true;
+						}
+					}
+				}
+				$scope.check_cookies();
+				
+			    $scope.set_user = function(uid)
+			    {
+	  				$scope.user = uid;
+					$scope.authenticate(function()
+					{
+//						$http.get($scope.service_path + '/drinker/' + id + '?token=' + $scope.token).
+//							then(function(response)
+//							{
+//								if (response.data.drinker !== undefined)	
+//								{
+//									$scope.user_type = response.data.drinker.type;
+//									$scope.user_name = response.data.drinker.name;
+//									console.log('howmuchisapint user name is ' + $scope.user_name);
+//									console.log('howmuchisapint user type is ' + $scope.user_type);
+//								}
+//							}, 
+//							function(response) 
+//							{
+//							});
+
+						$http.get($scope.service_path + '/refdata/country?token=' + $scope.token).
+							then(function(response)
+							{
+								$scope.country_data_list = response.data;
+							}, 
+							function(response) 
+							{
+							});
+
+						$http.get($scope.service_path + '/refdata/ccy?token=' + $scope.token).
+							then(function(response)
+							{
+								$scope.ccy_data_list = response.data;
+							}, 
+							function(response) 
+							{
+							});
+						$http.get($scope.service_path + '/refdata/pubtype?token=' + $scope.token).
+							then(function(response)
+							{
+								$scope.pub_type_data_list = response.data;
+							}, 
+							function(response) 
+							{
+							});
+
+						$http.get($scope.service_path + '/pub?token=' + $scope.token).
+							then(function(response)
+							{
+								for (i = 0; i < response.data.pub.length; i++)
+								{
+									for (t = 0; t < response.data.pub[i].tags.length; t++)
+									{
+										var ex = false;
+										for (t2 in $scope.all_tags)
+										{
+											ex = ex || $scope.all_tags[t2] == response.data.pub[i].tags[t];
+										}
+										if (!ex)
+										{
+											$scope.all_tags.push(response.data.pub[i].tags[t]);
+										}
+										var ex = false;
+										for (t2 in $scope.pub_tags)
+										{
+											ex = ex || $scope.pub_tags[t2] == response.data.pub[i].tags[t];
+										}
+										if (!ex)
+										{
+											$scope.pub_tags.push(response.data.pub[i].tags[t]);
+										}
+										
+									}
+								}
+							}, 
+							function(response) 
+							{
+							});
+
+						$http.get($scope.service_path + '/refdata/beertype?token=' + $scope.token).
+							then(function(response)
+							{
+								$scope.beer_type_data_list = response.data;
+							}, 
+							function(response) 
+							{
+							});
+
+						$http.get($scope.service_path + '/beer?token=' + $scope.token).
+							then(function(response)
+							{
+								for (i = 0; i < response.data.beer.length; i++)
+								{
+									for (t = 0; t < response.data.beer[i].tags.length; t++)
+									{
+										var ex = false;
+										for (t2 in $scope.all_tags)
+										{
+											ex = ex || $scope.all_tags[t2] == response.data.beer[i].tags[t];
+										}
+										if (!ex)
+										{
+											$scope.all_tags.push(response.data.beer[i].tags[t]);
+										}
+										var ex = false;
+										for (t2 in $scope.beer_tags)
+										{
+											ex = ex || $scope.beer_tags[t2] == response.data.beer[i].tags[t];
+										}
+										if (!ex)
+										{
+											$scope.beer_tags.push(response.data.beer[i].tags[t]);
+										}
+									}
+								}
+							}, 
+							function(response) 
+							{
+							});
+
+						$http.get($scope.service_path + '/beerprice?token=' + $scope.token + '&tags=unverified').
+							then(function(response)
+							{
+								for (i = 0; i < response.data['beer-price'].length; i++)
+								{
+									for (t = 0; t < response.data['beer-price'][i].tags.length; t++)
+									{
+										var ex = false;
+										for (t2 in $scope.all_tags)
+										{
+											ex = ex || $scope.all_tags[t2] == response.data['beer-price'][i].tags[t];
+										}
+										if (!ex)
+										{
+											$scope.all_tags.push(response.data['beer-price'][i].tags[t]);
+										}
+										var ex = false;
+										for (t2 in $scope.price_tags)
+										{
+											ex = ex || $scope.price_tags[t2] == response.data['beer-price'][i].tags[t];
+										}
+										if (!ex)
+										{
+											$scope.price_tags.push(response.data['beer-price'][i].tags[t]);
+										}
+									}
+								}	
+							}, 
+							function(response) 
+							{
+							});
+					});
+					setTimeout(function(){ $scope.initialise();},5000)
+				}
+				$scope.authenticate = function(doWork)
+				{
+					if ($scope.token == null || moment().isAfter(moment($scope.token_exp)))
+					{
+						$http.get($scope.service_path + '/authenticate?uid=' + $scope.user).
+							then(function(response)
+							{
+								$scope.token = response.data.token 
+								$scope.token_exp = response.data.expiry 
+								console.log('howmuchisapint token is ' + $scope.token);
+								doWork();
+							}, 
+							function(response) 
+							{
+							});
+					}
+					else
+					{
+						doWork();
+					}
+				}
+			    $scope.upd_prices_pub_country = function()
+			    {
+					$scope.price_stat_data = '';
+					$scope.price_data = '';
+					$scope.prices_pub_city = null;
+					$scope.prices_pub_town = null;
+					$scope.prices_pub_type = null;
+					$scope.prices_pub = null;
+					$scope.prices_pub_city_data_list = [];
+					$scope.prices_pub_town_data_list = [];
+					$scope.prices_pub_type_data_list = [];
+					if ($scope.prices_pub_country != null)
+					{
+						$scope.authenticate(function()
+						{
+							$http.get($scope.service_path + '/pub?token=' + $scope.token).
+								then(function(response)
+								{
+									for (p in response.data.pub)
+									{
+										if (response.data.pub[p].country == $scope.prices_pub_country)
+										{ 
+											var ex = false;
+											for (p2 in $scope.prices_pub_city_data_list)
+											{
+												ex = ex || $scope.prices_pub_city_data_list[p2].city == response.data.pub[p].city;
+											}
+											if (!ex)
+											{
+												$scope.prices_pub_city_data_list.push(response.data.pub[p]);
+											}
+										}
+									}
+									if ($scope.prices_pub_city_data_list.length == 1)
+									{
+										$scope.prices_pub_city = $scope.prices_pub_city_data_list[0].city;
+										$scope.upd_prices_pub_city();
+									}
+								}, 
+								function(response) 
+								{
+								});
+
+								for (ctry in $scope.country_data_list['ref-data-country'])
+								{
+									if ($scope.country_data_list['ref-data-country'][ctry].name == $scope.prices_pub_country)
+									{
+										$scope.prices_ccy = $scope.country_data_list['ref-data-country'][ctry].ccy;
+									}
+								}
+								$scope.upd_prices_display_ccy()
+						});
+					}
+			    } 
+			    $scope.upd_prices_pub_city = function()
+			    {
+					$scope.price_stat_data = '';
+					$scope.price_data = '';
+					$scope.prices_pub_town = null;
+					$scope.prices_pub_pc = null;
+					$scope.prices_pub_type = null;
+					$scope.prices_pub = null;
+					$scope.prices_pub_town_data_list = [];
+					$scope.prices_pub_type_data_list = [];
+					if ($scope.prices_pub_country != null)
+					{
+						$scope.authenticate(function()
+						{
+							$http.get($scope.service_path + '/pub?token=' + $scope.token).
+								then(function(response)
+								{
+									for (p in response.data.pub)
+									{
+										if (response.data.pub[p].city == $scope.prices_pub_city && response.data.pub[p].country == $scope.prices_pub_country)
+										{ 
+											var ex = false;
+											for (p2 in $scope.prices_pub_town_data_list)
+											{
+												ex = ex || $scope.prices_pub_town_data_list[p2].town == response.data.pub[p].town;
+											}
+											if (!ex)
+											{
+												$scope.prices_pub_town_data_list.push(response.data.pub[p]);
+											}
+										}
+									}
+									if ($scope.prices_pub_town_data_list.length == 1)
+									{
+										$scope.prices_pub_town = $scope.prices_pub_town_data_list[0].town;
+									}
+									$scope.upd_prices_pub_town();
+								}, 
+								function(response) 
+								{
+								});
+						});
+					}
+				} 
+			    $scope.upd_prices_pub_town = function()
+			    {
+					$scope.price_stat_data = '';
+					$scope.price_data = '';
+					$scope.prices_pub_type = null;
+					$scope.prices_pub = null;
+					$scope.prices_pub_type_data_list = [];
+					$scope.prices_pub_data_list = [];
+					
+					$scope.authenticate(function()
+					{
+						$http.get($scope.service_path + '/pub?token=' + $scope.token).
+							then(function(response)
+							{
+								for (p in response.data.pub)
+								{
+									if ((response.data.pub[p].town == $scope.prices_pub_town || $scope.prices_pub_town == null) && (response.data.pub[p].city == $scope.prices_pub_city || $scope.prices_pub_city == null) && response.data.pub[p].country == $scope.prices_pub_country)
+									{ 
+										var ex = false;
+										for (p2 in $scope.prices_pub_type_data_list)
+										{
+											ex = ex || $scope.prices_pub_type_data_list[p2].type == response.data.pub[p].type;
+										}
+										if (!ex)
+										{
+											$scope.prices_pub_type_data_list.push(response.data.pub[p]);
+										}
+									}
+								}
+								if ($scope.prices_pub_type_data_list.length == 1)
+								{
+									$scope.prices_pub_type = $scope.prices_pub_type_data_list[0].type;
+									$scope.upd_prices_pub_type();
+								}
+							}, 
+							function(response) 
+							{
+							});
+					});
+			    } 
+			    $scope.upd_prices_pub_type = function()
+			    {
+					$scope.price_stat_data = '';
+					$scope.price_data = '';
+					$scope.prices_pub = null;
+					$scope.prices_pub_data_list = [];
+					if ($scope.prices_pub_type != null)
+					{
+						$scope.authenticate(function()
+						{
+							$http.get($scope.service_path + '/pub?token=' + $scope.token).
+								then(function(response)
+								{
+									for (p in response.data.pub)
+									{
+										if (response.data.pub[p].type == $scope.prices_pub_type && response.data.pub[p].town == $scope.prices_pub_town && response.data.pub[p].city == $scope.prices_pub_city && response.data.pub[p].country == $scope.prices_pub_country)
+										{ 
+											var ex = false;
+											for (p2 in $scope.prices_pub_data_list)
+											{
+												ex = ex || $scope.prices_pub_data_list[p2].name == response.data.pub[p].name;
+											}
+											if (!ex)
+											{
+												$scope.prices_pub_data_list.push(response.data.pub[p]);
+											}
+										}
+									}
+									if ($scope.prices_pub_data_list.length == 1)
+									{
+										$scope.prices_pub = $scope.prices_pub_data_list[0];
+									}
+								}, 
+								function(response) 
+								{
+								});
+						});
+					}
+			    } 
+			    $scope.upd_prices_pub = function()
+			    {
+					$scope.price_stat_data = '';
+					$scope.price_data = '';
+			    }
+			    $scope.upd_prices_beer_type = function()
+			    {
+					$scope.price_stat_data = '';
+					$scope.price_data = '';
+					$scope.prices_beer_data_list = [];
+					if ($scope.prices_beer_type != null)
+					{
+						$scope.authenticate(function()
+						{
+							$http.get($scope.service_path + '/beer?token=' + $scope.token).
+								then(function(response)
+								{
+									for (p in response.data.beer)
+									{
+										if (response.data.beer[p].type == $scope.prices_beer_type)
+										{ 
+											$scope.prices_beer_data_list.push(response.data.beer[p]);
+										}
+									}
+									if ($scope.prices_beer_data_list.length == 1)
+									{
+										$scope.prices_beer = $scope.prices_beer_data_list[0];
+									}
+								}, 
+								function(response) 
+								{
+								});
+						});
+					}
+			    } 
+			    $scope.upd_prices_beer = function()
+			    {
+					$scope.price_stat_data = '';
+					$scope.price_data = '';
+			    }
+			    $scope.upd_prices_display_ccy = function()
+			    {
+			    	if ($scope.prices_display_ccy != null)
+			    	{
+				    	$scope.prices_display_fxrate = 1;
+						if ($scope.prices_ccy != $scope.prices_display_ccy)
+						{
+							$scope.authenticate(function()
+							{
+								$http.get($scope.service_path + '/fxrate/' + $scope.prices_ccy + $scope.prices_display_ccy + '?latest=Y&token=' + $scope.token).
+									then(function(response)
+									{
+										if (response.data['fx-rate'] !== undefined)
+										{
+											$scope.prices_display_fxrate = response.data['fx-rate']['rate'];
+										}
+									}, 
+									function(response) 
+									{
+									});
+							});
+						}
+						for (ccy in $scope.ccy_data_list['ref-data-ccy'])
+						{
+							if ($scope.ccy_data_list['ref-data-ccy'][ccy].code == $scope.prices_display_ccy)
+							{
+								$scope.prices_display_ccy_symbol = $scope.ccy_data_list['ref-data-ccy'][ccy].symbol;
+								if ($scope.prices_display_ccy_symbol.length > 1)
+								{
+									$scope.prices_display_ccy_symbol = $scope.prices_display_ccy_symbol + ' ';
+								}
+							}
+						}
+					}
+			    }
+				$scope.set_location = function(coords)
+				{
+					$scope.home_country = '';
+					$scope.home_city = '';
+					$scope.home_town = '';
+					$scope.home_pc = '';
+		    		$http.get('https://maps.googleapis.com/maps/api/geocode/json?latlng=' + coords + '&key=AIzaSyDB-gk_9KWXlZ7eWj-SYToR8v5DTTI6T00').
+						then(function(response)
+						{
+							for (res in response.data.results)
+							{
+								for (add_comp in response.data.results[res]['address_components'])
+								{
+									address = response.data.results[res]['address_components'][add_comp];
+									if (address['types'][0] == 'country')
+										$scope.home_country = address['long_name'];
+									else if (address['types'][0] == 'administrative_area_level_2' && $scope.add_pub_city == '')
+										$scope.home_city = address['long_name'];
+									else if (address['types'][0] == 'postal_town' && $scope.add_pub_town == '')
+										$scope.home_town = address['long_name'];
+									else if (address['types'][0] == 'locality' && $scope.add_pub_town == '')
+										$scope.home_town = address['long_name'];
+									else if (address['types'][0] == 'postal_code' && $scope.add_pub_pc == '')
+										$scope.home_pc = address['long_name'];
+								}
+							}
+							if ($scope.home_city == '')
+							{
+								$scope.home_city = $scope.home_town;
+							}
+
+			  		}, 
+			  		function(response) 
+			  		{
+					});
+				}
+				$scope.initialise = function()
+				{
+					$scope.add_beer_type = 'Lager'
+					$scope.add_pub_type = 'Pub'
+
+					for (ctry in $scope.country_data_list['ref-data-country'])
+					{
+						if ($scope.country_data_list['ref-data-country'][ctry].name == $scope.home_country)
+						{
+							$scope.home_ccy = $scope.country_data_list['ref-data-country'][ctry].ccy;
+						}
+					}
+					for (ccy in $scope.ccy_data_list['ref-data-ccy'])
+					{
+						if ($scope.ccy_data_list['ref-data-ccy'][ccy].code == $scope.home_ccy)
+						{
+							$scope.home_ccy_symbol = $scope.ccy_data_list['ref-data-ccy'][ccy].symbol;
+							if ($scope.home_ccy_symbol.length > 1)
+							{
+								$scope.home_ccy_symbol = $scope.home_ccy_symbol + ' ';
+							}
+						}	
+					}
+					$scope.prices_display_ccy = $scope.home_ccy;
+					$scope.prices_display_ccy_symbol = $scope.home_ccy_symbol;
+					$scope.prices_display_fxrate = 1
+
+					$scope.add_pub_country = $scope.home_country;
+					$scope.add_pub_city = $scope.home_city;
+					$scope.add_pub_town = $scope.home_town;
+					$scope.add_pub_pc = $scope.home_pc;
+	
+					$scope.prices_pub_country = $scope.home_country;
+					$scope.upd_prices_pub_country();
+					$scope.prices_pub_city = $scope.home_city;
+					$scope.upd_prices_pub_city();
+					$scope.prices_pub_town = $scope.home_town;
+					$scope.upd_prices_pub_town();
+	
+					var params = '?token=' + $scope.token + '&style=small';
+					params = params + '&pubCountry=' + $scope.home_country;
+					params = params + '&pubCity=' + $scope.home_city;
+					params = params + '&pubType=Pub';
+					params = params + '&pubTown=' + $scope.home_town;
+					if ($scope.home_country == 'United Kingdom' )
+					{
+						params = params + '&tags=wetherspoons';
+					}
+					var stats = [];
+					$scope.headline_stat1 = '';
+					$scope.headline_stat2 = '';
+					
+					$http.get($scope.service_path + '/beerpricestats/BeerTypeAndPubTypeAndTown' + params).
+						then(function(response)
+						{
+							stats = response.data['beer-price-stats'];
+							if (stats.length == 0)
+							{
+								$scope.headline_stat1 = 'Be the first to submit a pub pint price in ';
+								$scope.headline_stat2 = $scope.home_town;
+								
+								$http.get($scope.service_path + '/beerpricestats/BeerTypeAndPubTypeAndCity' + params).
+									then(function(response)
+									{
+										stats = response.data['beer-price-stats'];
+									});
+							}
+							if (stats.length > 0)
+							{
+								var frst = true;
+								var max = 0;
+								var tot = 0;
+								for (i = 0; i < stats.length; i++)
+								{
+									tot = tot + stats[i]['count'];
+									max = (stats[i]['count'] > max ? stats[i]['count'] : max);
+								}
+								if (max > 5)
+								{
+									max = 5;
+								}
+								$scope.headline_stat1 = tot + ' prices in ' + stats[0]['pub']['town'] + ' ' + stats[0]['pub']['type'] + 's ';
+								for (i = 0; i < stats.length; i++)
+								{
+									if (stats[i]['tags'].length == 0 && stats[i]['count'] >= max)
+									{
+										if (!frst)
+										{	
+											$scope.headline_stat2 = $scope.headline_stat2 + ', ';
+										}
+										$scope.headline_stat2 = $scope.headline_stat2 + stats[i]['beer']['type'] + ' is ' + $scope.home_ccy_symbol + $scope.get_number_display(stats[i]['avg-price'], 2);
+										frst = false;
+									}
+								}
+							}
+						});
+					$scope.headline_latest = [];
+					$scope.headline_latest_ccy_symbol = [];
+					
+					$http.get($scope.service_path + '/beerprice?token=' + $scope.token + '&page=1&pageSize=5&pubCountry=' + $scope.home_country).
+						then(function(response)
+						{
+							prices = response.data['beer-price'];
+							c = 0
+							for (p in prices.sort(function(a, b){return a.date < b.date ? 1 : a.date > b.date ? -1 : 1 }))
+							{
+								$scope.headline_latest[c] = prices[p];
+								price_ccy = ''
+								for (ctry in $scope.country_data_list['ref-data-country'])
+								{
+									if ($scope.country_data_list['ref-data-country'][ctry].name == prices[p].pub.country)
+									{
+										price_ccy = $scope.country_data_list['ref-data-country'][ctry].ccy;
+									}
+								}
+								for (ccy in $scope.ccy_data_list['ref-data-ccy'])
+								{
+									if ($scope.ccy_data_list['ref-data-ccy'][ccy].code == price_ccy)
+									{
+										$scope.headline_latest_ccy_symbol[c] = $scope.ccy_data_list['ref-data-ccy'][ccy].symbol;
+									}
+								}
+								c = c + 1;
+							}
+						},
+						function(response) 
+						{
+						});
+				}
+			    
+				$scope.get_beers = function()
+			    {
+					$scope.working_beer = true;
+					$scope.beer_data = '';
+					$scope.add_beer_info = '';
+					$scope.beer_err = '';
+					var params = '?token=' + $scope.token + '&style=small'
+					if ($scope.add_beer_tags.length > 0)
+					{
+						params = params + '&tags=' + $scope.add_beer_tags;
+					}				
+					if ($scope.add_beer_type != null)
+					{
+						params = params + '&type=' + $scope.add_beer_type;
+					}				
+					if ($scope.add_beer_name.length > 0)
+					{
+						params = params + '&name=' + $scope.add_beer_name;
+					}
+					
+					$scope.authenticate(function()
+					{
+						$http.get($scope.service_path + '/beer' + params).
+							then(function(response)
+							{
+								$scope.beer_data = response.data;
+								$scope.add_beer_info = response.data['beer'].length + ' beer(s) - ';
+								$scope.add_beer_info = $scope.add_beer_info + ($scope.add_beer_name.length > 0 ? ' ' + $scope.add_beer_name + ($scope.add_beer_type != null ? ' (' + $scope.add_beer_type + ')' : '') : ($scope.add_beer_type != null ? ' ' + $scope.add_beer_type : ''));
+								var tags = $scope.add_beer_tags.split(' ');
+								for (t in tags)
+								{
+									if (tags[t].length > 0)
+									{
+										$scope.add_beer_info = $scope.add_beer_info + ' #' + tags[t];
+									}
+								}
+								$scope.working_beer = false;
+							}, 
+							function(response) 
+							{
+								errMsg = response.data.message;
+								if (!((response.status >= 400 && response.status < 500) || (response.status >= 200 && response.status < 300)))
+								{  
+									errMsg = response.status + " " + errMsg;
+								}
+								$scope.beer_err = errMsg
+								$scope.working_beer = false;
+							});
+					});	
+			    }
+			    $scope.get_pubs = function()
+			    {
+					$scope.working_pub = true;
+					$scope.pub_data = '';
+					$scope.add_pub_info = '';
+					$scope.pub_err = '';
+					var params = '?token=' + $scope.token + '&style=small'
+					if ($scope.add_pub_tags.length > 0)
+					{
+						params = params + '&tags=' + $scope.add_pub_tags;
+					}				
+					if ($scope.add_pub_town.length > 0)
+					{
+						params = params + '&town=' + $scope.add_pub_town;
+					}				
+					if ($scope.add_pub_city.length > 0)
+					{
+						params = params + '&city=' + $scope.add_pub_city;
+					}				
+					if ($scope.add_pub_country != null)
+					{
+						params = params + '&country=' + $scope.add_pub_country;
+					}				
+					if ($scope.add_pub_type != null)
+					{
+						params = params + '&type=' + $scope.add_pub_type;
+					}				
+					if ($scope.add_pub_name.length > 0)
+					{
+						params = params + '&name=' + $scope.add_pub_name;
+					}	
+					
+					$scope.authenticate(function()
+					{
+						$http.get($scope.service_path + '/pub' + params).
+							then(function(response)
+							{
+								$scope.pub_data = response.data;
+								$scope.add_pub_info = response.data['pub'].length + ' pub(s) - ';
+								$scope.add_pub_info = $scope.add_pub_info + ($scope.add_pub_name.length > 0 ? ' ' + $scope.add_pub_name + ($scope.add_pub_type != null ? ' (' + $scope.add_pub_type + ')' : '') : ($scope.add_pub_type != null ? ' ' + $scope.add_pub_type : ''));
+								$scope.add_pub_info = $scope.add_pub_info + ', ' + ($scope.add_pub_town.length > 0 ? $scope.add_pub_town + ', ': '') + ($scope.add_pub_city.length > 0 ? $scope.add_pub_city + ', ' : '') + $scope.add_pub_country;
+								var tags = $scope.add_pub_tags.split(' ');
+								for (t in tags)
+								{
+									if (tags[t].length > 0)
+									{
+										$scope.add_pub_info = $scope.add_pub_info + ' #' + tags[t];
+									}  
+								}
+								$scope.working_pub = false;
+							}, 
+							function(response) 
+							{
+								errMsg = response.data.message;
+								if (!((response.status >= 400 && response.status < 500) || (response.status >= 200 && response.status < 300)))
+								{  
+									errMsg = response.status + " " + errMsg;
+								}
+								$scope.pub_err = errMsg
+								$scope.working_pub = false;
+							});
+					});
+				}
+			    $scope.get_prices_params = function(wethers)
+			    {
+					var params = '?token=' + $scope.token + '&style=small'
+					if ($scope.prices_tags.length > 0)
+					{
+						params = params + '&tags=' + $scope.prices_tags;
+					}
+					else if ($scope.prices_pub_country == 'United Kingdom' && wethers)
+					{
+						params = params + '&tags=wetherspoons';
+					}
+									
+					if ($scope.prices_pub_town != null)
+					{
+						params = params + '&pubTown=' + $scope.prices_pub_town;
+					}				
+					if ($scope.prices_pub_city != null)
+					{
+						params = params + '&pubCity=' + $scope.prices_pub_city;
+					}				
+					if ($scope.prices_pub_country != null)
+					{
+						params = params + '&pubCountry=' + $scope.prices_pub_country;
+					}				
+					if ($scope.prices_pub_type != null)
+					{
+						params = params + '&pubType=' + $scope.prices_pub_type;
+					}				
+					if ($scope.prices_pub != null)
+					{
+						params = params + '&pubName=' + $scope.prices_pub.name;
+					}				
+					if ($scope.prices_beer_type != null)
+					{
+						params = params + '&beerType=' + $scope.prices_beer_type;
+					}	
+					if ($scope.prices_beer != null)
+					{
+						params = params + '&beerName=' + $scope.prices_beer.name;
+					}				
+					return params;
+				}
+			    $scope.get_avg_prices = function()
+			    {
+					$scope.price_err = '';
+					$scope.add_price_info = '';
+					$scope.get_prices_info = '';
+					$scope.price_stat_data = '';
+					$scope.price_data = '';
+					$scope.working_prices = true;
+					var params = $scope.get_prices_params(true);
+
+					$scope.authenticate(function()
+					{
+						$http.get($scope.service_path + '/beerpricestats/BeerTypeAndPubTypeAndCountry' + params).
+							then(function(response)
+							{
+								$scope.price_stat_data = response.data;
+								var tot = 0;
+								var yrtot = 0;
+								yr = new Date().getFullYear()
+								for (p in response.data['beer-price-stats'])
+								{
+									for (s in response.data['beer-price-stats'][p]['by-year'])
+									{
+										if (yr - response.data['beer-price-stats'][p]['by-year'][s].year == 0)
+										{
+											yrtot = yrtot + response.data['beer-price-stats'][p]['by-year'][s].count;
+										}
+									}
+									tot = tot + response.data['beer-price-stats'][p].count;
+								}
+								$scope.get_prices_info = response.data['beer-price-stats'].length + ' average(s) from ' + tot + ' price(s) (' + yrtot + ' in the last year) ' + $scope.prices_criteria();
+								$scope.working_prices = false;
+							}, 
+							function(response) 
+							{
+								errMsg = response.data.message;
+								if (!((response.status >= 400 && response.status < 500) || (response.status >= 200 && response.status < 300)))
+								{  
+									errMsg = response.status + " " + errMsg;
+								}
+								$scope.price_err = errMsg
+								$scope.working_prices = false;
+							});
+					});
+			    }
+			    $scope.get_prices = function()
+			    {
+					$scope.price_err = '';
+					$scope.add_price_info = '';
+					$scope.get_prices_info = '';
+					$scope.price_stat_data = '';
+					$scope.price_data = '';
+					$scope.working_prices = true;
+					var params = $scope.get_prices_params();
+					
+					$scope.authenticate(function()
+					{
+						$http.get($scope.service_path + '/beerprice' + params).
+							then(function(response)
+							{
+								$scope.price_data = response.data;
+								$scope.get_prices_info = response.data['beer-price'].length + ' prices(s) ' + $scope.prices_criteria();
+								$scope.working_prices = false;
+							}, 
+							function(response) 
+							{
+								errMsg = response.data.message;
+								if (!((response.status >= 400 && response.status < 500) || (response.status >= 200 && response.status < 300)))
+								{  
+									errMsg = response.status + " " + errMsg;
+								}
+								$scope.price_err = errMsg
+								$scope.working_prices = false;
+							});
+					});
+			    }
+			    $scope.prices_criteria = function()
+			    {
+					var beer = ($scope.prices_beer != null ?  $scope.prices_beer.name + ' (' + $scope.prices_beer_type + ')' : ($scope.prices_beer_type != null ? $scope.prices_beer_type : ''));
+					var criteria = (beer == '' ? '' : ', ' + beer + ' ') + ' - ';
+					criteria = criteria + ($scope.prices_pub != null ?  $scope.prices_pub.name + ' (' + $scope.prices_pub_type + '), ' : ($scope.prices_pub_type != null ? $scope.prices_pub_type + ', ' : ''));
+					criteria = criteria + ($scope.prices_pub_town != null ? $scope.prices_pub_town + ', ': '') + ($scope.prices_pub_city != null ? $scope.prices_pub_city + ', ' : '') + $scope.prices_pub_country;
+					var tags = $scope.prices_tags.split(' ');
+					for (t in tags)
+					{
+						if (tags[t].length > 0)
+						{
+							criteria = criteria + ' #' + tags[t];
+						}  
+					}
+					return criteria;
+			    }
+			    $scope.add_beer = function()
+			    {
+					$scope.beer_data = '';
+					$scope.beer_err = '';
+					$scope.add_beer_info = '';
+			    	if ($scope.add_beer_type.length == 0 || $scope.add_beer_name.length == 0)	
+			    	{
+						$scope.beer_err = 'Incomplete - beer type and name required';
+			    	}
+			    	else
+			    	{
+						$scope.working_beer = true;
+			    		var msg = '{"beer":{"type":"' + $scope.add_beer_type + '","name":"' + $scope.add_beer_name + '"';
+						msg = msg + ',"tags":[';
+			    		if ($scope.add_beer_tags.length > 0)
+			    		{ 
+							var tags = $scope.add_beer_tags.split(' ');
+				    		if (tags.length > 0)
+				    		{
+					    		for (i = 0; i < tags.length; i++)
+					    		{
+					    			msg = msg + '"' + tags[i] + '",';
+					    		}
+								msg = msg.substring(0,msg.length-1);
+							}
+						}
+						msg = msg + '],"alerts":[]';
+				    	msg = msg + '}}';
+						
+						$scope.authenticate(function()
+						{
+							$http.post($scope.service_path + '/beer?token=' + $scope.token, msg).
+								then(function(response)
+								{
+									$scope.add_beer_info = $scope.get_beer_desc(response.data.beer, true);
+
+									$scope.add_beer_name = '';
+									$scope.add_beer_tags = '';
+
+									$scope.prices_beer_type = response.data.beer.type;
+									$scope.upd_prices_beer_type();
+									$scope.prices_beer = response.data.beer;
+									$scope.beer_err = response.statusText;
+									$scope.working_beer = false;
+								}, 
+								function(response) 
+								{
+									errMsg = response.data.message;
+									if (!((response.status >= 400 && response.status < 500) || (response.status >= 200 && response.status < 300)))
+									{  
+										errMsg = response.status + " " + errMsg;
+									}
+									$scope.beer_err = errMsg
+									$scope.working_beer = false;
+								});
+						});
+					}
+			    }
+			    $scope.add_pub = function()
+			    {
+					$scope.pub_data = '';
+					$scope.pub_err = '';
+					$scope.add_pub_info = '';
+			    	if ($scope.add_pub_type.length == 0 || $scope.add_pub_name.length == 0 || $scope.add_pub_country.length == 0 || $scope.add_pub_town.length == 0 || $scope.add_pub_city.length == 0 || ($scope.add_pub_pc.length == 0 && $scope.add_pub_country == 'United Kingdom'))	
+			    	{
+						$scope.pub_err = 'Incomplete - pub type, name, country, city, town and post code (UK only) required';
+			    	}
+			    	else
+			    	{
+						$scope.working_pub = true;
+			    		var msg = '{"pub":{"type":"' + $scope.add_pub_type + '","name":"' + $scope.add_pub_name + '","country":"' + $scope.add_pub_country + '","city":"' + $scope.add_pub_city + '","town":"' + $scope.add_pub_town + '","post-code":"' + $scope.add_pub_pc + '"';
+						msg = msg + ',"tags":[';
+			    		if ($scope.add_pub_tags.length > 0)
+			    		{ 
+				    		var tags = $scope.add_pub_tags.split(' ');
+				    		if (tags.length > 0)
+				    		{
+					    		for (i = 0; i < tags.length; i++)
+					    		{
+					    			msg = msg + '"' + tags[i] + '",';
+					    		}
+								msg = msg.substring(0,msg.length-1);
+							}
+						}
+						msg = msg + '],"alerts":[]';
+				    	msg = msg + '}}';
+						
+						$scope.authenticate(function()
+						{
+							$http.post($scope.service_path + '/pub?token=' + $scope.token, msg).
+								then(function(response)
+								{
+									$scope.add_pub_info = $scope.get_pub_desc(response.data.pub, true);
+
+									$scope.add_pub_name = '';
+									$scope.add_pub_tags = '';
+
+									$scope.prices_pub_country = response.data.pub.country;
+									$scope.upd_prices_pub_country();
+									$scope.prices_pub_city = response.data.pub.city;
+									$scope.upd_prices_pub_city();
+									$scope.prices_pub_town = response.data.pub.town;
+									$scope.upd_prices_pub_town();
+									$scope.prices_pub_type = response.data.pub.type;
+									$scope.upd_prices_pub_type();
+									$scope.prices_pub = response.data.pub;
+									$scope.pub_err = response.statusText;
+									$scope.working_pub = false;
+								}, 
+								function(response) 
+								{
+									errMsg = response.data.message;
+									if (!((response.status >= 400 && response.status < 500) || (response.status >= 200 && response.status < 300)))
+									{  
+										errMsg = response.status + " " + errMsg;
+									}
+									$scope.pub_err = errMsg
+									$scope.working_pub = false;
+								});
+						});
+					}
+			    }
+			    $scope.add_tag = function(ename)
+			    {
+				    $scope.add_tagalert(ename, 'tag')
+			    }
+			    $scope.add_alert = function(ename)
+			    {
+				    $scope.add_tagalert(ename, 'alert')
+			    }
+			    $scope.add_tagalert = function(ename, tora)
+			    {
+			    }
+			    $scope.add_price = function()
+			    {
+					$scope.price_err = '';
+					$scope.add_price_info = '';
+					$scope.get_prices_info = '';
+					$scope.price_stat_data = '';
+					$scope.price_data = '';
+			    	if ($scope.add_price_amount == 0 || $scope.prices_pub.audit.id == "0" || $scope.prices_beer.audit.id == "0")	
+			    	{
+						$scope.price_err = 'Incomplete - pub, beer and price required';
+			    	}
+			    	else
+			    	{
+						$scope.working_prices = true;
+					    var today = new Date();
+					    var date = today.getFullYear() + (today.getMonth()>8 ? '' : '0') + (today.getMonth() + 1) + (today.getDate()>9 ? '' : '0') + today.getDate();
+			    		var msg = '{"beer-price":{"date":"' + date + '","price":' + $scope.add_price_amount + ',"pub":{"audit":{"id":"' + $scope.prices_pub.audit.id + '"}},"beer":{"audit":{"id":"' + $scope.prices_beer.audit.id + '"}}';
+						msg = msg + ',"tags":[';
+			    		if ($scope.prices_tags.length > 0)
+			    		{ 
+				    		var tags = $scope.prices_tags.split(' ');
+				    		if (tags.length > 0)
+				    		{
+					    		for (i = 0; i < tags.length; i++)
+					    		{
+					    			msg = msg + '"' + tags[i] + '",';
+					    		}
+								msg = msg.substring(0,msg.length-1);
+							}
+						}
+						msg = msg + '],"alerts":[]';
+				    	msg = msg + '}}';
+						
+						$scope.authenticate(function()
+						{
+							$http.post($scope.service_path + '/beerprice?token=' + $scope.token, msg).
+								then(function(response)
+								{
+									$scope.add_price_info = $scope.get_price_desc(response.data["beer-price"], true);
+
+									$scope.add_price_amount = 0.00;
+									$scope.prices_tags = '';
+									$scope.price_err = response.statusText;
+									$scope.working_prices = false;
+								}, 
+								function(response) 
+								{
+									errMsg = response.data.message;
+									if (!((response.status >= 400 && response.status < 500) || (response.status >= 200 && response.status < 300)))
+									{  
+										errMsg = response.status + " " + errMsg;
+									}
+									$scope.price_err = errMsg
+									$scope.working_prices = false;
+								});
+						});
+			    	}
+			    }
+				$scope.get_years_ago_display = function(year)
+				{
+					ago = new Date().getFullYear() - year
+					if (ago == 0)
+					{
+						return 'in the last year';
+					}
+					else if (ago == 1)
+					{
+						return 'in the previous year';				
+					}
+					else
+					{
+						return ago + ' years ago';				
+					}
+				}
+				$scope.get_tags_desc = function(tags)
+				{
+					var desc = '';
+		    		if (tags != null && tags.length > 0)
+			    	{
+			    		for (t in tags)
+			    		{
+			    			desc = desc + ' #' + tags[t];
+			    		}
+			    	}
+			    	return desc;
+				}
+				$scope.get_price_desc = function(price, incTags)
+				{
+					var desc = $scope.get_beer_desc(price.beer, false) + ' at ' + $scope.get_pub_desc(price.pub, false) + ' on ' + $scope.get_date_display(price.date) + ', ' + $scope.get_number_display(price.price , 2);
+					if (incTags)
+					{
+						desc = desc + $scope.get_tags_desc(price.tags);
+					}
+					return desc;
+				}
+				$scope.get_price_title = function(price)
+				{
+					var desc = $scope.get_beer_title(price.beer) + ' ' + $scope.prices_display_ccy_symbol + $scope.get_number_display(price.price / $scope.prices_display_fxrate, 2);
+					return desc;
+				}
+				$scope.get_price_title_desc = function(price)
+				{
+					var desc = $scope.get_beer_title_desc(price.beer) + ' at ' + $scope.get_pub_desc(price.pub, false) + ' on ' + $scope.get_date_display(price.date);
+					return desc;
+				}
+				$scope.get_pub_desc = function(pub, incTags)
+				{
+					var desc = $scope.get_pub_title(pub) + ' (' + pub.type + ') in ' + pub.town + ', ' + pub.city + ', ' + pub.country;
+					if (incTags)
+					{
+						desc = desc + $scope.get_tags_desc(pub.tags);
+					}
+					return desc;
+				}
+				$scope.get_pub_title = function(pub)
+				{
+					var desc = pub.name;
+					if (pub['post-code'] != null && pub['post-code'].length > 0)
+					{
+						desc = desc + ' ' + pub['post-code'];
+					}
+					return desc;
+				}
+				$scope.get_pub_title_desc = function(pub)
+				{
+					var desc = pub.type + ' in ' + pub.town + ', ' + pub.city + ', ' + pub.country;
+					return desc;
+				}
+				$scope.get_beer_desc = function(beer, incTags)
+				{
+					var desc = beer.name + ' (' + beer.type + ')';
+					if (incTags)
+					{
+						desc = desc + $scope.get_tags_desc(beer.tags);
+					}
+					return desc;
+				}
+				$scope.get_beer_title = function(beer)
+				{
+					var desc = beer.name;
+					return desc;
+				}
+				$scope.get_beer_title_desc = function(beer, incTags)
+				{
+					var desc = beer.type;
+					return desc;
+				}
+				$scope.get_date_display = function(dt)
+				{
+					var mlist = [ "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" ];
+					var str = dt.substring(6,8) + '-' + mlist[parseInt(dt.substring(4,6))-1] + '-' + dt.substring(0,4) 
+					if (dt.substring(8,10).length>0)
+					{
+						str = str + ' ' + dt.substring(8,10) + ':' + dt.substring(10,12) + ' ' + dt.substring(12);
+					}
+					return str;
+				}
+				$scope.get_time_display = function(tm)
+				{
+					if (parseInt(tm) == 0)
+					{
+						str = "";
+					}
+					else
+					{
+						var str = tm.substring(5,7) + ':' + tm.substring(7,9);
+						if (parseInt(tm.substring(0,5)) > 0)
+						{
+							str = tm.substring(0,5) + ':' + str;
+							if (parseInt(str.substring(0,1)) == 0)
+							{
+								str = str.substring(1);
+								if (parseInt(str.substring(0,1)) == 0)
+								{
+									str = str.substring(1);
+									if (parseInt(str.substring(0,1)) == 0)
+									{
+										str = str.substring(1);
+										if (parseInt(str.substring(0,1)) == 0)
+										{
+											str = str.substring(1);
+										}
+									}
+								}
+							}
+						}
+					}
+					return str;
+				}
+				$scope.get_list_display = function(lst)
+				{
+					var str = "";
+					for (i = 0; i < lst.length; i++)
+					{
+						str = str + lst[i] + " ";
+					}
+					return str.substring(0, str.length);
+				}
+				$scope.get_date_list_display = function(dts)
+				{
+					var str = "";
+					for (i = 0; i < dts.length; i++)
+					{
+						str = str + $scope.get_date_display(dts[i]) + " ";
+					}
+					return str.substring(0, str.length);
+				}
+				$scope.get_number_display = function(num, dp)
+				{
+					if (num == null)
+					{
+						return "";
+					}
+					else
+					{	
+						return num.toFixed(dp).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+					}
+				}
+				$scope.get_number_list_display = function(nums, dp)
+				{
+					var str = "";
+					for (i = 0; i < nums.length; i++)
+					{
+						str = str + $scope.get_number_display(nums[i],2) + " ";
+					}
+					return str.substring(0, str.length);
+				}
+				$scope.get_percent_display = function(num, dp)
+				{
+					if (num == null)
+					{
+						return "";
+					}
+					else
+					{	
+						num2 = num * 100;
+						return num2.toFixed(dp).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+					}
+				}
+				$scope.set_user('guest'); 
+			});
+			
+	        navigator.geolocation.getCurrentPosition(showPosition);
+			function showPosition(position) 
+			{
+				var coords = position.coords.latitude + ',' + position.coords.longitude;
+			    console.log('coords=' + coords)
+				angular.element(document.querySelector('[ng-controller="appCtrl"]')).scope().set_location(coords);
+			}
+			
+		</script>
+	</body>
+</html>
