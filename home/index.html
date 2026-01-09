@@ -1,566 +1,176 @@
 <!doctype html>
 <html lang="en">
-    <head>
-<style>
-</style>
-	    <title>How much is a pint?</title>
-	
-	    <meta charset="utf-8">
-	    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	
+	<head>
+		<title>How Much Is a Pint</title>
+
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
 		<meta name="author" content="Martin Keys">
-		<meta name="description" content="How much is a pint?" /> 
-		<meta property="og:title" content="How much is a pint?"/>  
-		<meta property="og:description" content="Ale, Stout or Lager How much does a good old British pint really cost?"/>  
-		<meta property="og:image" content="img/howmuchisapint_logo_big.png"/>  
-	   
-		<meta name="google-signin-client_id" content="389489146001-u67dreuh6gjbnofpmg0qtg7urtl2344r.apps.googleusercontent.com">
-		
-    	<link rel="icon" type="image/png" href="img/pint.png"/>
-		<link rel="stylesheet" href="css/bootstrap.min.css">
-    </head>
+		<meta property="og:title" content="How Much Is a Pint"/>
+		<meta name="description" content="How much is a good old British pint of beer" />
+		<meta property="og:description" content="How much is a good old British pint of beer"/>
+		<meta property="og:image" content="img/logo.png"/>
+
+		<link rel="icon" type="image/png" href="img/logo.png"/>
+	</head>
 	<body>
-		<script defer src="https://use.fontawesome.com/releases/v5.0.1/js/all.js"></script>
-		<script src="https://apis.google.com/js/platform.js" async defer></script>
-	
-		<script src="js/angular.min.js"></script>
-		<script src="js/jquery-3.2.1.slim.min.js"></script>
-		<script src="js/popper.min.js"></script>
-		<script src="js/bootstrap.min.js"></script>
-		<script src="js/jquery.min.js"></script>
+ 		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/js/bootstrap.bundle.min.js"></script>
+		<script src="js/moment.js"></script>
 
-	    
 
-		<div class="container" ng-app="app">
-			<div ng-controller="appCtrl">
-				<div class="col-md-12">
-			        <h1 class="text-primary">How much is a pint?</h1>
-					<img src="img/howmuchisapint_logo.png"  class="float-right">
-			        <h4>Ale, Stout or Lager <span class="text-muted">How much does a good old British pint really cost?</span></h4>
-			        <h5>{{headline_stat1}}<span class="text-muted">{{headline_stat2}}</span></h5>
+    	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+		<link href="css/custom.css" rel="stylesheet" type="text/css" >
+
+		<span ng-app="app">
+			<span ng-controller="appCtrl">
+				<div class="p-3 text-light bg-dark">
+					<div class="row">
+						<div class="col">
+				    		<h2><span class="align-middle text-warning">H O W  M U C H!</span><span class="align-middle text-secondary"> is a good old British pint of beer?</span><span class="align-middle text-danger ms-2"><i>{{env_msg}}</i></span></h2>
+						</div>
+					</div>
+					<div class="row mt">
+						<div class="col">
+							<h6><span class="text-secondary"><i>version 0.9 beta</i></span></h6>
+						</div>
+					</div>
 				</div>
-
-				<div class="col-md-12">
-			        <h5>Latest prices ({{home_country}}): </h5>
-					<div ng:repeat="r in sorted_price_data = (headline_latest | orderBy: 'date':true)">
-						<span class="text-muted">
-							<div ng:if="$index == 0 || r.date != sorted_price_data[$index - 1].date || r.pub.town != sorted_price_data[$index - 1].pub.town">
-								<p><h6>{{get_date_display(r.date)}} {{r.pub.country}}, {{r.pub.city}}, {{r.pub.town}}</h6>
+				<div class="bg-image" style="background-size:cover;background-image:url('img/logo.png');">
+			  		<div class="mask" style="min-height: 70.9vh;background-color:rgba(0, 0, 0, 0.8);">
+						<div class="p-3">
+							<div ng-if="!loggedin">
+								<div class="shadow p-3 mb-4 text-light bg-dark bg-opacity-75">
+									<div ng-if="logginin">
+										<div class="row">
+										</div>
+									</div>
+									<div ng-if="!logginin">
+										<div class="row mt-3">
+											<div class="col">
+												<h6>
+													<span class="text-secondary">Continue annonymously or </span>
+													<a href="#" class="link-info text-decoration-none" ng-click="signup()">Sign in
+														<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
+														  <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+														</svg>
+													</a>
+													<span class="text-secondary">to track your own prices.</span>
+												</h6>
+											</div>
+										</div>
+									</div>
+								</div>
 							</div>
-						</span>  
-						{{get_pub_title(r.pub)}} ({{r.pub.type}}), {{r.beer.name}} ({{r.beer.type}}) {{headline_latest_ccy_symbol[$index]}}{{get_number_display(r.price, 2)}}
-			    	</div>
-				</div>
-
-				<hr class="featurette-divider">		
-
-				<div class="col-md-12">
-					<span ng-if="user_name!=''">
-				  		<p>{{user_name}} <span class="text-muted">{{user_type}} user<span ng-hide="user_type!='GUEST'"> - please supply a contact email address with each submission</span></span></p>
-				  	</span>
-					<span ng-if="user_name==''">
-			  			<p>Sign-in is required to submit new pint prices</p>
-					</span>
-					<span class="g-signin2" data-onsuccess="onSignIn"></span>
-				</div>
-				<div class="wsite-spacer" style="height:10px;"></div>
-				<div class="col-md-12">
-					<span ng-hide="user_type!='GUEST' || user_type=='NEW'">
-						<p><i><span class="text-muted">
-			  			IMPORTANT: All guest and signed-in new users are able to add new pubs, add new beers and submit pint prices, use the tag 'unverified' to see them - only signed-in approved beer price submissions will be included in pint price analysis by default. A super user will review and approve beer price submissions until trusted user status is obtained. Trusted user status will be obtained upon a series of successfully beer price submissions
-		  				</span></i></p>
-					</span>
-				</div>
-
-				<div id="accmain" role="tablist">
-					<div class="card-header" role="tab" id="heading1"> 	
-						<button type="button" class="btn btn-secondary" data-toggle="collapse" data-target="#collapse1">Pubs</button>
-						<button type="button" class="btn btn-secondary" data-toggle="collapse" data-target="#collapse2">Beers</button>
-						<!--button type="button" class="btn btn-secondary" data-toggle="collapse" data-target="#collapse3">Old Prices</button-->
-						<button type="button" class="btn btn-secondary" data-toggle="collapse" data-target="#collapse4">Prices</button>
-					</div>
-					<div class="card">
-						<div id="collapse1" class="collapse" role="tabpanel" aria-labelledby="heading1" data-parent="#accmain">
-      						<div class="card-body">
-								<form name="frmPub">
-									<div class="form-row">
-										<div class="col">
-											<select class="form-control" ng-model="add_pub_type" >
-												<option ng-repeat="p in pub_type_data_list['ref-data-pub-type']" value="{{p.name}}">{{p.name}}</option>
-											</select>
-											<input class="form-control" type="text" ng-model="add_pub_name" placeholder="Name"/>
-										</div>
+							<div class="shadow p-3 mb-4 text-light bg-dark bg-opacity-75">
+								<div class="row mt-2">
+									<div class="col">
+										<h4><span class="text-warning">Latest prices ({{home_country}})</span></h4>
 									</div>
-									
-									<div class="wsite-spacer" style="height:10px;"></div>
-
-									<div class="form-row">
-										<div class="col">
-											<select class="form-control" ng-model="add_pub_country" >
-												<option ng-repeat="l in country_data_list['ref-data-country']" value="{{l.name}}">{{l.name}}</option>
-											</select>
-											<input class="form-control" type="text" ng-model="add_pub_city" placeholder="City"/>
-											<input class="form-control" type="text" ng-model="add_pub_town" placeholder="Town"/>
-											<input class="form-control" type="text" ng-model="add_pub_pc" placeholder="Post Code"/>
-										</div>
-									</div>
-
-									<div class="wsite-spacer" style="height:10px;"></div>
-
-									<div class="form-row">
-										<div class="col">
-											<input class="form-control" type="text" ng-model="add_pub_tags" placeholder="Tags"/>
-											<div class="wsite-spacer" style="height:5px;"></div>
-										    <span class="text-muted">
-												<span style="font-size:1em; color:Green"><i class="fas fa-tags"></i></span>											
-												<span ng:repeat="t in pub_tags">{{t}} </span>
-											</span>
-										</div>
-									</div>
-
-									<div class="wsite-spacer" style="height:20px;"></div>
-									
-							  		<span ng-show="user_type=='GUEST'">
-										<div class="form-row">
-											<div class="col">
-												<button type="button" class="btn btn-primary" ng-click="get_pubs()">List Pubs</button>
-											</div>
-										</div>
-	
-										<div class="wsite-spacer" style="height:10px;"></div>
-	
-										<div class="form-row">
-											<div class="col">
-												<input id="input_pub_email" class="form-control form-control-danger" type="email" ng-model="add_pub_guest_email" ng-change="upd_pub_email()" placeholder="Guest Email"/>
-									  		</div>
-											<div class="col">
-												<button type="button" class="btn btn-primary" ng-click="add_pub()">Add Pub</button>
-									  		</div>
-								  		</div>
-									</span>
-
-							  		<span ng-show="user_type!='GUEST'">
-										<div class="form-row">
-											<div class="col">
-												<button type="button" class="btn btn-primary" ng-click="get_pubs()">List Pubs</button>
-												<button type="button" class="btn btn-primary" ng-click="add_pub()">Add Pub</button>
-									  		</div>
-								  		</div>
-									</span>
-
-									<span ng-if="working_pub">
-										<img class="img-responsive" src="img/working.gif"/>
-									</span>
-
-									<div class="wsite-spacer" style="height:10px;"></div>
-
-									<div class="form-row">
-										<div class="col">
-							  				<p>
-								  				<span class="text-danger">{{pub_err}}</span>
-								  				<span class="text-info">{{add_pub_info}}</span>
-							  				</p>
-										</div>
-									</div>
-									
-									<div class="form-row">
-										<div class="col">
-							 	 			<div ng-if="pub_data.pub.length>0">
-												<div ng:repeat="r in sorted_pub_data = (pub_data.pub | orderBy: ['\u0022display-name\u0022'])">
-													<a ng-href="#pub_{{$index}}" data-toggle="collapse">
-														<span ng:repeat="a in r.alerts">
-															<span style="font-size:1em; color:Red"><i class="fas fa-flag"></i></span>
-														</span>
-														{{get_pub_title(r)}}
-														<span class="text-muted">
-															<span ng:repeat="t in r.tags">
-																<span style="font-size:1em; color:Green"><i class="fas fa-tag"></i></span> {{t}} 
-															</span>
-														</span>
-													</a>
-													<div id="{{'pub_' + $index}}" class="collapse">
-														<p>
-															{{get_pub_title_desc(r)}}
-															<span class="text-muted">
-																<span ng:repeat="a in r.alerts">
-																	<span style="font-size:1em; color:Red"><i class="fas fa-flag"></i> {{a}}</span>	
-																</span>
-																<span a ng-if="user_type!='GUEST' && user_type!='NEW'" style="font-size:1em; color:Green"><a href="#" data-toggle="modal" data-target="#addTagModal">Tag </a><i class="fas fa-tag"></i></span> 
-																<span a ng-if="user_type!='GUEST' && user_type!='NEW'" style="font-size:1em; color:Red"><a href="#" data-toggle="modal" data-target="#addAlertModal">Flag </a><i class="fas fa-flag"></i></span> 
-															</span>
-														</p>
-													</div>
-												</div>
-						   					</div>
-										</div>
-									</div>
-								</form>
-		   				 	</div>
-	   				 	</div>
-   				 	</div>
-   				 	
-					<div class="card">
-						<div id="collapse2" class="collapse" role="tabpanel" aria-labelledby="heading2" data-parent="#accmain">
-      						<div class="card-body">
-								<form name="frmBeer">
-									<div class="form-row">
-										<div class="col">
-											<select class="form-control" ng-model="add_beer_type" >
-												<option ng-repeat="b in beer_type_data_list['ref-data-beer-type']" value="{{b.name}}">{{b.name}}</option>
-											</select>
-											<input class="form-control" type="text" ng-model="add_beer_name" placeholder="Name"/>
-										</div>
-									</div>
-									
-									<div class="wsite-spacer" style="height:10px;"></div>
-
-									<div class="form-row">
-										<div class="col">
-											<input class="form-control" type="text" ng-model="add_beer_tags" placeholder="Tags"/>
-											<div class="wsite-spacer" style="height:5px;"></div>
-										    <span class="text-muted">
-												<span style="font-size:1em; color:Green"><i class="fas fa-tags"></i></span>											
-												<span ng:repeat="t in beer_tags">{{t}} </span>
-											</span>
-										</div>
-									</div>
-
-									<div class="wsite-spacer" style="height:20px;"></div>
-
-							  		<span ng-hide="user_type!='GUEST'">
-										<div class="form-row">
-											<div class="col">
-												<button type="button" class="btn btn-primary" ng-click="get_beers()">List Beers</button>
-											</div>
-										</div>
-										
-										<div class="wsite-spacer" style="height:10px;"></div>
-	
-										<div class="form-row">
-											<div class="col">
-												<input id="input_beer_email" class="form-control" type="email" ng-model="add_beer_guest_email" placeholder="Guest Email"/>
-									  		</div>
-											<div class="col">
-												<button type="button" class="btn btn-primary" ng-click="add_beer()">Add Beer</button>
-									  		</div>
-								  		</div>
-							  		</span>
-
-							  		<span ng-show="user_type!='GUEST'">
-										<div class="form-row">
-											<div class="col">
-												<button type="button" class="btn btn-primary" ng-click="get_beers()">List Beers</button>
-												<button type="button" class="btn btn-primary" ng-click="add_beer()">Add Beer</button>
-									  		</div>
-								  		</div>
-							  		</span>
-
-									<span ng-show="working_beer">
-										<img class="img-responsive" src="img/working.gif"/>
-									</span>
-
-									<div class="wsite-spacer" style="height:10px;"></div>
-
-									<div class="form-row">
-										<div class="col">
-											<p>
-							  					<span class="text-danger">{{beer_err}}</span>
-							  					<span class="text-info">{{add_beer_info}}</span>
-							  				</p>
-										</div>
-									</div>
-									
-									<div class="form-row">
-										<div class="col">
-							 	 			<div ng-if="beer_data.beer.length>0">
-												<div ng:repeat="r in sorted_beer_data = (beer_data.beer | orderBy: ['\u0022display-name\u0022'])">
-													<a ng-href="#beer_{{$index}}" data-toggle="collapse">
-														<span ng:repeat="a in r.alerts">
-															<span style="font-size:1em; color:Red"><i class="fas fa-flag"></i></span>
-														</span>
-														{{get_beer_title(r)}}
-														<span class="text-muted">
-															<span ng:repeat="t in r.tags">
-																<span style="font-size:1em; color:Green"><i class="fas fa-tag"></i></span> {{t}} 
-															</span>
-														</span>
-													</a>
-													<div id="{{'beer_' + $index}}" class="collapse">
-														<p>
-															{{get_beer_title_desc(r)}}
-															<span class="text-muted">
-																<span ng:repeat="a in r.alerts">
-																	<span style="font-size:1em; color:Red"><i class="fas fa-flag"></i> {{a}}</span>
-																</span>
-																<span a ng-if="user_type!='GUEST' && user_type!='NEW'" style="font-size:1em; color:Green"><a href="#" data-toggle="modal" data-target="#addTagModal">Tag </a><i class="fas fa-tag"></i></span> 
-																<span a ng-if="user_type!='GUEST' && user_type!='NEW'" style="font-size:1em; color:Red"><a href="#" data-toggle="modal" data-target="#addAlertModal">Flag </a><i class="fas fa-flag"></i></span> 
-															</span>
-														</p> 
-													</div>
-												</div>
-						   				 	</div>
-						   				</div>
-					   				 </div>
-							  	</form>
-			   				</div>
-		   				</div>
-   				 	</div>
-   				 						
-					<div class="card">
-						<div id="collapse4" class="collapse" role="tabpanel" aria-labelledby="heading4" data-parent="#accmain">
-      						<div class="card-body">
-								<form name="frmPriceParams">
-									<div class="form-row">
-										<div class="col">
-											<select class="form-control" ng-change="upd_prices_pub_country()" ng-model="prices_pub_country" >
-												<option ng-repeat="l in sorted_country_data_list = (country_data_list['ref-data-country'] | orderBy: 'name')" value="{{l.name}}">{{l.name}}</option>
-											</select>
-											<select ng-options="pub.city as pub.city for pub in (prices_pub_city_data_list | orderBy:'city')" class="form-control" ng-change="upd_prices_pub_city()" ng-model="prices_pub_city" >
-												<option value=""> -- City  -- </option>
-											</select>
-											<select ng-options="pub.town as pub.town for pub in (prices_pub_town_data_list | orderBy:'town')" class="form-control" ng-change="upd_prices_pub_town()" ng-model="prices_pub_town" >
-												<option value=""> -- Town  -- </option>
-											</select>
-										</div>
-									</div>
-
-									<div class="wsite-spacer" style="height:10px;"></div>
-
-									<div class="form-row">
-										<div class="col">
-											<select ng-options="pub.type as pub.type for pub in (prices_pub_type_data_list | orderBy:'type')" class="form-control" ng-change="upd_prices_pub_type()" ng-model="prices_pub_type" >
-												<option value=""> -- Type  -- </option>
-											</select>
-											<select ng-options="pub as pub.name + ' ' + pub['post-code'] for pub in (prices_pub_data_list | orderBy:['\u0022display-name\u0022'])" class="form-control" ng-model="prices_pub" >
-												<option value=""> -- Pub  -- </option>
-											</select>
-										</div>
-									</div>
-
-									<div class="wsite-spacer" style="height:10px;"></div>
-
-									<div class="form-row">
-										<div class="col">
-											<select ng-options="beertype.name as beertype.name for beertype in (beer_type_data_list['ref-data-beer-type'] | orderBy:'name')" class="form-control" ng-change="upd_prices_beer_type()" ng-model="prices_beer_type" >
-												<option value=""> -- Type  -- </option>
-											</select>
-											<select ng-options="beer as beer.name for beer in (prices_beer_data_list | orderBy:['\u0022display-name\u0022'])" class="form-control" ng-model="prices_beer" >
-												<option value=""> -- Beer  -- </option>
-											</select>
-										</div>
-									</div>
-
-									<div class="wsite-spacer" style="height:10px;"></div>
-
-									<div class="form-row">
-										<div class="col">
-											<input class="form-control" type="number" ng-model="add_price_amount" min="0" step="0.01" placeholder="Price"/>
-										</div>	
-										<div class="col">
-											<select ng-options="ccy.code as ccy.code + ' - ' + ccy.name for ccy in (ccy_data_list['ref-data-ccy'] | orderBy: ['code'])" class="form-control" ng-change="" ng-model="prices_ccy" disabled>
-											</select>
-										</div>	
-									</div>
-
-									<div class="wsite-spacer" style="height:10px;"></div>
-
-									<div class="form-row">
-										<div class="col">
-											<input class="form-control" type="text" ng-model="prices_tags" placeholder="Tags"/>
-											<div class="wsite-spacer" style="height:5px;"></div>
-										    <span class="text-muted">
-												<span style="font-size:1em; color:Green"><i class="fas fa-tags"></i></span>											
-												<span ng:repeat="t in all_tags">{{t}} </span>
-											</span>
-										</div>
-									</div>
-
-									<div class="wsite-spacer" style="height:10px;"></div>
-	
-							  		<span ng-show="user_type=='GUEST'">
-										<div class="form-row">
-											<div class="col">
-												<select ng-options="ccy.code as ccy.code + ' - ' + ccy.name for ccy in (ccy_data_list['ref-data-ccy'] | orderBy: ['code'])" class="form-control" ng-change="upd_prices_display_ccy()" ng-model="prices_display_ccy" >
-												</select>
-									  		</div>
-											<div class="col">
-												<button type="button" class="btn btn-primary" ng-click="get_prices()">List Prices</button>
-												<button type="button" class="btn btn-primary" ng-click="get_avg_prices()">Average Prices</button>
-									  		</div>
-								  		</div>
-										
-										<div class="wsite-spacer" style="height:10px;"></div>
-	
-										<div class="form-row">
-											<div class="col">
-												<input id="input_price_email" class="form-control form-control-danger" type="email" ng-model="add_price_guest_email" ng-change="upd_price_email()" placeholder="Guest Email"/>
-									  		</div>
-											<div class="col">
-												<button type="button" class="btn btn-primary" ng-click="add_price()">Add Price</button>
-									  		</div>
-								  		</div>
-								  	</span>
-
-							  		<span ng-show="user_type!='GUEST'">
-										<div class="form-row">
-											<div class="col">
-												<select ng-options="ccy.code as ccy.code + ' - ' + ccy.name for ccy in (ccy_data_list['ref-data-ccy'] | orderBy: ['code'])" class="form-control" ng-change="upd_prices_display_ccy()" ng-model="prices_display_ccy" >
-												</select>
-									  		</div>
-											<div class="col">
-												<button type="button" class="btn btn-primary" ng-click="get_prices()">List Prices</button>
-												<button type="button" class="btn btn-primary" ng-click="get_avg_prices()">Average Prices</button>
-									  		</div>
-								  		</div>
-
-										<div class="wsite-spacer" style="height:10px;"></div>
-
-										<div class="form-row">
-											<div class="col">
-												<button type="button" class="btn btn-primary" ng-click="add_price()">Add Price</button>
-									  		</div>
-								  		</div>
-								  	</span>
-
-									<span ng-if="working_prices">
-										<img class="img-responsive" src="img/working.gif"/>
-									</span>
-
-									<div class="wsite-spacer" style="height:10px;"></div>
-
-									<div class="form-row">
-										<div class="col">
-											<p>
-								  				<span class="text-danger">{{price_err}}</span>
-								  				<span class="text-info">{{get_prices_info}}</span>
-								  				<span class="text-info">{{add_price_info}}</span>
-							  				</p>
-							  			</div>
-							  		</div>
-									<div class="form-row">
-										<div class="col">
-							 	 			<div ng-if="price_data['beer-price'].length>0">
-												<div ng:repeat="r in sorted_price_data = (price_data['beer-price'] | orderBy: 'date':true)">
-													<div ng:if="$index == 0 || r.date != sorted_price_data[$index - 1].date">
-														{{get_date_display(r.date)}}
-													</div>
-													<a ng-href="#price_{{$index}}" data-toggle="collapse">
-														<span ng:repeat="a in r.alerts">
-															<span style="font-size:1em; color:Red"><i class="fas fa-flag"></i></span>
-														</span>
-														{{get_price_title(r)}}
-														<span class="text-muted">
-															<span ng:repeat="t in r.tags">
-																<span style="font-size:1em; color:Green"><i class="fas fa-tag"></i></span> {{t}} 
-															</span>
-														</span>
-													</a>
-													<div id="{{'price_'+ $index}}" class="collapse">
-														<p>
-															{{get_price_title_desc(r)}}
-															<span class="text-muted">
-																<span ng:repeat="a in r.alerts">
-																	<span style="font-size:1em; color:Red"><i class="fas fa-flag"></i> {{a}}</span>
-																</span>
-																<span a ng-if="user_type!='GUEST' && user_type!='NEW'" style="font-size:1em; color:Green"><a href="#" data-toggle="modal" data-target="#addTagModal">Tag </a><i class="fas fa-tag"></i></span> 
-																<span a ng-if="user_type!='GUEST' && user_type!='NEW'" style="font-size:1em; color:Red"><a href="#" data-toggle="modal" data-target="#addAlertModal">Flag </a><i class="fas fa-flag"></i></span> 
-															</span>
-														</p>
-													</div>
-												</div>
-											</div>
-											
-							 	 			<div ng-if="price_stat_data['beer-price-stats'].length>0">
-												<div ng:repeat="r in sorted_price_stat_data = price_stat_data['beer-price-stats'] | orderBy: ['pub.type','beer.type','pub']">
-													<a ng-href="#pricestat_{{$index}}" data-toggle="collapse">
-														{{r.beer.type}} in {{r.pub.type}}s is {{prices_display_ccy_symbol}}{{get_number_display(r['avg-price'] / prices_display_fxrate, 2)}}
-													</a>
-													<span class="text-muted">
-														<span ng:repeat="t in r.tags">
-															<span style="font-size:1em; color:Green"><i class="fas fa-tag"></i></span> {{t}} 
-														</span>
-													</span>
-													<div id="{{'pricestat_' + $index}}" class="collapse">
-														<div ng:repeat="y in sorted_price_stat_data_year = r['by-year'] | orderBy: -['year']">
-															 {{prices_display_ccy_symbol}}{{get_number_display(y['avg-price'] / prices_display_fxrate, 2)}} from {{get_number_display(y.count,0)}} price(s) {{get_years_ago_display(y.year)}}
-														</div>
-														<p/>
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>
-							  	</form>
-		   				 	</div>
-	   				 	</div>
-					</div>
-
-					<div class="modal fade" id="addTagModal">
-						<div class="modal-dialog">
-							<div class="modal-content">
-								<div class="modal-header">
-									<h4 class="modal-title">Tag</h4>
-									<button type="button" class="close" data-dismiss="modal">&times;</button>
 								</div>
-								<div class="modal-body">
-									<input class="form-control" type="text" ng-model="tags" placeholder="Tag"/>
+								<div ng:repeat="r in sorted_price_data = (headline_latest | orderBy: 'date':true)">
+									<span class="text-muted">
+										<div ng:if="$index == 0 || r.date != sorted_price_data[$index - 1].date || r.pub.town != sorted_price_data[$index - 1].pub.town">
+											<h6><span class="text-light">{{get_date_display(r.date)}} {{r.pub.country}}, {{r.pub.city}}, {{r.pub.town}</span></h6>
+										</div>
+									</span>  
+									<h6><span class="text-secondary ms-1">{{get_pub_title(r.pub)}} ({{r.pub.type}}), {{r.beer.name}} ({{r.beer.type}}) {{headline_latest_ccy_symbol[$index]}}{{get_number_display(r.price, 2)}}</span></h6>
 								</div>
-								<div class="modal-footer">
-									<button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
-									<button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+							</div>
+							<div ng-if="loggedin">
+								<div class="shadow p-3 mb-4 text-light bg-dark bg-opacity-75">
+									<div ng-if="logginin">
+										<div class="row">
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="bg-image" style="background-size:cover;background-image:url('img/logo.png');">
+							<div class="mask" style="min-height: 70.9vh;background-color:rgba(0, 0, 0, 0.8);">
+								<div class="modal fade" id="frm_request_error">
+									<div class="modal-dialog">
+										<div class="modal-content text-light bg-dark bg-opacity-75">
+											<div class="modal-header">
+												<h4 class="modal-title text-warning">Fatal Error</h4>
+												<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+											</div>
+											<div class="modal-body">
+												<div class="p-2">
+													<div class="alert alert-danger">
+													  <strong>{{request_error}}</strong>
+													</div>							
+												</div>
+												<div class="modal-footer">
+													<button type="submit" class="btn btn-light" data-bs-dismiss="modal" ng-click="request_signin()">OK</button>
+												</div>
+											</div>
+										</div>
+									</div>
 								</div>
 							</div>
 						</div>
 					</div>
-
-					<div class="modal fade" id="addAlertModal">
-						<div class="modal-dialog">
-							<div class="modal-content">
-								<div class="modal-header">
-									<h4 class="modal-title">Flag</h4>
-									<button type="button" class="close" data-dismiss="modal">&times;</button>
-								</div>
-								<div class="modal-body">
-									<div class="radio">
-										<label><input type="radio" name="optradio"> Duplicate</label>
-									</div>
-									<div class="radio">
-										<label><input type="radio" name="optradio"> Inaccurate</label>
-									</div>
-									<div class="radio">
-										<label><input type="radio" name="optradio"> Tagging</label>
-									</div>								
-									<input class="form-control" type="text" ng-model="comment" placeholder="Comment"/>
-								</div>
-								<div class="modal-footer">
-									<button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
-									<button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+			  		<div class="mask" style="background-color:rgba(0, 0, 0, 0.8);">
+						<div ng-if="use_cookies">
+							<div class="p-5">
+								<div class="row mt-2">
 								</div>
 							</div>
 						</div>
+						<div ng-if="!use_cookies" class="text-center">
+							<div class="p-4">
+								<div class="p-2 ms-5 me-5 bg-light">
+							    <span class="text-dark"><b>Do you like cookies?</b></span> &#x1F36A; <span class="text-dark ms-2">Cookies are in use to ensure the best experience</span>
+							    <button type="button" class="btn btn-md btn-info ms-2" ng-click="accept_cookies()">I agree</button>
+							    <!--a class="link-info text-decoration-none ms-1" href="https://cookiesandyou.com/" target="_blank">Learn more
+									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
+									  <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+									</svg>
+							    </a-->
+							</div>
+						</div>
 					</div>
-
 				</div>
 			</div>
-
-			<hr class="featurette-divider">
-	
-			<footer class="container">
-				<p class="float-right"><a href="mailto:hello@conceptintegral.com">hello@conceptintegral.com</a></p>
-				<p>&copy; 2021 <a href="https://www.conceptintegral.com">Concept Integral</a></p>
-			</footer>
-		</div>
-	
+			<div class="p-3 text-light bg-dark">
+				<div class="row mb-1">
+					<div class="col">
+						<span class="float-start"><a href="mailto:hello@conceptintegral.com" class="link-secondary text-decoration-none">hello@conceptintegral.com</a></span>
+					</div>
+					<div class="col">
+						<span class="float-end text-secondary">&copy; 2022 <a href="https://www.conceptintegral.com" class="link-secondary text-decoration-none">Concept Integral</a></span>
+					</div>
+				</div>
+			</span>
+		</span>
 		<script>
 			var app = angular.module('app', []);
 			app.controller('appCtrl', function($scope, $http, $location, $window) 
 			{
-				$scope.user_type = 'GUEST';
-				$scope.user_ip = '';
+				$scope.api_path = "api.mynutpile.com/service";
+				$scope.service_path = "https://" + $scope.api_path;
+				$scope.env_msg = "";
+				$scope.request_error = "";
+				$scope.loggedin = false;
+				$scope.logginin = false;
+
+				$scope.frm_login = {"id": "", "pwd": "", "remember":false};
+				$scope.frm_signup = {email: "", "pwd": ""};
+				$scope.token = "";
 				
+				$scope.user_type = 'GUEST';
+				$scope.user_name = '';
+				$scope.user_ip = '';
+				$scope.token = null;
+				
+				$scope.all_tags = [];
+				$scope.beer_tags = [];
+				$scope.pub_tags = [];
+
 				$scope.add_beer_name = '';
 				$scope.add_beer_tags = '';
-				$scope.add_beer_guest_email = '';
 	
 				$scope.add_pub_name = '';
 				$scope.add_pub_country = 'United Kingdom';
@@ -568,11 +178,8 @@
 				$scope.add_pub_town = '';
 				$scope.add_pub_pc = '';
 				$scope.add_pub_tags = '';
-				$scope.add_pub_guest_email = '';
 	
 				$scope.add_price_amount = 0.00;
-				$scope.add_price_guest_email = '';
-				$scope.prices_tags = '';
 				$scope.prices_pub_country = 'United Kingdom';
 				$scope.prices_pub_town = null;
 				$scope.prices_pub_pc = null;
@@ -581,6 +188,7 @@
 				$scope.prices_pub = null;
 				$scope.prices_beer_type = null;
 				$scope.prices_beer = null;
+				$scope.prices_tags = '';
 
 			    $scope.price_err = '';
 			    $scope.add_price_info = '';
@@ -594,15 +202,6 @@
 				$scope.working_pub = false;
 				$scope.working_beer = false;
 
-			    $scope.upd_email_pub = function()
-			    {
-			    }
-			    $scope.upd_email_beer = function()
-			    {
-			    }
-			    $scope.upd_email_price = function()
-			    {
-			    }
 				$scope.get_ip = function()
 				{
 	        		$http.get('https://api.ipgeolocation.io/getip?apiKey=7109be59140c4b538dfc3bacb50a241a').
@@ -623,40 +222,224 @@
 				  		{
 						});
 				}
-
 				$scope.get_ip();
 
-			    $scope.set_user = function(id, name, email)
-			    {
-	  				$scope.user_name = name;
-					$scope.user_type = 'GUEST';
-					$scope.add_price_guest_email = email;
-					$scope.add_pub_guest_email = email;
-					$scope.add_beer_guest_email = email;
-	        		$http.get('https://api.howmuchisapint.com/test/drinker/' + id).
-						then(function(response)
-						{
-							if (response.data.drinker !== undefined)	
-							{
-				  				$scope.user_type = response.data.drinker.type;
-				  				$scope.user_name = response.data.drinker.name;
-				  				$scope.add_price_guest_email = email;
-				  				$scope.add_pub_guest_email = email;
-				  				$scope.add_beer_guest_email = email;
-				  				console.log($scope.user_type);
-				  				console.log($scope.user_name);
-				  				
-				  			}
-				  			else
-				  			{
-					  			return null;
-					  		}
-				  		}, 
-				  		function(response) 
-				  		{
-						});
-			    }
+				$http.get("https://api.ipify.org?format=json").then(function(resp) {$scope.ip = resp.data.ip;console.log("ip="+$scope.ip);}, function(resp) {console.log(resp)});
 
+				$scope.accept_cookies = function()
+				{
+					$scope.use_cookies = true;
+					d = new Date();
+		  			d.setTime(d.getTime() + (100*24*60*60*1000));
+					document.cookie = "cookies=true;expires="+d.toUTCString()+";path=/";
+				}
+				$scope.read_cookie = function(cname) 
+				{
+					name = cname + "=";
+					cookie = decodeURIComponent(document.cookie);
+					ca = cookie.split(';');
+					for(i = 0; i < ca.length; i++) 
+					{
+						c = ca[i];
+						while (c.charAt(0) == ' ') 
+						{
+							c = c.substring(1);
+						}
+					   	if (c.indexOf(name) == 0) 
+						{
+					      return c.substring(name.length, c.length);
+					   	}
+					}
+					return "";
+				}
+				$scope.check_cookies = function()
+				{
+					$scope.use_cookies=$scope.read_cookie("cookies")=="true";
+					if ($scope.use_cookies)
+					{
+						$scope.frm_login.id=$scope.read_cookie("uid");
+						if ($scope.frm_login.id!="")
+						{
+							$scope.frm_login.remember=true;
+						}
+					}
+				}
+				$scope.check_cookies();
+			    $scope.set_google_user = function(google_token, id, name, email)
+			    {
+	  				$scope.user = google_token;
+					$scope.authenticate(function()
+					{
+						$http.get('https://api.howmuchisapint.com/test/drinker/' + id + '?token=' + $scope.token).
+							then(function(response)
+							{
+								if (response.data.drinker !== undefined)	
+								{
+									$scope.user_type = response.data.drinker.type;
+									$scope.user_name = response.data.drinker.name;
+									console.log('howmuchisapint user name is ' + $scope.user_name);
+									console.log('howmuchisapint user type is ' + $scope.user_type);
+								}
+							}, 
+							function(response) 
+							{
+							});
+
+						$http.get('https://api.howmuchisapint.com/test/refdata/country?token=' + $scope.token).
+							then(function(response)
+							{
+								$scope.country_data_list = response.data;
+							}, 
+							function(response) 
+							{
+							});
+
+						$http.get('https://api.howmuchisapint.com/test/refdata/ccy?token=' + $scope.token).
+							then(function(response)
+							{
+								$scope.ccy_data_list = response.data;
+							}, 
+							function(response) 
+							{
+							});
+						$http.get('https://api.howmuchisapint.com/test/refdata/pubtype?token=' + $scope.token).
+							then(function(response)
+							{
+								$scope.pub_type_data_list = response.data;
+							}, 
+							function(response) 
+							{
+							});
+
+						$http.get('https://api.howmuchisapint.com/test/pub?token=' + $scope.token).
+							then(function(response)
+							{
+								for (i = 0; i < response.data.pub.length; i++)
+								{
+									for (t = 0; t < response.data.pub[i].tags.length; t++)
+									{
+										var ex = false;
+										for (t2 in $scope.all_tags)
+										{
+											ex = ex || $scope.all_tags[t2] == response.data.pub[i].tags[t];
+										}
+										if (!ex)
+										{
+											$scope.all_tags.push(response.data.pub[i].tags[t]);
+										}
+										var ex = false;
+										for (t2 in $scope.pub_tags)
+										{
+											ex = ex || $scope.pub_tags[t2] == response.data.pub[i].tags[t];
+										}
+										if (!ex)
+										{
+											$scope.pub_tags.push(response.data.pub[i].tags[t]);
+										}
+										
+									}
+								}
+							}, 
+							function(response) 
+							{
+							});
+
+						$http.get('https://api.howmuchisapint.com/test/refdata/beertype?token=' + $scope.token).
+							then(function(response)
+							{
+								$scope.beer_type_data_list = response.data;
+							}, 
+							function(response) 
+							{
+							});
+
+						$http.get('https://api.howmuchisapint.com/test/beer?token=' + $scope.token).
+							then(function(response)
+							{
+								for (i = 0; i < response.data.beer.length; i++)
+								{
+									for (t = 0; t < response.data.beer[i].tags.length; t++)
+									{
+										var ex = false;
+										for (t2 in $scope.all_tags)
+										{
+											ex = ex || $scope.all_tags[t2] == response.data.beer[i].tags[t];
+										}
+										if (!ex)
+										{
+											$scope.all_tags.push(response.data.beer[i].tags[t]);
+										}
+										var ex = false;
+										for (t2 in $scope.beer_tags)
+										{
+											ex = ex || $scope.beer_tags[t2] == response.data.beer[i].tags[t];
+										}
+										if (!ex)
+										{
+											$scope.beer_tags.push(response.data.beer[i].tags[t]);
+										}
+									}
+								}
+							}, 
+							function(response) 
+							{
+							});
+
+						$http.get('https://api.howmuchisapint.com/test/beerprice?token=' + $scope.token + '&tags=unverified').
+							then(function(response)
+							{
+								for (i = 0; i < response.data['beer-price'].length; i++)
+								{
+									for (t = 0; t < response.data['beer-price'][i].tags.length; t++)
+									{
+										var ex = false;
+										for (t2 in $scope.all_tags)
+										{
+											ex = ex || $scope.all_tags[t2] == response.data['beer-price'][i].tags[t];
+										}
+										if (!ex)
+										{
+											$scope.all_tags.push(response.data['beer-price'][i].tags[t]);
+										}
+										var ex = false;
+										for (t2 in $scope.price_tags)
+										{
+											ex = ex || $scope.price_tags[t2] == response.data['beer-price'][i].tags[t];
+										}
+										if (!ex)
+										{
+											$scope.price_tags.push(response.data['beer-price'][i].tags[t]);
+										}
+									}
+								}	
+							}, 
+							function(response) 
+							{
+							});
+					});
+					setTimeout(function(){ $scope.initialise();},5000)
+				}
+				$scope.authenticate = function(doWork)
+				{
+					if ($scope.token == null || moment().isAfter(moment($scope.token_exp)))
+					{
+						$http.get('https://api.howmuchisapint.com/test/authenticate?user=' + $scope.user).
+							then(function(response)
+							{
+								$scope.token = response.data.token 
+								$scope.token_exp = response.data.expiry 
+								console.log('howmuchisapint token is ' + $scope.token);
+								doWork();
+							}, 
+							function(response) 
+							{
+							});
+					}
+					else
+					{
+						doWork();
+					}
+				}
 			    $scope.upd_prices_pub_country = function()
 			    {
 					$scope.price_stat_data = '';
@@ -670,42 +453,45 @@
 					$scope.prices_pub_type_data_list = [];
 					if ($scope.prices_pub_country != null)
 					{
-					    $http.get('https://api.howmuchisapint.com/test/pub').
-							then(function(response)
-							{
-								for (p in response.data.pub)
+						$scope.authenticate(function()
+						{
+							$http.get('https://api.howmuchisapint.com/test/pub?token=' + $scope.token).
+								then(function(response)
 								{
-									if (response.data.pub[p].country == $scope.prices_pub_country)
-							    	{ 
-							    		var ex = false;
-							    		for (p2 in $scope.prices_pub_city_data_list)
-							    		{
-							    			ex = ex || $scope.prices_pub_city_data_list[p2].city == response.data.pub[p].city;
-							    		}
-							    		if (!ex)
-							    		{
-						  					$scope.prices_pub_city_data_list.push(response.data.pub[p]);
-					  					}
-					  				}
-					  			}
-								if ($scope.prices_pub_city_data_list.length == 1)
+									for (p in response.data.pub)
+									{
+										if (response.data.pub[p].country == $scope.prices_pub_country)
+										{ 
+											var ex = false;
+											for (p2 in $scope.prices_pub_city_data_list)
+											{
+												ex = ex || $scope.prices_pub_city_data_list[p2].city == response.data.pub[p].city;
+											}
+											if (!ex)
+											{
+												$scope.prices_pub_city_data_list.push(response.data.pub[p]);
+											}
+										}
+									}
+									if ($scope.prices_pub_city_data_list.length == 1)
+									{
+										$scope.prices_pub_city = $scope.prices_pub_city_data_list[0].city;
+										$scope.upd_prices_pub_city();
+									}
+								}, 
+								function(response) 
 								{
-									$scope.prices_pub_city = $scope.prices_pub_city_data_list[0].city;
-									$scope.upd_prices_pub_city();
-								}
-					  		}, 
-					  		function(response) 
-					  		{
-							});
+								});
 
-							for (ctry in $scope.country_data_list['ref-data-country'])
-							{
-								if ($scope.country_data_list['ref-data-country'][ctry].name == $scope.prices_pub_country)
+								for (ctry in $scope.country_data_list['ref-data-country'])
 								{
-									$scope.prices_ccy = $scope.country_data_list['ref-data-country'][ctry].ccy;
+									if ($scope.country_data_list['ref-data-country'][ctry].name == $scope.prices_pub_country)
+									{
+										$scope.prices_ccy = $scope.country_data_list['ref-data-country'][ctry].ccy;
+									}
 								}
-							}
-							$scope.upd_prices_display_ccy()
+								$scope.upd_prices_display_ccy()
+						});
 					}
 			    } 
 			    $scope.upd_prices_pub_city = function()
@@ -720,33 +506,36 @@
 					$scope.prices_pub_type_data_list = [];
 					if ($scope.prices_pub_country != null)
 					{
-					    $http.get('https://api.howmuchisapint.com/test/pub').
-							then(function(response)
-							{
-								for (p in response.data.pub)
+						$scope.authenticate(function()
+						{
+							$http.get('https://api.howmuchisapint.com/test/pub?token=' + $scope.token).
+								then(function(response)
 								{
-									if (response.data.pub[p].city == $scope.prices_pub_city && response.data.pub[p].country == $scope.prices_pub_country)
-							    	{ 
-							    		var ex = false;
-							    		for (p2 in $scope.prices_pub_town_data_list)
-							    		{
-							    			ex = ex || $scope.prices_pub_town_data_list[p2].town == response.data.pub[p].town;
-							    		}
-							    		if (!ex)
-							    		{
-					  						$scope.prices_pub_town_data_list.push(response.data.pub[p]);
-					  					}
-					  				}
-					  			}
-								if ($scope.prices_pub_town_data_list.length == 1)
+									for (p in response.data.pub)
+									{
+										if (response.data.pub[p].city == $scope.prices_pub_city && response.data.pub[p].country == $scope.prices_pub_country)
+										{ 
+											var ex = false;
+											for (p2 in $scope.prices_pub_town_data_list)
+											{
+												ex = ex || $scope.prices_pub_town_data_list[p2].town == response.data.pub[p].town;
+											}
+											if (!ex)
+											{
+												$scope.prices_pub_town_data_list.push(response.data.pub[p]);
+											}
+										}
+									}
+									if ($scope.prices_pub_town_data_list.length == 1)
+									{
+										$scope.prices_pub_town = $scope.prices_pub_town_data_list[0].town;
+									}
+									$scope.upd_prices_pub_town();
+								}, 
+								function(response) 
 								{
-									$scope.prices_pub_town = $scope.prices_pub_town_data_list[0].town;
-								}
-								$scope.upd_prices_pub_town();
-					  		}, 
-					  		function(response) 
-					  		{
-							});
+								});
+						});
 					}
 				} 
 			    $scope.upd_prices_pub_town = function()
@@ -757,33 +546,37 @@
 					$scope.prices_pub = null;
 					$scope.prices_pub_type_data_list = [];
 					$scope.prices_pub_data_list = [];
-				    $http.get('https://api.howmuchisapint.com/test/pub').
-						then(function(response)
-						{
-							for (p in response.data.pub)
+					
+					$scope.authenticate(function()
+					{
+						$http.get('https://api.howmuchisapint.com/test/pub?token=' + $scope.token).
+							then(function(response)
 							{
-								if ((response.data.pub[p].town == $scope.prices_pub_town || $scope.prices_pub_town == null) && (response.data.pub[p].city == $scope.prices_pub_city || $scope.prices_pub_city == null) && response.data.pub[p].country == $scope.prices_pub_country)
-						    	{ 
-						    		var ex = false;
-						    		for (p2 in $scope.prices_pub_type_data_list)
-						    		{
-						    			ex = ex || $scope.prices_pub_type_data_list[p2].type == response.data.pub[p].type;
-						    		}
-						    		if (!ex)
-						    		{
-					  					$scope.prices_pub_type_data_list.push(response.data.pub[p]);
-					  				}
-				  				}
-				  			}
-							if ($scope.prices_pub_type_data_list.length == 1)
+								for (p in response.data.pub)
+								{
+									if ((response.data.pub[p].town == $scope.prices_pub_town || $scope.prices_pub_town == null) && (response.data.pub[p].city == $scope.prices_pub_city || $scope.prices_pub_city == null) && response.data.pub[p].country == $scope.prices_pub_country)
+									{ 
+										var ex = false;
+										for (p2 in $scope.prices_pub_type_data_list)
+										{
+											ex = ex || $scope.prices_pub_type_data_list[p2].type == response.data.pub[p].type;
+										}
+										if (!ex)
+										{
+											$scope.prices_pub_type_data_list.push(response.data.pub[p]);
+										}
+									}
+								}
+								if ($scope.prices_pub_type_data_list.length == 1)
+								{
+									$scope.prices_pub_type = $scope.prices_pub_type_data_list[0].type;
+									$scope.upd_prices_pub_type();
+								}
+							}, 
+							function(response) 
 							{
-								$scope.prices_pub_type = $scope.prices_pub_type_data_list[0].type;
-								$scope.upd_prices_pub_type();
-							}
-				  		}, 
-				  		function(response) 
-				  		{
-						});
+							});
+					});
 			    } 
 			    $scope.upd_prices_pub_type = function()
 			    {
@@ -793,32 +586,35 @@
 					$scope.prices_pub_data_list = [];
 					if ($scope.prices_pub_type != null)
 					{
-					    $http.get('https://api.howmuchisapint.com/test/pub').
-							then(function(response)
-							{
-								for (p in response.data.pub)
+						$scope.authenticate(function()
+						{
+							$http.get('https://api.howmuchisapint.com/test/pub?token=' + $scope.token).
+								then(function(response)
 								{
-									if (response.data.pub[p].type == $scope.prices_pub_type && response.data.pub[p].town == $scope.prices_pub_town && response.data.pub[p].city == $scope.prices_pub_city && response.data.pub[p].country == $scope.prices_pub_country)
-							    	{ 
-							    		var ex = false;
-							    		for (p2 in $scope.prices_pub_data_list)
-							    		{
-							    			ex = ex || $scope.prices_pub_data_list[p2].name == response.data.pub[p].name;
-							    		}
-							    		if (!ex)
-							    		{
-						  					$scope.prices_pub_data_list.push(response.data.pub[p]);
+									for (p in response.data.pub)
+									{
+										if (response.data.pub[p].type == $scope.prices_pub_type && response.data.pub[p].town == $scope.prices_pub_town && response.data.pub[p].city == $scope.prices_pub_city && response.data.pub[p].country == $scope.prices_pub_country)
+										{ 
+											var ex = false;
+											for (p2 in $scope.prices_pub_data_list)
+											{
+												ex = ex || $scope.prices_pub_data_list[p2].name == response.data.pub[p].name;
+											}
+											if (!ex)
+											{
+												$scope.prices_pub_data_list.push(response.data.pub[p]);
+											}
 										}
-					  				}
-					  			}
-								if ($scope.prices_pub_data_list.length == 1)
+									}
+									if ($scope.prices_pub_data_list.length == 1)
+									{
+										$scope.prices_pub = $scope.prices_pub_data_list[0];
+									}
+								}, 
+								function(response) 
 								{
-									$scope.prices_pub = $scope.prices_pub_data_list[0];
-								}
-					  		}, 
-					  		function(response) 
-					  		{
-							});
+								});
+						});
 					}
 			    } 
 			    $scope.upd_prices_pub = function()
@@ -833,24 +629,27 @@
 					$scope.prices_beer_data_list = [];
 					if ($scope.prices_beer_type != null)
 					{
-					    $http.get('https://api.howmuchisapint.com/test/beer').
-							then(function(response)
-							{
-								for (p in response.data.beer)
+						$scope.authenticate(function()
+						{
+							$http.get('https://api.howmuchisapint.com/test/beer?token=' + $scope.token).
+								then(function(response)
 								{
-									if (response.data.beer[p].type == $scope.prices_beer_type)
-							    	{ 
-					  					$scope.prices_beer_data_list.push(response.data.beer[p]);
-					  				}
-					  			}
-								if ($scope.prices_beer_data_list.length == 1)
+									for (p in response.data.beer)
+									{
+										if (response.data.beer[p].type == $scope.prices_beer_type)
+										{ 
+											$scope.prices_beer_data_list.push(response.data.beer[p]);
+										}
+									}
+									if ($scope.prices_beer_data_list.length == 1)
+									{
+										$scope.prices_beer = $scope.prices_beer_data_list[0];
+									}
+								}, 
+								function(response) 
 								{
-									$scope.prices_beer = $scope.prices_beer_data_list[0];
-								}
-					  		}, 
-					  		function(response) 
-					  		{
-							});
+								});
+						});
 					}
 			    } 
 			    $scope.upd_prices_beer = function()
@@ -865,17 +664,20 @@
 				    	$scope.prices_display_fxrate = 1;
 						if ($scope.prices_ccy != $scope.prices_display_ccy)
 						{
-						    $http.get('https://api.howmuchisapint.com/test/fxrate/latest/' + $scope.prices_ccy + $scope.prices_display_ccy).
-								then(function(response)
-								{
-									if (response.data['fx-rate'] !== undefined)
-					  				{
-					  					$scope.prices_display_fxrate = response.data['fx-rate']['rate'];
-						  			}
-						  		}, 
-						  		function(response) 
-						  		{
-								});
+							$scope.authenticate(function()
+							{
+								$http.get('https://api.howmuchisapint.com/test/fxrate/' + $scope.prices_ccy + $scope.prices_display_ccy + '?latest=Y&token=' + $scope.token).
+									then(function(response)
+									{
+										if (response.data['fx-rate'] !== undefined)
+										{
+											$scope.prices_display_fxrate = response.data['fx-rate']['rate'];
+										}
+									}, 
+									function(response) 
+									{
+									});
+							});
 						}
 						for (ccy in $scope.ccy_data_list['ref-data-ccy'])
 						{
@@ -925,10 +727,12 @@
 			  		function(response) 
 			  		{
 					});
-					setTimeout($scope.set_to_home, 2000);
 				}
-				$scope.set_to_home = function()
+				$scope.initialise = function()
 				{
+					$scope.add_beer_type = 'Lager'
+					$scope.add_pub_type = 'Pub'
+
 					for (ctry in $scope.country_data_list['ref-data-country'])
 					{
 						if ($scope.country_data_list['ref-data-country'][ctry].name == $scope.home_country)
@@ -945,7 +749,7 @@
 							{
 								$scope.home_ccy_symbol = $scope.home_ccy_symbol + ' ';
 							}
-						}
+						}	
 					}
 					$scope.prices_display_ccy = $scope.home_ccy;
 					$scope.prices_display_ccy_symbol = $scope.home_ccy_symbol;
@@ -957,13 +761,13 @@
 					$scope.add_pub_pc = $scope.home_pc;
 	
 					$scope.prices_pub_country = $scope.home_country;
-				    $scope.upd_prices_pub_country();
+					$scope.upd_prices_pub_country();
 					$scope.prices_pub_city = $scope.home_city;
-				    $scope.upd_prices_pub_city();
+					$scope.upd_prices_pub_city();
 					$scope.prices_pub_town = $scope.home_town;
-				    $scope.upd_prices_pub_town();
+					$scope.upd_prices_pub_town();
 	
-					var params = '?style=small';
+					var params = '?token=' + $scope.token + '&style=small';
 					params = params + '&pubCountry=' + $scope.home_country;
 					params = params + '&pubCity=' + $scope.home_city;
 					params = params + '&pubType=Pub';
@@ -973,25 +777,26 @@
 						params = params + '&tags=wetherspoons';
 					}
 					var stats = [];
-		  			$scope.headline_stat1 = '';
-		  			$scope.headline_stat2 = '';
-		    		$http.get('https://api.howmuchisapint.com/test/beerpricestats/BeerTypeAndPubTypeAndTown' + params).
+					$scope.headline_stat1 = '';
+					$scope.headline_stat2 = '';
+					
+					$http.get('https://api.howmuchisapint.com/test/beerpricestats/BeerTypeAndPubTypeAndTown' + params).
 						then(function(response)
 						{
-				  			stats = response.data['beer-price-stats'];
-				  			if (stats.length == 0)
-				  			{
-					  			$scope.headline_stat1 = 'Be the first to submit a pub pint price in ';
-					  			$scope.headline_stat2 = $scope.home_town;
-					  			
-					    		$http.get('https://api.howmuchisapint.com/test/beerpricestats/BeerTypeAndPubTypeAndCity' + params).
+							stats = response.data['beer-price-stats'];
+							if (stats.length == 0)
+							{
+								$scope.headline_stat1 = 'Be the first to submit a pub pint price in ';
+								$scope.headline_stat2 = $scope.home_town;
+								
+								$http.get('https://api.howmuchisapint.com/test/beerpricestats/BeerTypeAndPubTypeAndCity' + params).
 									then(function(response)
 									{
-							  			stats = response.data['beer-price-stats'];
-							  		});
+										stats = response.data['beer-price-stats'];
+									});
 							}
-				  			if (stats.length > 0)
-				  			{
+							if (stats.length > 0)
+							{
 								var frst = true;
 								var max = 0;
 								var tot = 0;
@@ -1019,17 +824,18 @@
 								}
 							}
 						});
-		  			$scope.headline_latest = [];
-		  			$scope.headline_latest_ccy_symbol = [];
-		    		$http.get('https://api.howmuchisapint.com/test/beerprice?page=1&pageSize=5&pubCountry=' + $scope.home_country).
+					$scope.headline_latest = [];
+					$scope.headline_latest_ccy_symbol = [];
+					
+					$http.get('https://api.howmuchisapint.com/test/beerprice?token=' + $scope.token + '&page=1&pageSize=5&pubCountry=' + $scope.home_country).
 						then(function(response)
 						{
-				  			prices = response.data['beer-price'];
-				  			c = 0
-				  			for (p in prices.sort(function(a, b){return a.date < b.date ? 1 : a.date > b.date ? -1 : 1 }))
-				  			{
-					  			$scope.headline_latest[c] = prices[p];
-					  			price_ccy = ''
+							prices = response.data['beer-price'];
+							c = 0
+							for (p in prices.sort(function(a, b){return a.date < b.date ? 1 : a.date > b.date ? -1 : 1 }))
+							{
+								$scope.headline_latest[c] = prices[p];
+								price_ccy = ''
 								for (ctry in $scope.country_data_list['ref-data-country'])
 								{
 									if ($scope.country_data_list['ref-data-country'][ctry].name == prices[p].pub.country)
@@ -1044,20 +850,21 @@
 										$scope.headline_latest_ccy_symbol[c] = $scope.ccy_data_list['ref-data-ccy'][ccy].symbol;
 									}
 								}
-				  				c = c + 1;
-				  			}
+								c = c + 1;
+							}
 						},
-				  		function(response) 
-				  		{
+						function(response) 
+						{
 						});
 				}
-			    $scope.get_beers = function()
+			    
+				$scope.get_beers = function()
 			    {
 					$scope.working_beer = true;
 					$scope.beer_data = '';
 					$scope.add_beer_info = '';
 					$scope.beer_err = '';
-					var params = '?style=small'
+					var params = '?token=' + $scope.token + '&style=small'
 					if ($scope.add_beer_tags.length > 0)
 					{
 						params = params + '&tags=' + $scope.add_beer_tags;
@@ -1069,33 +876,37 @@
 					if ($scope.add_beer_name.length > 0)
 					{
 						params = params + '&name=' + $scope.add_beer_name;
-					}				
-	        		$http.get('https://api.howmuchisapint.com/test/beer' + params).
-						then(function(response)
-						{
-			  				$scope.beer_data = response.data;
-							$scope.add_beer_info = response.data['beer'].length + ' beer(s) - ';
-							$scope.add_beer_info = $scope.add_beer_info + ($scope.add_beer_name.length > 0 ? ' ' + $scope.add_beer_name + ($scope.add_beer_type != null ? ' (' + $scope.add_beer_type + ')' : '') : ($scope.add_beer_type != null ? ' ' + $scope.add_beer_type : ''));
-							var tags = $scope.add_beer_tags.split(' ');
-							for (t in tags)
+					}
+					
+					$scope.authenticate(function()
+					{
+						$http.get('https://api.howmuchisapint.com/test/beer' + params).
+							then(function(response)
 							{
-								if (tags[t].length > 0)
+								$scope.beer_data = response.data;
+								$scope.add_beer_info = response.data['beer'].length + ' beer(s) - ';
+								$scope.add_beer_info = $scope.add_beer_info + ($scope.add_beer_name.length > 0 ? ' ' + $scope.add_beer_name + ($scope.add_beer_type != null ? ' (' + $scope.add_beer_type + ')' : '') : ($scope.add_beer_type != null ? ' ' + $scope.add_beer_type : ''));
+								var tags = $scope.add_beer_tags.split(' ');
+								for (t in tags)
 								{
-									$scope.add_beer_info = $scope.add_beer_info + ' #' + tags[t];
+									if (tags[t].length > 0)
+									{
+										$scope.add_beer_info = $scope.add_beer_info + ' #' + tags[t];
+									}
 								}
-							}
-							$scope.working_beer = false;
-				  		}, 
-				  		function(response) 
-				  		{
-							errMsg = response.data.message;
-							if (!((response.status >= 400 && response.status < 500) || (response.status >= 200 && response.status < 300)))
-							{  
-								errMsg = response.status + " " + errMsg;
-							}
-							$scope.beer_err = errMsg
-							$scope.working_beer = false;
-						});
+								$scope.working_beer = false;
+							}, 
+							function(response) 
+							{
+								errMsg = response.data.message;
+								if (!((response.status >= 400 && response.status < 500) || (response.status >= 200 && response.status < 300)))
+								{  
+									errMsg = response.status + " " + errMsg;
+								}
+								$scope.beer_err = errMsg
+								$scope.working_beer = false;
+							});
+					});	
 			    }
 			    $scope.get_pubs = function()
 			    {
@@ -1103,7 +914,7 @@
 					$scope.pub_data = '';
 					$scope.add_pub_info = '';
 					$scope.pub_err = '';
-					var params = '?style=small'
+					var params = '?token=' + $scope.token + '&style=small'
 					if ($scope.add_pub_tags.length > 0)
 					{
 						params = params + '&tags=' + $scope.add_pub_tags;
@@ -1127,38 +938,42 @@
 					if ($scope.add_pub_name.length > 0)
 					{
 						params = params + '&name=' + $scope.add_pub_name;
-					}				
-	        		$http.get('https://api.howmuchisapint.com/test/pub' + params).
-						then(function(response)
-						{
-			  				$scope.pub_data = response.data;
-							$scope.add_pub_info = response.data['pub'].length + ' pub(s) - ';
-							$scope.add_pub_info = $scope.add_pub_info + ($scope.add_pub_name.length > 0 ? ' ' + $scope.add_pub_name + ($scope.add_pub_type != null ? ' (' + $scope.add_pub_type + ')' : '') : ($scope.add_pub_type != null ? ' ' + $scope.add_pub_type : ''));
-							$scope.add_pub_info = $scope.add_pub_info + ', ' + ($scope.add_pub_town.length > 0 ? $scope.add_pub_town + ', ': '') + ($scope.add_pub_city.length > 0 ? $scope.add_pub_city + ', ' : '') + $scope.add_pub_country;
-							var tags = $scope.add_pub_tags.split(' ');
-							for (t in tags)
+					}	
+					
+					$scope.authenticate(function()
+					{
+						$http.get('https://api.howmuchisapint.com/test/pub' + params).
+							then(function(response)
 							{
-								if (tags[t].length > 0)
+								$scope.pub_data = response.data;
+								$scope.add_pub_info = response.data['pub'].length + ' pub(s) - ';
+								$scope.add_pub_info = $scope.add_pub_info + ($scope.add_pub_name.length > 0 ? ' ' + $scope.add_pub_name + ($scope.add_pub_type != null ? ' (' + $scope.add_pub_type + ')' : '') : ($scope.add_pub_type != null ? ' ' + $scope.add_pub_type : ''));
+								$scope.add_pub_info = $scope.add_pub_info + ', ' + ($scope.add_pub_town.length > 0 ? $scope.add_pub_town + ', ': '') + ($scope.add_pub_city.length > 0 ? $scope.add_pub_city + ', ' : '') + $scope.add_pub_country;
+								var tags = $scope.add_pub_tags.split(' ');
+								for (t in tags)
 								{
-									$scope.add_pub_info = $scope.add_pub_info + ' #' + tags[t];
-								}  
-							}
-							$scope.working_pub = false;
-				  		}, 
-				  		function(response) 
-				  		{
-							errMsg = response.data.message;
-							if (!((response.status >= 400 && response.status < 500) || (response.status >= 200 && response.status < 300)))
-							{  
-								errMsg = response.status + " " + errMsg;
-							}
-							$scope.pub_err = errMsg
-							$scope.working_pub = false;
-						});
+									if (tags[t].length > 0)
+									{
+										$scope.add_pub_info = $scope.add_pub_info + ' #' + tags[t];
+									}  
+								}
+								$scope.working_pub = false;
+							}, 
+							function(response) 
+							{
+								errMsg = response.data.message;
+								if (!((response.status >= 400 && response.status < 500) || (response.status >= 200 && response.status < 300)))
+								{  
+									errMsg = response.status + " " + errMsg;
+								}
+								$scope.pub_err = errMsg
+								$scope.working_pub = false;
+							});
+					});
 				}
 			    $scope.get_prices_params = function(wethers)
 			    {
-					var params = '?style=small'
+					var params = '?token=' + $scope.token + '&style=small'
 					if ($scope.prices_tags.length > 0)
 					{
 						params = params + '&tags=' + $scope.prices_tags;
@@ -1207,37 +1022,41 @@
 					$scope.price_data = '';
 					$scope.working_prices = true;
 					var params = $scope.get_prices_params(true);
-	        		$http.get('https://api.howmuchisapint.com/test/beerpricestats/BeerTypeAndPubTypeAndCountry' + params).
-						then(function(response)
-						{
-			  				$scope.price_stat_data = response.data;
-			  				var tot = 0;
-			  				var yrtot = 0;
-							yr = new Date().getFullYear()
-			  				for (p in response.data['beer-price-stats'])
-			  				{
-				  				for (s in response.data['beer-price-stats'][p]['by-year'])
-				  				{
-				  					if (yr - response.data['beer-price-stats'][p]['by-year'][s].year == 0)
-				  					{
-				  						yrtot = yrtot + response.data['beer-price-stats'][p]['by-year'][s].count;
-				  					}
-				  				}
-			  					tot = tot + response.data['beer-price-stats'][p].count;
-			  				}
-			  				$scope.get_prices_info = response.data['beer-price-stats'].length + ' average(s) from ' + tot + ' price(s) (' + yrtot + ' in the last year) ' + $scope.prices_criteria();
-							$scope.working_prices = false;
-				  		}, 
-				  		function(response) 
-				  		{
-							errMsg = response.data.message;
-							if (!((response.status >= 400 && response.status < 500) || (response.status >= 200 && response.status < 300)))
-							{  
-								errMsg = response.status + " " + errMsg;
-							}
-							$scope.price_err = errMsg
-							$scope.working_prices = false;
-						});
+
+					$scope.authenticate(function()
+					{
+						$http.get('https://api.howmuchisapint.com/test/beerpricestats/BeerTypeAndPubTypeAndCountry' + params).
+							then(function(response)
+							{
+								$scope.price_stat_data = response.data;
+								var tot = 0;
+								var yrtot = 0;
+								yr = new Date().getFullYear()
+								for (p in response.data['beer-price-stats'])
+								{
+									for (s in response.data['beer-price-stats'][p]['by-year'])
+									{
+										if (yr - response.data['beer-price-stats'][p]['by-year'][s].year == 0)
+										{
+											yrtot = yrtot + response.data['beer-price-stats'][p]['by-year'][s].count;
+										}
+									}
+									tot = tot + response.data['beer-price-stats'][p].count;
+								}
+								$scope.get_prices_info = response.data['beer-price-stats'].length + ' average(s) from ' + tot + ' price(s) (' + yrtot + ' in the last year) ' + $scope.prices_criteria();
+								$scope.working_prices = false;
+							}, 
+							function(response) 
+							{
+								errMsg = response.data.message;
+								if (!((response.status >= 400 && response.status < 500) || (response.status >= 200 && response.status < 300)))
+								{  
+									errMsg = response.status + " " + errMsg;
+								}
+								$scope.price_err = errMsg
+								$scope.working_prices = false;
+							});
+					});
 			    }
 			    $scope.get_prices = function()
 			    {
@@ -1248,23 +1067,27 @@
 					$scope.price_data = '';
 					$scope.working_prices = true;
 					var params = $scope.get_prices_params();
-	        		$http.get('https://api.howmuchisapint.com/test/beerprice' + params).
-						then(function(response)
-						{
-			  				$scope.price_data = response.data;
-			  				$scope.get_prices_info = response.data['beer-price'].length + ' prices(s) ' + $scope.prices_criteria();
-							$scope.working_prices = false;
-				  		}, 
-				  		function(response) 
-				  		{
-							errMsg = response.data.message;
-							if (!((response.status >= 400 && response.status < 500) || (response.status >= 200 && response.status < 300)))
-							{  
-								errMsg = response.status + " " + errMsg;
-							}
-							$scope.price_err = errMsg
-							$scope.working_prices = false;
-						});
+					
+					$scope.authenticate(function()
+					{
+						$http.get('https://api.howmuchisapint.com/test/beerprice' + params).
+							then(function(response)
+							{
+								$scope.price_data = response.data;
+								$scope.get_prices_info = response.data['beer-price'].length + ' prices(s) ' + $scope.prices_criteria();
+								$scope.working_prices = false;
+							}, 
+							function(response) 
+							{
+								errMsg = response.data.message;
+								if (!((response.status >= 400 && response.status < 500) || (response.status >= 200 && response.status < 300)))
+								{  
+									errMsg = response.status + " " + errMsg;
+								}
+								$scope.price_err = errMsg
+								$scope.working_prices = false;
+							});
+					});
 			    }
 			    $scope.prices_criteria = function()
 			    {
@@ -1282,141 +1105,6 @@
 					}
 					return criteria;
 			    }
-			    $scope.get_lists = function()
-			    {
-			    	$scope.all_tags = [];
-			    	$scope.price_tags = [];
-			    	$scope.pub_tags = [];
-			    	$scope.beer_tags = [];
-				    $http.get('https://api.howmuchisapint.com/test/refdata/country').
-						then(function(response)
-						{
-			  				$scope.country_data_list = response.data;
-				  		}, 
-				  		function(response) 
-				  		{
-						});
-				    $http.get('https://api.howmuchisapint.com/test/refdata/ccy').
-						then(function(response)
-						{
-			  				$scope.ccy_data_list = response.data;
-				  		}, 
-				  		function(response) 
-				  		{
-						});
-				    $http.get('https://api.howmuchisapint.com/test/refdata/pubtype').
-						then(function(response)
-						{
-			  				$scope.pub_type_data_list = response.data;
-				  		}, 
-				  		function(response) 
-				  		{
-						});
-				    $http.get('https://api.howmuchisapint.com/test/pub').
-						then(function(response)
-						{
-							for (i = 0; i < response.data.pub.length; i++)
-							{
-								for (t = 0; t < response.data.pub[i].tags.length; t++)
-								{
-						    		var ex = false;
-						    		for (t2 in $scope.all_tags)
-						    		{
-						    			ex = ex || $scope.all_tags[t2] == response.data.pub[i].tags[t];
-						    		}
-						    		if (!ex)
-						    		{
-					  					$scope.all_tags.push(response.data.pub[i].tags[t]);
-					  				}
-						    		var ex = false;
-						    		for (t2 in $scope.pub_tags)
-						    		{
-						    			ex = ex || $scope.pub_tags[t2] == response.data.pub[i].tags[t];
-						    		}
-						    		if (!ex)
-						    		{
-				  						$scope.pub_tags.push(response.data.pub[i].tags[t]);
-				  					}
-				  					
-			  					}
-		  					}
-				  		}, 
-				  		function(response) 
-				  		{
-						});
-				    $http.get('https://api.howmuchisapint.com/test/refdata/beertype').
-						then(function(response)
-						{
-			  				$scope.beer_type_data_list = response.data;
-				  		}, 
-				  		function(response) 
-				  		{
-						});
-	        		$http.get('https://api.howmuchisapint.com/test/beer').
-						then(function(response)
-						{
-							for (i = 0; i < response.data.beer.length; i++)
-							{
-								for (t = 0; t < response.data.beer[i].tags.length; t++)
-								{
-						    		var ex = false;
-						    		for (t2 in $scope.all_tags)
-						    		{
-						    			ex = ex || $scope.all_tags[t2] == response.data.beer[i].tags[t];
-						    		}
-						    		if (!ex)
-						    		{
-				  						$scope.all_tags.push(response.data.beer[i].tags[t]);
-				  					}
-						    		var ex = false;
-						    		for (t2 in $scope.beer_tags)
-						    		{
-						    			ex = ex || $scope.beer_tags[t2] == response.data.beer[i].tags[t];
-						    		}
-						    		if (!ex)
-						    		{
-				  						$scope.beer_tags.push(response.data.beer[i].tags[t]);
-				  					}
-			  					}
-		  					}
-				  		}, 
-				  		function(response) 
-				  		{
-						});
-				    $http.get('https://api.howmuchisapint.com/test/beerprice?tags=unverified').
-						then(function(response)
-						{
-							for (i = 0; i < response.data['beer-price'].length; i++)
-							{
-								for (t = 0; t < response.data['beer-price'][i].tags.length; t++)
-								{
-						    		var ex = false;
-						    		for (t2 in $scope.all_tags)
-						    		{
-						    			ex = ex || $scope.all_tags[t2] == response.data['beer-price'][i].tags[t];
-						    		}
-						    		if (!ex)
-						    		{
-				  						$scope.all_tags.push(response.data['beer-price'][i].tags[t]);
-				  					}
-						    		var ex = false;
-						    		for (t2 in $scope.price_tags)
-						    		{
-						    			ex = ex || $scope.price_tags[t2] == response.data['beer-price'][i].tags[t];
-						    		}
-						    		if (!ex)
-						    		{
-				  						$scope.price_tags.push(response.data['beer-price'][i].tags[t]);
-				  					}
-			  					}
-		  					}	
-				  		}, 
-				  		function(response) 
-				  		{
-						});
-				    $scope.add_beer_type = 'Lager'
-				    $scope.add_pub_type = 'Pub'
-				}
 			    $scope.add_beer = function()
 			    {
 					$scope.beer_data = '';
@@ -1426,14 +1114,10 @@
 			    	{
 						$scope.beer_err = 'Incomplete - beer type and name required';
 			    	}
-			    	else if ($scope.user_type=='GUEST' && (!document.getElementById("input_beer_email").checkValidity() || $scope.add_beer_guest_email.length == 0))	
-			    	{
-						$scope.beer_err = 'Valid guest email is required';
-			    	}
 			    	else
 			    	{
 						$scope.working_beer = true;
-			    		var msg = '{' + ($scope.user_type=='GUEST' ? '"guest-email":"' + $scope.add_beer_guest_email : '"token":"' + user_token) + '","beer":{"type":"' + $scope.add_beer_type + '","name":"' + $scope.add_beer_name + '"';
+			    		var msg = '{"beer":{"type":"' + $scope.add_beer_type + '","name":"' + $scope.add_beer_name + '"';
 						msg = msg + ',"tags":[';
 			    		if ($scope.add_beer_tags.length > 0)
 			    		{ 
@@ -1449,30 +1133,34 @@
 						}
 						msg = msg + '],"alerts":[]';
 				    	msg = msg + '}}';
-		        		$http.post('https://api.howmuchisapint.com/test/beer', msg).
-							then(function(response)
-							{
-								$scope.add_beer_info = $scope.get_beer_desc(response.data.beer, true);
+						
+						$scope.authenticate(function()
+						{
+							$http.post('https://api.howmuchisapint.com/test/beer?token=' + $scope.token, msg).
+								then(function(response)
+								{
+									$scope.add_beer_info = $scope.get_beer_desc(response.data.beer, true);
 
-								$scope.add_beer_name = '';
-								$scope.add_beer_tags = '';
+									$scope.add_beer_name = '';
+									$scope.add_beer_tags = '';
 
-								$scope.prices_beer_type = response.data.beer.type;
-								$scope.upd_prices_beer_type();
-								$scope.prices_beer = response.data.beer;
-								$scope.beer_err = response.statusText;
-								$scope.working_beer = false;
-					  		}, 
-					  		function(response) 
-					  		{
-								errMsg = response.data.message;
-								if (!((response.status >= 400 && response.status < 500) || (response.status >= 200 && response.status < 300)))
-								{  
-									errMsg = response.status + " " + errMsg;
-								}
-								$scope.beer_err = errMsg
-								$scope.working_beer = false;
-							});
+									$scope.prices_beer_type = response.data.beer.type;
+									$scope.upd_prices_beer_type();
+									$scope.prices_beer = response.data.beer;
+									$scope.beer_err = response.statusText;
+									$scope.working_beer = false;
+								}, 
+								function(response) 
+								{
+									errMsg = response.data.message;
+									if (!((response.status >= 400 && response.status < 500) || (response.status >= 200 && response.status < 300)))
+									{  
+										errMsg = response.status + " " + errMsg;
+									}
+									$scope.beer_err = errMsg
+									$scope.working_beer = false;
+								});
+						});
 					}
 			    }
 			    $scope.add_pub = function()
@@ -1484,14 +1172,10 @@
 			    	{
 						$scope.pub_err = 'Incomplete - pub type, name, country, city, town and post code (UK only) required';
 			    	}
-			    	else if ($scope.user_type=='GUEST' && (!document.getElementById("input_pub_email").checkValidity() || $scope.add_pub_guest_email.length == 0)) 	
-			    	{
-						$scope.pub_err = 'Valid guest email is required';
-			    	}
 			    	else
 			    	{
 						$scope.working_pub = true;
-			    		var msg = '{' + ($scope.user_type=='GUEST' ? '"guest-email":"' + $scope.add_pub_guest_email : '"token":"' + user_token) + '","pub":{"type":"' + $scope.add_pub_type + '","name":"' + $scope.add_pub_name + '","country":"' + $scope.add_pub_country + '","city":"' + $scope.add_pub_city + '","town":"' + $scope.add_pub_town + '","post-code":"' + $scope.add_pub_pc + '"';
+			    		var msg = '{"pub":{"type":"' + $scope.add_pub_type + '","name":"' + $scope.add_pub_name + '","country":"' + $scope.add_pub_country + '","city":"' + $scope.add_pub_city + '","town":"' + $scope.add_pub_town + '","post-code":"' + $scope.add_pub_pc + '"';
 						msg = msg + ',"tags":[';
 			    		if ($scope.add_pub_tags.length > 0)
 			    		{ 
@@ -1507,37 +1191,41 @@
 						}
 						msg = msg + '],"alerts":[]';
 				    	msg = msg + '}}';
-		        		$http.post('https://api.howmuchisapint.com/test/pub', msg).
-							then(function(response)
-							{
-								$scope.add_pub_info = $scope.get_pub_desc(response.data.pub, true);
+						
+						$scope.authenticate(function()
+						{
+							$http.post('https://api.howmuchisapint.com/test/pub?token=' + $scope.token, msg).
+								then(function(response)
+								{
+									$scope.add_pub_info = $scope.get_pub_desc(response.data.pub, true);
 
-								$scope.add_pub_name = '';
-								$scope.add_pub_tags = '';
+									$scope.add_pub_name = '';
+									$scope.add_pub_tags = '';
 
-								$scope.prices_pub_country = response.data.pub.country;
-								$scope.upd_prices_pub_country();
-								$scope.prices_pub_city = response.data.pub.city;
-								$scope.upd_prices_pub_city();
-								$scope.prices_pub_town = response.data.pub.town;
-								$scope.upd_prices_pub_town();
-								$scope.prices_pub_type = response.data.pub.type;
-								$scope.upd_prices_pub_type();
-								$scope.prices_pub = response.data.pub;
-								$scope.pub_err = response.statusText;
-								$scope.working_pub = false;
-					  		}, 
-					  		function(response) 
-					  		{
-								errMsg = response.data.message;
-								if (!((response.status >= 400 && response.status < 500) || (response.status >= 200 && response.status < 300)))
-								{  
-									errMsg = response.status + " " + errMsg;
-								}
-								$scope.pub_err = errMsg
-								$scope.working_pub = false;
-							});
-			    	}
+									$scope.prices_pub_country = response.data.pub.country;
+									$scope.upd_prices_pub_country();
+									$scope.prices_pub_city = response.data.pub.city;
+									$scope.upd_prices_pub_city();
+									$scope.prices_pub_town = response.data.pub.town;
+									$scope.upd_prices_pub_town();
+									$scope.prices_pub_type = response.data.pub.type;
+									$scope.upd_prices_pub_type();
+									$scope.prices_pub = response.data.pub;
+									$scope.pub_err = response.statusText;
+									$scope.working_pub = false;
+								}, 
+								function(response) 
+								{
+									errMsg = response.data.message;
+									if (!((response.status >= 400 && response.status < 500) || (response.status >= 200 && response.status < 300)))
+									{  
+										errMsg = response.status + " " + errMsg;
+									}
+									$scope.pub_err = errMsg
+									$scope.working_pub = false;
+								});
+						});
+					}
 			    }
 			    $scope.add_tag = function(ename)
 			    {
@@ -1549,13 +1237,6 @@
 			    }
 			    $scope.add_tagalert = function(ename, tora)
 			    {
-	        		$http.post('https://www.howmuchisapint.com:8443/beerprices/service/manage/v1/' + ename + '/' + tora, '{' + ($scope.user_type=='GUEST' ? '"guest-email":"' + $scope.add_tag_guest_email : '"token":"' + user_token) + '","' + ename + '-id":' + id + '","tag":"' + tag + '"}').
-						then(function(response)
-						{
-				  		}, 
-				  		function(response) 
-				  		{
-						});
 			    }
 			    $scope.add_price = function()
 			    {
@@ -1568,16 +1249,12 @@
 			    	{
 						$scope.price_err = 'Incomplete - pub, beer and price required';
 			    	}
-			    	else if ($scope.user_type=='GUEST' && (!document.getElementById("input_price_email").checkValidity() || $scope.add_price_guest_email.length == 0))	
-			    	{
-						$scope.price_err = 'Valid guest email is required';
-			    	}
 			    	else
 			    	{
 						$scope.working_prices = true;
 					    var today = new Date();
 					    var date = today.getFullYear() + (today.getMonth()>8 ? '' : '0') + (today.getMonth() + 1) + (today.getDate()>9 ? '' : '0') + today.getDate();
-			    		var msg = '{' + ($scope.user_type=='GUEST' ? '"guest-email":"' + $scope.add_price_guest_email : '"token":"' + user_token) + '","beer-price":{"date":"' + date + '","price":' + $scope.add_price_amount + ',"pub":{"audit":{"id":"' + $scope.prices_pub.audit.id + '"}},"beer":{"audit":{"id":"' + $scope.prices_beer.audit.id + '"}}';
+			    		var msg = '{"beer-price":{"date":"' + date + '","price":' + $scope.add_price_amount + ',"pub":{"audit":{"id":"' + $scope.prices_pub.audit.id + '"}},"beer":{"audit":{"id":"' + $scope.prices_beer.audit.id + '"}}';
 						msg = msg + ',"tags":[';
 			    		if ($scope.prices_tags.length > 0)
 			    		{ 
@@ -1593,26 +1270,30 @@
 						}
 						msg = msg + '],"alerts":[]';
 				    	msg = msg + '}}';
-		        		$http.post('https://api.howmuchisapint.com/test/beerprice', msg).
-							then(function(response)
-							{
-								$scope.add_price_info = $scope.get_price_desc(response.data["beer-price"], true);
+						
+						$scope.authenticate(function()
+						{
+							$http.post('https://api.howmuchisapint.com/test/beerprice?token=' + $scope.token, msg).
+								then(function(response)
+								{
+									$scope.add_price_info = $scope.get_price_desc(response.data["beer-price"], true);
 
-								$scope.add_price_amount = 0.00;
-								$scope.prices_tags = '';
-								$scope.price_err = response.statusText;
-								$scope.working_prices = false;
-				  		}, 
-					  		function(response) 
-					  		{
-								errMsg = response.data.message;
-								if (!((response.status >= 400 && response.status < 500) || (response.status >= 200 && response.status < 300)))
-								{  
-									errMsg = response.status + " " + errMsg;
-								}
-								$scope.price_err = errMsg
-								$scope.working_prices = false;
-							});
+									$scope.add_price_amount = 0.00;
+									$scope.prices_tags = '';
+									$scope.price_err = response.statusText;
+									$scope.working_prices = false;
+								}, 
+								function(response) 
+								{
+									errMsg = response.data.message;
+									if (!((response.status >= 400 && response.status < 500) || (response.status >= 200 && response.status < 300)))
+									{  
+										errMsg = response.status + " " + errMsg;
+									}
+									$scope.price_err = errMsg
+									$scope.working_prices = false;
+								});
+						});
 			    	}
 			    }
 				$scope.get_years_ago_display = function(year)
@@ -1797,8 +1478,6 @@
 					}
 				}
 				
-				//initialise
-			    $scope.get_lists();
 			});
 			
 	        navigator.geolocation.getCurrentPosition(showPosition);
@@ -1809,19 +1488,16 @@
 				angular.element(document.querySelector('[ng-controller="appCtrl"]')).scope().set_location(coords);
 			}
 
-			var user_token = 'none';
 			function onSignIn(googleUser) 
 			{
 			 	var profile = googleUser.getBasicProfile();
-		        user_token = googleUser.getAuthResponse().id_token;
-	
-				console.log('id is ' + profile.getId());
-			  	console.log('name is ' + profile.getName());
-			  	console.log('image is ' + profile.getImageUrl());
-			  	console.log('email is ' + profile.getEmail());
-		        console.log("token is " + user_token);
+				console.log('google id is ' + profile.getId());
+			  	console.log('google name is ' + profile.getName());
+			  	console.log('google image is ' + profile.getImageUrl());
+			  	console.log('google email is ' + profile.getEmail());
+		        console.log("google token is " + googleUser.getAuthResponse().id_token);
 				
-				angular.element(document.querySelector('[ng-controller="appCtrl"]')).scope().set_user(profile.getId(), profile.getName(), profile.getEmail()); 
+				angular.element(document.querySelector('[ng-controller="appCtrl"]')).scope().set_google_user(googleUser.getAuthResponse().id_token, profile.getId(), profile.getName(), profile.getEmail()); 
 			}
 		</script>
 	</body>
