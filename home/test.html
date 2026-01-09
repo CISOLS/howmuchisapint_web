@@ -33,7 +33,7 @@
 					</div>
 					<div class="row mt">
 						<div class="col">
-							<h6><span class="text-secondary"><i>version 0.9 beta</i></span></h6>
+							<h5><span class="text-light">{{headline_stat1}}</span><span class="text-secondary">{{headline_stat2}}</span></h5>
 						</div>
 					</div>
 				</div>
@@ -60,10 +60,9 @@
 												</h6>
 											</div>
 										</div>
-										<h5><span class="text-light">{{headline_stat1}}</span><span class="text-muted">{{headline_stat2}}</span></h5>
 										<div class="row mt-2">
 											<div class="col">
-												<h4><span class="text-warning">Latest prices ({{home_country}})</span></h4>
+												<h4><span class="text-light">Latest prices ({{home_country}})</span></h4>
 											</div>
 										</div>
 										<div ng:repeat="r in sorted_price_data = (headline_latest | orderBy: 'date':true)">
