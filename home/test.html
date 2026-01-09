@@ -40,60 +40,55 @@
 				<div class="bg-image" style="background-size:cover;background-image:url('img/logo.png');">
 			  		<div class="mask" style="min-height: 70.9vh;background-color:rgba(0, 0, 0, 0.8);">
 						<div class="p-3">
+							<div class="shadow p-3 mb-4 text-light bg-dark bg-opacity-75">
+								<div class="row mt-2">
+									<div class="col">
+										<h4><span class="text-warning">Latest prices ({{home_country}})</span></h4>
+									</div>
+								</div>
+								<div ng:repeat="r in sorted_price_data = (headline_latest | orderBy: 'date':true)">
+									<span class="text-muted">
+										<div ng:if="$index == 0 || r.date != sorted_price_data[$index - 1].date || r.pub.town != sorted_price_data[$index - 1].pub.town">
+											<h6><span class="text-light">{{get_date_display(r.date)}} {{r.pub.country}}, {{r.pub.city}}, {{r.pub.town}</span></h6>
+										</div>
+									</span>  
+									<h6><span class="text-secondary ms-1">{{get_pub_title(r.pub)}} ({{r.pub.type}}), {{r.beer.name}} ({{r.beer.type}}) {{headline_latest_ccy_symbol[$index]}}{{get_number_display(r.price, 2)}}</span></h6>
+								</div>
+							</div>
 							<div ng-if="!loggedin">
 								<div class="shadow p-3 mb-4 text-light bg-dark bg-opacity-75">
 									<div ng-if="logginin">
 										<div class="row">
-											<center><span class="spinner-border spinner-border-md bg-dark text-warning"></span></center>
 										</div>
 									</div>
 									<div ng-if="!logginin">
-										<div class="p-3">
-											<div class="shadow p-3 mb-4 text-light bg-dark bg-opacity-75">
-												<div class="row mt-2">
-													<div class="col">
-														<h4><span class="text-warning">Latest prices ({{home_country}})</span></h4>
-													</div>
-												</div>
-												<div ng:repeat="r in sorted_price_data = (headline_latest | orderBy: 'date':true)">
-													<span class="text-muted">
-														<div ng:if="$index == 0 || r.date != sorted_price_data[$index - 1].date || r.pub.town != sorted_price_data[$index - 1].pub.town">
-															<h6><span class="text-light">{{get_date_display(r.date)}} {{r.pub.country}}, {{r.pub.city}}, {{r.pub.town}</span></h6>
-														</div>
-													</span>  
-													<h6><span class="text-secondary ms-1">{{get_pub_title(r.pub)}} ({{r.pub.type}}), {{r.beer.name}} ({{r.beer.type}}) {{headline_latest_ccy_symbol[$index]}}{{get_number_display(r.price, 2)}}</span></h6>
-												</div>
-												<div class="row mt-3">
-													<div class="col">
-														<h6>
-															<span class="text-secondary">Continue as a </span>
-															<a href="#" class="link-info text-decoration-none" ng-click="signup()">Guest
-																<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
-																  <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
-																</svg>
-															</a>
-															<span class="text-secondary"> or </span>
-															<a href="#" class="link-info text-decoration-none" ng-click="signup()">Sign up
-																<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
-																  <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
-																</svg>
-															</a>
-															<span class="text-secondary">to track your own prices.</span>
-														</h6>
-													</div>
-												</div>
+										<div class="row mt-3">
+											<div class="col">
+												<h6>
+													<span class="text-secondary">Continue as a </span>
+													<a href="#" class="link-info text-decoration-none" ng-click="signup()">Guest
+														<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
+														  <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+														</svg>
+													</a>
+													<span class="text-secondary"> or </span>
+													<a href="#" class="link-info text-decoration-none" ng-click="signup()">Sign up
+														<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
+														  <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+														</svg>
+													</a>
+													<span class="text-secondary">to track your own prices.</span>
+												</h6>
 											</div>
 										</div>
 									</div>
 								</div>
 							</div>
-							</div>
 							<div ng-if="loggedin">
-								<div id="bio" class="shadow p-3 mb-4 text-light bg-dark bg-opacity-75">
-									<div class="row">
-										<h4>
-										</h4>
-									</div>									
+								<div class="shadow p-3 mb-4 text-light bg-dark bg-opacity-75">
+									<div ng-if="logginin">
+										<div class="row">
+										</div>
 									</div>
 								</div>
 							</div>
