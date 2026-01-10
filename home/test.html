@@ -36,6 +36,21 @@
 							<h5><span class="text-light">{{headline_stat1}}</span><span class="text-secondary">{{headline_stat2}}</span></h5>
 						</div>
 					</div>
+					<div ng-if="!loggedin">
+						<div class="row mt-3">
+							<div class="col">
+								<h6>
+									<span class="text-secondary">Continue annonymously or </span>
+									<a href="#" class="link-info text-decoration-none" ng-click="signup()">Sign in
+										<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
+										  <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+										</svg>
+									</a>
+									<span class="text-secondary">to track your own prices.</span>
+								</h6>
+							</div>
+						</div>
+					</div>
 				</div>
 				<div class="bg-image" style="background-size:cover;background-image:url('img/howmuchisapint_logo.png');">
 			  		<div class="mask" style="min-height: 70.9vh;background-color:rgba(0, 0, 0, 0.8);">
@@ -43,21 +58,6 @@
 							<div class="shadow p-3 mb-4 text-light bg-dark bg-opacity-75">
 								<div ng-if="loggedin">
 									<div class="row">
-									</div>
-								</div>
-								<div ng-if="!loggedin">
-									<div class="row mt-3">
-										<div class="col">
-											<h6>
-												<span class="text-secondary">Continue annonymously or </span>
-												<a href="#" class="link-info text-decoration-none" ng-click="signup()">Sign in
-													<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
-													  <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
-													</svg>
-												</a>
-												<span class="text-secondary">to track your own prices.</span>
-											</h6>
-										</div>
 									</div>
 								</div>
 								<div class="row mt-3">
@@ -73,8 +73,8 @@
 								</div>
 								<div class="row mt-3">
 									<div class="col">
-										<h4><span class="text-warning">New Beer Price Agent</span></h4>
-										<label class="form-label">Tell me about the new price
+										<h4><span class="text-warning">Beer Price Agent</span></h4>
+										<label class="form-label">Ask me about beer prices or tell me about a new one
 											<!--a href="#" class="link-info text-decoration-none" data-bs-toggle="collapse" data-bs-target="#agent_info">
 												<span class="ms-2">
 													<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-square text-secondary" viewBox="0 0 16 16">
