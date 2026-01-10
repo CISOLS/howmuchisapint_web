@@ -119,6 +119,24 @@
 											<button type="button" class="btn-light btn-sm"" ng-click="add_beer()">Add New</button>
 										</div>
 									</div>
+									<div ng-show="working_beer" class="row mt-2">
+										<div class="col">
+											<span class="spinner-border spinner-border-sm text-warning ms-1 me-1"></span>
+										</div>
+									</div>
+									<div ng-show="!working_beer" class="row mt-2">
+										<div class="col">
+											<span class="text-danger">{{beer_err}}</span>
+											<span class="text-info">{{add_beer_info}}</span>
+										</div>
+									</div>
+									<div ng-show="beer_data.beer.length>0"class="row mt-2">
+										<div class="col">
+											<div ng:repeat="r in sorted_beer_data = (beer_data.beer | orderBy: ['\u0022display-name\u0022'])">
+												<label class="form-label">{{get_beer_title_desc(r)}} <span class="text-warning">{{get_beer_title(r)}}</span></label>
+											</div>
+										</div>
+									</div>
 								</div>
 							</div>
 							<div class="shadow p-3 mb-4 text-light bg-dark bg-opacity-75">
@@ -146,6 +164,28 @@
 											<input class="form-control bg-dark text-light"" type="text" ng-model="add_pub_city" placeholder="City"/>
 											<input class="form-control bg-dark text-light"" type="text" ng-model="add_pub_town" placeholder="Town"/>
 											<input class="form-control bg-dark text-light"" type="text" ng-model="add_pub_pc" placeholder="Post Code"/>
+										</div>
+									</div>
+									<div class="row mt-2">
+										<div class="col">
+											<button type="button" class="btn-light btn-sm" ng-click="get_pubs()">List</button>
+											<button type="button" class="btn-light btn-sm"" ng-click="add_pub()">Add New</button>
+										</div>
+									</div>
+									<div ng-show="working_pub" class="row mt-2">
+										<div class="col">
+											<span class="spinner-border spinner-border-sm text-warning ms-1 me-1"></span>
+										</div>
+									</div>
+									<div ng-show="!working_pub" class="row mt-2">
+										<div class="col">
+											<span class="text-danger">{{pub_err}}</span>
+											<span class="text-info">{{add_pub_info}}</span>
+										</div>
+									</div>
+									<div ng-show="pub_data.pub.length>0"class="row mt-2">
+										<div ng:repeat="r in sorted_pub_data = (pub_data.pub | orderBy: ['\u0022display-name\u0022'])">
+											<label class="form-label">{{get_pub_title_type_desc(r)}} <span class="text-muted">in</span> {{get_pub_title_desc(r)}}<span class="text-warning"> {{get_pub_title(r)}}</span></label>
 										</div>
 									</div>
 								</div>
@@ -900,7 +940,7 @@
 								{
 									max = 5;
 								}
-								$scope.headline_stat1 = tot + ' pub price in ' + stats[0]['pub']['town'] + ' ' + stats[0]['pub']['type'] + 's ';
+								$scope.headline_stat1 = tot + ' pub prices in ' + stats[0]['pub']['town'] + ' ' + stats[0]['pub']['type'] + 's ';
 								for (i = 0; i < stats.length; i++)
 								{
 									if (stats[i]['tags'].length == 0 && stats[i]['count'] >= max)
@@ -975,8 +1015,8 @@
 							then(function(response)
 							{
 								$scope.beer_data = response.data;
-								$scope.add_beer_info = response.data['beer'].length + ' beer(s) - ';
-								$scope.add_beer_info = $scope.add_beer_info + ($scope.add_beer_name.length > 0 ? ' ' + $scope.add_beer_name + ($scope.add_beer_type != null ? ' (' + $scope.add_beer_type + ')' : '') : ($scope.add_beer_type != null ? ' ' + $scope.add_beer_type : ''));
+								$scope.add_beer_info = response.data['beer'].length + ' beers';
+								//$scope.add_beer_info = $scope.add_beer_info + ($scope.add_beer_name.length > 0 ? ' ' + $scope.add_beer_name + ($scope.add_beer_type != null ? ' (' + $scope.add_beer_type + ')' : '') : ($scope.add_beer_type != null ? ' ' + $scope.add_beer_type : ''));
 								var tags = $scope.add_beer_tags.split(' ');
 								for (t in tags)
 								{
@@ -1037,17 +1077,17 @@
 							then(function(response)
 							{
 								$scope.pub_data = response.data;
-								$scope.add_pub_info = response.data['pub'].length + ' pub(s) - ';
-								$scope.add_pub_info = $scope.add_pub_info + ($scope.add_pub_name.length > 0 ? ' ' + $scope.add_pub_name + ($scope.add_pub_type != null ? ' (' + $scope.add_pub_type + ')' : '') : ($scope.add_pub_type != null ? ' ' + $scope.add_pub_type : ''));
-								$scope.add_pub_info = $scope.add_pub_info + ', ' + ($scope.add_pub_town.length > 0 ? $scope.add_pub_town + ', ': '') + ($scope.add_pub_city.length > 0 ? $scope.add_pub_city + ', ' : '') + $scope.add_pub_country;
-								var tags = $scope.add_pub_tags.split(' ');
-								for (t in tags)
-								{
-									if (tags[t].length > 0)
-									{
-										$scope.add_pub_info = $scope.add_pub_info + ' #' + tags[t];
-									}  
-								}
+								$scope.add_pub_info = response.data['pub'].length + ' pubs';
+//								$scope.add_pub_info = $scope.add_pub_info + ($scope.add_pub_name.length > 0 ? ' ' + $scope.add_pub_name + ($scope.add_pub_type != null ? ' (' + $scope.add_pub_type + ')' : '') : ($scope.add_pub_type != null ? ' ' + $scope.add_pub_type : ''));
+//								$scope.add_pub_info = $scope.add_pub_info + ', ' + ($scope.add_pub_town.length > 0 ? $scope.add_pub_town + ', ': '') + ($scope.add_pub_city.length > 0 ? $scope.add_pub_city + ', ' : '') + $scope.add_pub_country;
+//								var tags = $scope.add_pub_tags.split(' ');
+//								for (t in tags)
+//								{
+//									if (tags[t].length > 0)
+//									{
+//										$scope.add_pub_info = $scope.add_pub_info + ' #' + tags[t];
+//									}  
+//								}
 								$scope.working_pub = false;
 							}, 
 							function(response) 
@@ -1452,9 +1492,14 @@
 					}
 					return desc;
 				}
+				$scope.get_pub_title_type_desc = function(pub)
+				{
+					var desc = pub.type;
+					return desc;
+				}
 				$scope.get_pub_title_desc = function(pub)
 				{
-					var desc = pub.type + ' in ' + pub.town + ', ' + pub.city + ', ' + pub.country;
+					var desc = pub.town + ', ' + pub.city + ', ' + pub.country;
 					return desc;
 				}
 				$scope.get_beer_desc = function(beer, incTags)
