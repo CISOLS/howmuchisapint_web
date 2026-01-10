@@ -10,9 +10,9 @@
 		<meta property="og:title" content="How Much Is a Pint"/>
 		<meta name="description" content="How much is a good old British pint of beer" />
 		<meta property="og:description" content="How much is a good old British pint of beer"/>
-		<meta property="og:image" content="img/logo.png"/>
+		<meta property="og:image" content="img/square_logo.png"/>
 
-		<link rel="icon" type="image/png" href="img/logo.png"/>
+		<link rel="icon" type="image/png" href="img/square_logo.png"/>
 	</head>
 	<body>
  		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
@@ -28,7 +28,7 @@
 				<div class="p-3 text-light bg-dark">
 					<div class="row">
 						<div class="col">
-				    		<h2><span class="align-middle text-warning">H O W  M U C H!</span><span class="align-middle text-secondary"> is a good old British pint of beer?</span><span class="align-middle text-danger ms-2"><i>{{env_msg}}</i></span></h2>
+							<img src="img/logo.png"  class="float-center">
 						</div>
 					</div>
 					<div class="row mt">
@@ -37,34 +37,32 @@
 						</div>
 					</div>
 				</div>
-				<div class="bg-image" style="background-size:cover;background-image:url('img/logo.png');">
+				<div class="bg-image" style="background-size:cover;background-image:url('img/howmuchisapint_logo.png');">
 			  		<div class="mask" style="min-height: 70.9vh;background-color:rgba(0, 0, 0, 0.8);">
 						<div class="p-3">
-							<div ng-if="!loggedin">
-								<div class="shadow p-3 mb-4 text-light bg-dark bg-opacity-75">
-									<div ng-if="loggedin">
-										<div class="row">
+							<div class="shadow p-3 mb-4 text-light bg-dark bg-opacity-75">
+								<div ng-if="loggedin">
+									<div class="row">
+									</div>
+								</div>
+								<div ng-if="!loggedin">
+									<div class="row mt-3">
+										<div class="col">
+											<h6>
+												<span class="text-secondary">Continue annonymously or </span>
+												<a href="#" class="link-info text-decoration-none" ng-click="signup()">Sign in
+													<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
+													  <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+													</svg>
+												</a>
+												<span class="text-secondary">to track your own prices.</span>
+											</h6>
 										</div>
 									</div>
-									<div ng-if="!loggedin">
-										<div class="row mt-3">
-											<div class="col">
-												<h6>
-													<span class="text-secondary">Continue annonymously or </span>
-													<a href="#" class="link-info text-decoration-none" ng-click="signup()">Sign in
-														<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
-														  <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
-														</svg>
-													</a>
-													<span class="text-secondary">to track your own prices.</span>
-												</h6>
-											</div>
-										</div>
-										<div class="row mt-2">
-											<div class="col">
-												<h4><span class="text-warning">Latest prices ({{home_country}})</span></h4>
-											</div>
-										</div>
+								</div>
+								<div class="row mt-3">
+									<div class="col">
+										<h4><span class="text-warning">Recent beer prices in {{home_country}}</span></h4>
 										<div ng:repeat="r in sorted_price_data = (headline_latest | orderBy: 'date':true)">
 											<div ng:if="$index == 0 || r.date != sorted_price_data[$index - 1].date || r.pub.town != sorted_price_data[$index - 1].pub.town">
 												<h6><span class="text-light">{{get_date_display(r.date)}} {{r.pub.country}}, {{r.pub.city}}, {{r.pub.town}}</span></h6>
@@ -73,10 +71,11 @@
 										</div>
 									</div>
 								</div>
-								<div id="agent" class="shadow p-3 mb-4 text-light bg-dark bg-opacity-75">
-									<div class="row mt-1">
-										<label class="form-label">Beer Price Agent
-											<a href="#" class="link-info text-decoration-none" data-bs-toggle="collapse" data-bs-target="#agent_info">
+								<div class="row mt-3">
+									<div class="col">
+										<h4><span class="text-warning">New Beer Price Agent</span></h4>
+										<label class="form-label">Tell me about the new price
+											<!--a href="#" class="link-info text-decoration-none" data-bs-toggle="collapse" data-bs-target="#agent_info">
 												<span class="ms-2">
 													<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-square text-secondary" viewBox="0 0 16 16">
 													  <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
@@ -84,83 +83,123 @@
 													</svg>
 												</span>
 											</a>
-											<span id="agent_info" class="collapse text-secondary ms-1">You can say things like...</span>
+											<span id="agent_info" class="collapse text-secondary ms-1">You can say things like...</span-->
 										</label>
 										<div class="col">
-											<input class="form-control bg-dark text-light" type="text" id="agent_command" ng-model="agent.command" placeholder="Tell me about the new price..." required>
+											<input class="form-control bg-dark text-light" type="text" id="agent_command" ng-model="agent.command" placeholder="Guinness is a fiver at the Lescar in Sheffield" required>
 										</div>
-									</div>
 								</div>
-								<div id="data" class="shadow p-3 mb-4 text-light bg-dark bg-opacity-75">
-									<div class="row mt-1">
-										<label class="form-label">Beers, Pubs and Prices</label>
-									</div>
-									<div class="row mt">
-										<a href="#" class="link-info text-decoration-none" data-bs-toggle="collapse" data-bs-target="#data_beers">Beers
-											<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrows-expand" viewBox="0 0 16 16">
-											  <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8zM7.646.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 1.707V5.5a.5.5 0 0 1-1 0V1.707L6.354 2.854a.5.5 0 1 1-.708-.708l2-2zM8 10a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 0 1 .708-.708L7.5 14.293V10.5A.5.5 0 0 1 8 10z"/>
-											</svg>
-										</a>
-									</div>
-									<div id="data_beers" class="collapse">
-										<div class="row mt-2">
-											<div class="col">
-												<select class="form-control" ng-model="add_beer_type" >
-													<option ng-repeat="b in beer_type_data_list['ref-data-beer-type']" value="{{b.name}}">{{b.name}}</option>
-												</select>
-												<input class="form-control" type="text" ng-model="add_beer_name" placeholder="Name"/>
-											</div>
-										</div>
-									</div>
-									<div class="row mt">
-										<a href="#" class="link-info text-decoration-none" data-bs-toggle="collapse" data-bs-target="#data_pubs">Pubs
-											<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrows-expand" viewBox="0 0 16 16">
-											  <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8zM7.646.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 1.707V5.5a.5.5 0 0 1-1 0V1.707L6.354 2.854a.5.5 0 1 1-.708-.708l2-2zM8 10a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 0 1 .708-.708L7.5 14.293V10.5A.5.5 0 0 1 8 10z"/>
-											</svg>
-										</a>
-									</div>
-									<div id="data_pubs" class="collapse">
-										<div class="row mt-2">
-											<div class="col">
-											</div>
-										</div>
-									</div>
-									<div class="row mt">
-										<a href="#" class="link-info text-decoration-none" data-bs-toggle="collapse" data-bs-target="#data_prices">Prices
-											<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrows-expand" viewBox="0 0 16 16">
-											  <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8zM7.646.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 1.707V5.5a.5.5 0 0 1-1 0V1.707L6.354 2.854a.5.5 0 1 1-.708-.708l2-2zM8 10a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 0 1 .708-.708L7.5 14.293V10.5A.5.5 0 0 1 8 10z"/>
-											</svg>
-										</a>
-									</div>
-									<div id="data_prices" class="collapse">
-										<div class="row mt-2">
-											<div class="col">
-											</div>
-										</div>
+								<div class="row mt-2">
+									<div class="col">
+										<button type="button" class="btn-light btn-sm" ng-click="agent_go()">Go</button>
 									</div>
 								</div>
 							</div>
 						</div>
-						<div class="bg-image" style="background-size:cover;background-image:url('img/logo.png');">
-							<div class="mask" style="min-height: 70.9vh;background-color:rgba(0, 0, 0, 0.8);">
-								<div class="modal fade" id="frm_request_error">
-									<div class="modal-dialog">
-										<div class="modal-content text-light bg-dark bg-opacity-75">
-											<div class="modal-header">
-												<h4 class="modal-title text-warning">Fatal Error</h4>
-												<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-											</div>
-											<div class="modal-body">
-												<div class="p-2">
-													<div class="alert alert-danger">
-													  <strong>{{request_error}}</strong>
-													</div>							
-												</div>
-												<div class="modal-footer">
-													<button type="submit" class="btn btn-light" data-bs-dismiss="modal" ng-click="request_signin()">OK</button>
-												</div>
-											</div>
+							<div class="shadow p-3 mb-4 text-light bg-dark bg-opacity-75">
+								<div class="row mt">
+									<h4><a href="#" class="link-info text-decoration-none text-warning" data-bs-toggle="collapse" data-bs-target="#data_beers">Beers
+										<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrows-expand" viewBox="0 0 16 16">
+										  <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8zM7.646.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 1.707V5.5a.5.5 0 0 1-1 0V1.707L6.354 2.854a.5.5 0 1 1-.708-.708l2-2zM8 10a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 0 1 .708-.708L7.5 14.293V10.5A.5.5 0 0 1 8 10z"/>
+										</svg>
+									</a><h4>
+								</div>
+								<div id="data_beers" class="collapse">
+									<div class="row mt-2">
+										<div class="col">
+											<select class="form-control bg-dark text-light" ng-model="add_beer_type" >
+												<option ng-repeat="b in beer_type_data_list['ref-data-beer-type']" value="{{b.name}}">{{b.name}}</option>
+											</select>
+											<input class="form-control bg-dark text-light" type="text" id="" ng-model="add_beer_name" placeholder="Name" required>
 										</div>
+									</div>
+									<div class="row mt-2">
+										<div class="col">
+											<button type="button" class="btn-light btn-sm" ng-click="get_beers()">List</button>
+											<button type="button" class="btn-light btn-sm"" ng-click="add_beer()">Add New</button>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="shadow p-3 mb-4 text-light bg-dark bg-opacity-75">
+								<div class="row mt">
+									<h4><a href="#" class="link-info text-decoration-none text-warning" data-bs-toggle="collapse" data-bs-target="#data_pubs">Pubs
+										<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrows-expand" viewBox="0 0 16 16">
+										  <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8zM7.646.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 1.707V5.5a.5.5 0 0 1-1 0V1.707L6.354 2.854a.5.5 0 1 1-.708-.708l2-2zM8 10a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 0 1 .708-.708L7.5 14.293V10.5A.5.5 0 0 1 8 10z"/>
+										</svg>
+									</a><h4>
+								</div>
+								<div id="data_pubs" class="collapse">
+									<div class="row mt-2">
+										<div class="col">
+											<select class="form-control bg-dark text-light"" ng-model="add_pub_type" >
+												<option ng-repeat="p in pub_type_data_list['ref-data-pub-type']" value="{{p.name}}">{{p.name}}</option>
+											</select>
+											<input class="form-control bg-dark text-light"" type="text" ng-model="add_pub_name" placeholder="Name"/>
+										</div>
+									</div>
+									<div class="row mt-2">
+										<div class="col">
+											<select class="form-control bg-dark text-light" ng-model="add_pub_country">
+												<option ng-repeat="l in country_data_list['ref-data-country']" value="{{l.name}}">{{l.name}}</option>
+											</select>
+											<input class="form-control bg-dark text-light"" type="text" ng-model="add_pub_city" placeholder="City"/>
+											<input class="form-control bg-dark text-light"" type="text" ng-model="add_pub_town" placeholder="Town"/>
+											<input class="form-control bg-dark text-light"" type="text" ng-model="add_pub_pc" placeholder="Post Code"/>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="shadow p-3 mb-4 text-light bg-dark bg-opacity-75">
+								<div class="row mt">
+									<h4><a href="#" class="link-info text-decoration-none text-warning" data-bs-toggle="collapse" data-bs-target="#data_prices">Beer Prices
+										<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrows-expand" viewBox="0 0 16 16">
+										  <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8zM7.646.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 1.707V5.5a.5.5 0 0 1-1 0V1.707L6.354 2.854a.5.5 0 1 1-.708-.708l2-2zM8 10a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 0 1 .708-.708L7.5 14.293V10.5A.5.5 0 0 1 8 10z"/>
+										</svg>
+									</a><h4>
+								</div>
+								<div id="data_prices" class="collapse">
+									<div class="row mt-2">
+										<div class="col">
+											<select class="form-control bg-dark text-light" ng-change="upd_prices_pub_country()" ng-model="prices_pub_country" >
+												<option ng-repeat="l in sorted_country_data_list = (country_data_list['ref-data-country'] | orderBy: 'name')" value="{{l.name}}">{{l.name}}</option>
+											</select>
+											<select ng-options="pub.city as pub.city for pub in (prices_pub_city_data_list | orderBy:'city')" class="form-control bg-dark text-light" ng-change="upd_prices_pub_city()" ng-model="prices_pub_city" >
+												<option value=""> -- City  -- </option>
+											</select>
+											<select ng-options="pub.town as pub.town for pub in (prices_pub_town_data_list | orderBy:'town')" class="form-control bg-dark text-light	" ng-change="upd_prices_pub_town()" ng-model="prices_pub_town" >
+												<option value=""> -- Town  -- </option>
+											</select>
+										</div>
+									</div>
+									<div class="row mt-2">
+										<div class="col">
+											<select ng-options="pub.type as pub.type for pub in (prices_pub_type_data_list | orderBy:'type')" class="form-control bg-dark text-light" ng-change="upd_prices_pub_type()" ng-model="prices_pub_type" >
+												<option value=""> -- Type  -- </option>
+											</select>
+											<select ng-options="pub as pub.name + ' ' + pub['post-code'] for pub in (prices_pub_data_list | orderBy:['\u0022display-name\u0022'])" class="form-control bg-dark text-light" ng-model="prices_pub" >
+												<option value=""> -- Pub  -- </option>
+											</select>
+										</div>
+									</div>
+									<div class="row mt-2">
+										<div class="col">
+											<select ng-options="beertype.name as beertype.name for beertype in (beer_type_data_list['ref-data-beer-type'] | orderBy:'name')" class="form-control bg-dark text-light" ng-change="upd_prices_beer_type()" ng-model="prices_beer_type" >
+												<option value=""> -- Type  -- </option>
+											</select>
+											<select ng-options="beer as beer.name for beer in (prices_beer_data_list | orderBy:['\u0022display-name\u0022'])" class="form-control bg-dark text-light" ng-model="prices_beer" >
+												<option value=""> -- Beer  -- </option>
+											</select>
+										</div>
+									</div>
+									<div class="row mt-2">
+										<div class="col">
+											<input class="form-control bg-dark text-light" type="number" ng-model="add_price_amount" min="0" step="0.01" placeholder="Price"/>
+										</div>	
+										<div class="col">
+											<select ng-options="ccy.code as ccy.code + ' - ' + ccy.name for ccy in (ccy_data_list['ref-data-ccy'] | orderBy: ['code'])" class="form-control bg-dark text-light" ng-change="" ng-model="prices_ccy" disabled>
+											</select>
+										</div>	
 									</div>
 								</div>
 							</div>
