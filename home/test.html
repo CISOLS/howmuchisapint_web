@@ -73,10 +73,9 @@
 										</div>
 									</div>
 								</div>
-								</div>
 								<div id="agent" class="shadow p-3 mb-4 text-light bg-dark bg-opacity-75">
 									<div class="row mt-1">
-										<label class="form-label">Beer price agent
+										<label class="form-label">Beer Price Agent
 											<a href="#" class="link-info text-decoration-none" data-bs-toggle="collapse" data-bs-target="#agent_info">
 												<span class="ms-2">
 													<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-square text-secondary" viewBox="0 0 16 16">
@@ -89,6 +88,50 @@
 										</label>
 										<div class="col">
 											<input class="form-control bg-dark text-light" type="text" id="agent_command" ng-model="agent.command" placeholder="Tell me the new price..." required>
+										</div>
+									</div>
+								</div>
+								<div id="data" class="shadow p-3 mb-4 text-light bg-dark bg-opacity-75">
+									<div class="row mt-1">
+										<label class="form-label">Beers, Pubs and Prices</label>
+									</div>
+									<div class="row mt">
+										<a href="#" class="link-info text-decoration-none" data-bs-toggle="collapse" data-bs-target="#data_beers">Beers
+											<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrows-expand" viewBox="0 0 16 16">
+											  <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8zM7.646.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 1.707V5.5a.5.5 0 0 1-1 0V1.707L6.354 2.854a.5.5 0 1 1-.708-.708l2-2zM8 10a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 0 1 .708-.708L7.5 14.293V10.5A.5.5 0 0 1 8 10z"/>
+											</svg>
+										</a>
+									</div>
+									<div id="data_beers" class="collapse">
+										<div class="row mt-2">
+											<div class="col">
+											</div>
+										</div>
+									</div>
+									<div class="row mt">
+										<a href="#" class="link-info text-decoration-none" data-bs-toggle="collapse" data-bs-target="#data_pubs">Pubs
+											<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrows-expand" viewBox="0 0 16 16">
+											  <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8zM7.646.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 1.707V5.5a.5.5 0 0 1-1 0V1.707L6.354 2.854a.5.5 0 1 1-.708-.708l2-2zM8 10a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 0 1 .708-.708L7.5 14.293V10.5A.5.5 0 0 1 8 10z"/>
+											</svg>
+										</a>
+									</div>
+									<div id="data_pubs" class="collapse">
+										<div class="row mt-2">
+											<div class="col">
+											</div>
+										</div>
+									</div>
+									<div class="row mt">
+										<a href="#" class="link-info text-decoration-none" data-bs-toggle="collapse" data-bs-target="#data_prices">Prices
+											<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrows-expand" viewBox="0 0 16 16">
+											  <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8zM7.646.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 1.707V5.5a.5.5 0 0 1-1 0V1.707L6.354 2.854a.5.5 0 1 1-.708-.708l2-2zM8 10a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 0 1 .708-.708L7.5 14.293V10.5A.5.5 0 0 1 8 10z"/>
+											</svg>
+										</a>
+									</div>
+									<div id="data_prices" class="collapse">
+										<div class="row mt-2">
+											<div class="col">
+											</div>
 										</div>
 									</div>
 								</div>
