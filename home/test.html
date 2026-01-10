@@ -42,11 +42,11 @@
 						<div class="p-3">
 							<div ng-if="!loggedin">
 								<div class="shadow p-3 mb-4 text-light bg-dark bg-opacity-75">
-									<div ng-if="logginin">
+									<div ng-if="loggedin">
 										<div class="row">
 										</div>
 									</div>
-									<div ng-if="!logginin">
+									<div ng-if="!loggedin">
 										<div class="row mt-3">
 											<div class="col">
 												<h6>
@@ -73,11 +73,10 @@
 										</div>
 									</div>
 								</div>
-							</div>
-							<div ng-if="loggedin">
-								<div class="shadow p-3 mb-4 text-light bg-dark bg-opacity-75">
-									<div ng-if="logginin">
-										<div class="row">
+								<div id="bio" class="shadow p-3 mb-4 text-light bg-dark bg-opacity-75">
+									<div class="row">
+										<div class="col">
+											<input class="form-control bg-dark text-light" type="text" id="agent_command" ng-model="agent.command" placeholder="Tell me the new price..." required>
 										</div>
 									</div>
 								</div>
@@ -422,7 +421,7 @@
 							{
 								$scope.token = response.data.token 
 								$scope.token_exp = response.data.expiry 
-								console.log('howmuchisapint token is ' + $scope.token);
+								console.log('token is ' + $scope.token);
 								doWork();
 							}, 
 							function(response) 
@@ -803,7 +802,7 @@
 								{
 									max = 5;
 								}
-								$scope.headline_stat1 = tot + ' prices in ' + stats[0]['pub']['town'] + ' ' + stats[0]['pub']['type'] + 's ';
+								$scope.headline_stat1 = tot + ' pub price in ' + stats[0]['pub']['town'] + ' ' + stats[0]['pub']['type'] + 's ';
 								for (i = 0; i < stats.length; i++)
 								{
 									if (stats[i]['tags'].length == 0 && stats[i]['count'] >= max)
