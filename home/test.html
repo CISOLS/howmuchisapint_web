@@ -87,7 +87,7 @@
 											<span id="agent_info" class="collapse text-secondary ms-1">You can say things like...</span>
 										</label>
 										<div class="col">
-											<input class="form-control bg-dark text-light" type="text" id="agent_command" ng-model="agent.command" placeholder="Tell me the new price..." required>
+											<input class="form-control bg-dark text-light" type="text" id="agent_command" ng-model="agent.command" placeholder="Tell me about the new price..." required>
 										</div>
 									</div>
 								</div>
@@ -105,6 +105,10 @@
 									<div id="data_beers" class="collapse">
 										<div class="row mt-2">
 											<div class="col">
+												<select class="form-control" ng-model="add_beer_type" >
+													<option ng-repeat="b in beer_type_data_list['ref-data-beer-type']" value="{{b.name}}">{{b.name}}</option>
+												</select>
+												<input class="form-control" type="text" ng-model="add_beer_name" placeholder="Name"/>
 											</div>
 										</div>
 									</div>
