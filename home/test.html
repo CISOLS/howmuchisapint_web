@@ -31,23 +31,16 @@
 							<img src="img/logo.png" class="img-fluid">
 						</div>
 					</div>
-					<div class="row mt">
-						<div class="col">
-							<h5><span class="text-light">{{headline_stat1}}</span><span class="text-secondary">{{headline_stat2}}</span></h5>
-						</div>
-					</div>
 					<div ng-if="!loggedin">
 						<div class="row mt-3">
 							<div class="col">
-								<h6>
-									<span class="text-secondary">Continue annonymously or </span>
-									<a href="#" class="link-info text-decoration-none" ng-click="signup()">Sign in
-										<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
-										  <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
-										</svg>
-									</a>
-									<span class="text-secondary">to track your own prices.</span>
-								</h6>
+								<span class="text-secondary">Continue annonymously or </span>
+								<a href="#" class="link-info text-decoration-none" ng-click="signup()">Sign in
+									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
+									  <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+									</svg>
+								</a>
+								<span class="text-secondary">to track your own prices.</span>
 							</div>
 						</div>
 					</div>
@@ -60,21 +53,56 @@
 									<div class="row">
 									</div>
 								</div>
-								<div class="row mt-3">
+								<div class="row mt-0" >
 									<div class="col">
-										<h4><span class="text-warning">Recent beer prices in {{home_country}}</span></h4>
-										<div ng:repeat="r in sorted_price_data = (headline_latest | orderBy: 'date':true)">
-											<div ng:if="$index == 0 || r.date != sorted_price_data[$index - 1].date || r.pub.town != sorted_price_data[$index - 1].pub.town">
-												<h6><span class="text-light">{{get_date_display(r.date)}} {{r.pub.country}}, {{r.pub.city}}, {{r.pub.town}}</span></h6>
+										<h4>
+											<span class="text-warning">Recent pint prices in</span>
+											<span ng-show="!ready" class="spinner-border spinner-border-sm text-warning ms-1 me-1"></span>
+											<span ng-show="ready" class="text-warning">{{home_country}} </span>
+										</h4>
+									</div>
+								</div>
+								<div ng:repeat="r in sorted_headline_latest = (headline_latest | orderBy: 'date':true)">
+									<div ng:if="$index == 0 || r.date != sorted_headline_latest[$index - 1].date">
+										<div class="row mt-2" >
+											<div class="col">
+												<span>{{get_date_display(r.date)}}</span>
 											</div>
-											<h6><span class="text-muted">{{get_pub_title(r.pub)}} ({{r.pub.type}}), {{r.beer.name}} ({{r.beer.type}}) {{headline_latest_ccy_symbol[$index]}}{{get_number_display(r.price, 2)}}</span></h6>
+										</div>
+									</div>
+									<div class="row mt-0" >
+										<div class="col">
+											<span class="text-info">{{get_pub_title(r.pub)}} <span class="text-muted"> {{r.pub.type}} </span> {{r.beer.name}}<span class="text-muted"> {{r.beer.type}} </span> {{headline_latest_ccy_symbol[$index]}}{{get_number_display(r.price, 2)}}</span>
 										</div>
 									</div>
 								</div>
-								<div class="row mt-3">
+								<div class="row mt-4" >
 									<div class="col">
-										<h4><span class="text-warning">Beer Price Agent</span></h4>
-										<label class="form-label">Ask me about beer prices or tell me about a new one
+										<h4>
+											<span ng-show="!ready" class="spinner-border spinner-border-sm text-warning ms-1 me-1"></span>
+											<span ng-show="ready" class="text-warning">{{headline_stat1}}</span>
+											<span class="text-warning">pint prices in</span>
+											<span ng-show="!ready" class="spinner-border spinner-border-sm text-warning ms-1 me-1"></span>
+											<span ng-show="ready">
+												<span ng-show="home_town.length>0" class="text-warning">{{home_town}}<span class="text-muted">, {{home_city}}, {{home_country}}</span></span>
+												<span ng-show="home_town.length==0" class="text-warning">{{home_country}} </span>
+											</span>
+										</h4>
+									</div>
+								</div>
+								<div class="row mt-2" >
+									<div class="col">
+										<span>{{headline_stat2}}</span>
+									</div>
+								</div>
+								<div class="row mt-4">
+									<div class="col">
+										<h4><span class="text-warning">Agent</span></h4>
+									</div>
+								</div>
+								<div class="row mt-1">
+									<div class="col">
+										<label class="form-label">Ask me about pint prices or tell me about a new one
 											<!--a href="#" class="link-info text-decoration-none" data-bs-toggle="collapse" data-bs-target="#agent_info">
 												<span class="ms-2">
 													<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-square text-secondary" viewBox="0 0 16 16">
@@ -84,20 +112,22 @@
 												</span>
 											</a>
 											<span id="agent_info" class="collapse text-secondary ms-1">You can say things like...</span-->
-										</label>
-										<div class="col">
-											<input class="form-control bg-dark text-light" type="text" id="agent_command" ng-model="agent.command" placeholder="Guinness is a fiver at the Lescar in Sheffield" required>
-										</div>
+										</span>
+									</div>
 								</div>
-								<div class="row mt-2">
+								<div class="row mt-0">
 									<div class="col">
-										<button type="button" class="btn-light btn-sm" ng-click="agent_go()">Go</button>
+										<input class="form-control bg-dark text-light" type="text" id="agent_command" ng-model="agent.command" placeholder="Guinness is a fiver at the Lescar in Sheffield" required>
+									</div>
+								</div>
+								<div class="row mt-3">
+									<div class="col">
+										<button type="button" class="btn-light btn-sm" ng-click="agent_go()">Hit me</button>
 									</div>
 								</div>
 							</div>
-						</div>
-							<div class="shadow p-3 mb-4 text-light bg-dark bg-opacity-75">
-								<div class="row mt">
+							<div class="shadow p-3 mb-4 text-light bg-dark bg-opacity-75" ng-show="ready">
+								<div class="row mt-0">
 									<h4><a href="#" class="link-info text-decoration-none text-warning" data-bs-toggle="collapse" data-bs-target="#data_beers">Beers
 										<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrows-expand" viewBox="0 0 16 16">
 										  <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8zM7.646.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 1.707V5.5a.5.5 0 0 1-1 0V1.707L6.354 2.854a.5.5 0 1 1-.708-.708l2-2zM8 10a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 0 1 .708-.708L7.5 14.293V10.5A.5.5 0 0 1 8 10z"/>
@@ -105,7 +135,7 @@
 									</a><h4>
 								</div>
 								<div id="data_beers" class="collapse">
-									<div class="row mt-2">
+									<div class="row mt-1">
 										<div class="col">
 											<select class="form-control bg-dark text-light" ng-model="add_beer_type" >
 												<option ng-repeat="b in beer_type_data_list['ref-data-beer-type']" value="{{b.name}}">{{b.name}}</option>
@@ -113,34 +143,36 @@
 											<input class="form-control bg-dark text-light" type="text" id="" ng-model="add_beer_name" placeholder="Name" required>
 										</div>
 									</div>
-									<div class="row mt-2">
+									<div class="row mt-3">
 										<div class="col">
 											<button type="button" class="btn-light btn-sm" ng-click="get_beers()">List</button>
-											<button type="button" class="btn-light btn-sm"" ng-click="add_beer()">Add New</button>
+											<button type="button" class="btn-light btn-sm" ng-click="add_beer()">Add New</button>
 										</div>
 									</div>
-									<div ng-show="working_beer" class="row mt-2">
-										<div class="col">
+									<div class="row mt-3 mb-2">
+										<div class="col" ng-show="working_beer">
 											<span class="spinner-border spinner-border-sm text-warning ms-1 me-1"></span>
 										</div>
-									</div>
-									<div ng-show="!working_beer" class="row mt-2">
-										<div class="col">
+										<div class="col" ng-show="!working_beer && beer_err.length>0">
 											<span class="text-danger">{{beer_err}}</span>
-											<span class="text-info">{{add_beer_info}}</span>
+										</div>
+										<div class="col" ng-show="!working_beer && add_beer_info.length>0">
+											<span>{{add_beer_info}}</span>
 										</div>
 									</div>
-									<div ng-show="beer_data.beer.length>0"class="row mt-2">
-										<div class="col">
-											<div ng:repeat="r in sorted_beer_data = (beer_data.beer | orderBy: ['\u0022display-name\u0022'])">
-												<label class="form-label">{{get_beer_title_desc(r)}} <span class="text-warning">{{get_beer_title(r)}}</span></label>
+									<div ng-show="!working_beer && beer_data.beer.length>0">
+										<div ng:repeat="r in sorted_beer_data = (beer_data.beer | orderBy: ['\u0022display-name\u0022'])">
+											<div class="row mt-0">
+												<div class="col">
+												</div>
+													<span class="text-info">{{get_beer_title(r)}}<!--span class="text-muted"> {{get_beer_title_desc(r)}}</span--></span>
 											</div>
 										</div>
 									</div>
 								</div>
 							</div>
-							<div class="shadow p-3 mb-4 text-light bg-dark bg-opacity-75">
-								<div class="row mt">
+							<div class="shadow p-3 mb-4 text-light bg-dark bg-opacity-75" ng-show="ready">
+								<div class="row mt-0">
 									<h4><a href="#" class="link-info text-decoration-none text-warning" data-bs-toggle="collapse" data-bs-target="#data_pubs">Pubs
 										<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrows-expand" viewBox="0 0 16 16">
 										  <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8zM7.646.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 1.707V5.5a.5.5 0 0 1-1 0V1.707L6.354 2.854a.5.5 0 1 1-.708-.708l2-2zM8 10a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 0 1 .708-.708L7.5 14.293V10.5A.5.5 0 0 1 8 10z"/>
@@ -148,7 +180,7 @@
 									</a><h4>
 								</div>
 								<div id="data_pubs" class="collapse">
-									<div class="row mt-2">
+									<div class="row mt-1">
 										<div class="col">
 											<select class="form-control bg-dark text-light"" ng-model="add_pub_type" >
 												<option ng-repeat="p in pub_type_data_list['ref-data-pub-type']" value="{{p.name}}">{{p.name}}</option>
@@ -156,7 +188,7 @@
 											<input class="form-control bg-dark text-light"" type="text" ng-model="add_pub_name" placeholder="Name"/>
 										</div>
 									</div>
-									<div class="row mt-2">
+									<div class="row mt-3">
 										<div class="col">
 											<select class="form-control bg-dark text-light" ng-model="add_pub_country">
 												<option ng-repeat="l in country_data_list['ref-data-country']" value="{{l.name}}">{{l.name}}</option>
@@ -166,40 +198,55 @@
 											<input class="form-control bg-dark text-light"" type="text" ng-model="add_pub_pc" placeholder="Post Code"/>
 										</div>
 									</div>
-									<div class="row mt-2">
+									<div class="row mt-3">
 										<div class="col">
 											<button type="button" class="btn-light btn-sm" ng-click="get_pubs()">List</button>
-											<button type="button" class="btn-light btn-sm"" ng-click="add_pub()">Add New</button>
+											<button type="button" class="btn-light btn-sm" ng-click="add_pub()">Add New</button>
 										</div>
 									</div>
-									<div ng-show="working_pub" class="row mt-2">
-										<div class="col">
+									<div class="row mt-3 mb-2">
+										<div class="col" ng-show="working_pub">
 											<span class="spinner-border spinner-border-sm text-warning ms-1 me-1"></span>
 										</div>
-									</div>
-									<div ng-show="!working_pub" class="row mt-2">
-										<div class="col">
+										<div class="col" ng-show="!working_pub && pub_err.length>0">
 											<span class="text-danger">{{pub_err}}</span>
-											<span class="text-info">{{add_pub_info}}</span>
+										</div>
+										<div class="col" ng-show="!working_pub && add_pub_info.length>0">
+											<span>{{add_pub_info}}</span>
 										</div>
 									</div>
-									<div ng-show="pub_data.pub.length>0"class="row mt-2">
+									<div ng-show="!working_pub && pub_data.pub.length>0">
 										<div ng:repeat="r in sorted_pub_data = (pub_data.pub | orderBy: ['\u0022display-name\u0022'])">
-											<label class="form-label">{{get_pub_title_type_desc(r)}} <span class="text-muted">in</span> {{get_pub_title_desc(r)}}<span class="text-warning"> {{get_pub_title(r)}}</span></label>
+											<div data-bs-toggle="collapse" data-bs-target="#{{'pub_' + $index}}">
+												<div class="row mt-0">
+													<div class="col">
+														<span class="text-info">{{get_pub_title(r)}} <!--span class="text-muted">{{get_pub_title_type_desc(r)}}</span-->
+															<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrows-expand" viewBox="0 0 16 16">
+															  <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8zM7.646.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 1.707V5.5a.5.5 0 0 1-1 0V1.707L6.354 2.854a.5.5 0 1 1-.708-.708l2-2zM8 10a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 0 1 .708-.708L7.5 14.293V10.5A.5.5 0 0 1 8 10z"/>
+															</svg>
+														</span>
+													</div>
+												</div>
+											</div>
+											<div id="{{'pub_' + $index}}" class="row mt-0 collapse">
+												<div class="col">
+													<span class="text-muted">{{get_pub_title_desc(r)}}</span>
+												</div>
+											</div>
 										</div>
 									</div>
 								</div>
 							</div>
-							<div class="shadow p-3 mb-4 text-light bg-dark bg-opacity-75">
-								<div class="row mt">
-									<h4><a href="#" class="link-info text-decoration-none text-warning" data-bs-toggle="collapse" data-bs-target="#data_prices">Beer Prices
+							<div class="shadow p-3 mb-4 text-light bg-dark bg-opacity-75" ng-show="ready">
+								<div class="row mt-0">
+									<h4><a href="#" class="link-info text-decoration-none text-warning" data-bs-toggle="collapse" data-bs-target="#data_prices">Pint Prices
 										<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrows-expand" viewBox="0 0 16 16">
 										  <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8zM7.646.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 1.707V5.5a.5.5 0 0 1-1 0V1.707L6.354 2.854a.5.5 0 1 1-.708-.708l2-2zM8 10a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 0 1 .708-.708L7.5 14.293V10.5A.5.5 0 0 1 8 10z"/>
 										</svg>
 									</a><h4>
 								</div>
 								<div id="data_prices" class="collapse">
-									<div class="row mt-2">
+									<div class="row mt-1">
 										<div class="col">
 											<select class="form-control bg-dark text-light" ng-change="upd_prices_pub_country()" ng-model="prices_pub_country" >
 												<option ng-repeat="l in sorted_country_data_list = (country_data_list['ref-data-country'] | orderBy: 'name')" value="{{l.name}}">{{l.name}}</option>
@@ -212,7 +259,7 @@
 											</select>
 										</div>
 									</div>
-									<div class="row mt-2">
+									<div class="row mt-3">
 										<div class="col">
 											<select ng-options="pub.type as pub.type for pub in (prices_pub_type_data_list | orderBy:'type')" class="form-control bg-dark text-light" ng-change="upd_prices_pub_type()" ng-model="prices_pub_type" >
 												<option value=""> -- Type  -- </option>
@@ -222,7 +269,7 @@
 											</select>
 										</div>
 									</div>
-									<div class="row mt-2">
+									<div class="row mt-3">
 										<div class="col">
 											<select ng-options="beertype.name as beertype.name for beertype in (beer_type_data_list['ref-data-beer-type'] | orderBy:'name')" class="form-control bg-dark text-light" ng-change="upd_prices_beer_type()" ng-model="prices_beer_type" >
 												<option value=""> -- Type  -- </option>
@@ -232,7 +279,7 @@
 											</select>
 										</div>
 									</div>
-									<div class="row mt-2">
+									<div class="row mt-3">
 										<div class="col">
 											<input class="form-control bg-dark text-light" type="number" ng-model="add_price_amount" min="0" step="0.01" placeholder="Price"/>
 										</div>	
@@ -241,6 +288,78 @@
 											</select>
 										</div>	
 									</div>
+									<div class="row mt-3">
+										<div class="col">
+											<button type="button" class="btn-light btn-sm" ng-click="get_prices()">List</button>
+											<button type="button" class="btn-light btn-sm" ng-click="get_avg_prices()">Summarise</button>
+											<button type="button" class="btn-light btn-sm" ng-click="add_price()">Add New</button>
+										</div>
+									</div>
+									<div class="row mt-3 mb-2">
+										<div class="col" ng-show="working_prices">
+											<span class="spinner-border spinner-border-sm text-warning ms-1 me-1"></span>
+										</div>
+										<div class="col" ng-show="!working_prices && price_err.length>0">
+											<span class="text-danger">{{price_err}}</span>
+										</div>
+										<div class="col" ng-show="!working_prices && add_price_info.length>0">
+											<span>{{add_price_info}}</span>
+										</div>
+										<div class="col" ng-show="!working_prices && get_prices_info.length>0">
+											<span>{{get_prices_info}}</span>
+										</div>
+									</div>
+									<div ng-show="!working_prices && price_data['beer-price'].length>0">
+										<div ng:repeat="r in sorted_price_data = (price_data['beer-price'] | orderBy: 'date':true)">
+											<div ng:if="$index == 0 || r.date != sorted_price_data[$index - 1].date">
+												<div class="row mt-2">
+													<div class="col">
+														{{get_date_display(r.date)}}
+													</div>
+												</div>
+											</div>
+											<div data-bs-toggle="collapse" data-bs-target="#{{'price_' + $index}}">
+												<div class="row mt-0">
+													<div class="col">
+														<span class="text-info">{{get_price_title(r)}} <!--span class="text-muted">{{get_pub_title_type_desc(r)}}</span-->
+															<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrows-expand" viewBox="0 0 16 16">
+															  <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8zM7.646.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 1.707V5.5a.5.5 0 0 1-1 0V1.707L6.354 2.854a.5.5 0 1 1-.708-.708l2-2zM8 10a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 0 1 .708-.708L7.5 14.293V10.5A.5.5 0 0 1 8 10z"/>
+															</svg>
+														</span>
+													</div>
+												</div>
+											</div>
+											<div id="{{'price_' + $index}}" class="row mt-0 collapse">
+												<div class="col">
+													<span class="text-muted">{{get_price_title_desc(r)}}</span>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div ng-show="!working_prices && price_stat_data['beer-price-stats'].length>0">
+										<div ng:repeat="r in sorted_price_stat_data = price_stat_data['beer-price-stats'] | orderBy: ['pub.type','beer.type','pub']">
+											<div data-bs-toggle="collapse" data-bs-target="#{{'pricestat_' + $index}}">
+												<div class="row mt-0">
+													<div class="col">
+														<span class="text-info">{{r.beer.type}} in {{r.pub.type}}s is {{prices_display_ccy_symbol}}{{get_number_display(r['avg-price'] / prices_display_fxrate, 2)}}
+															<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrows-expand" viewBox="0 0 16 16">
+															  <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8zM7.646.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 1.707V5.5a.5.5 0 0 1-1 0V1.707L6.354 2.854a.5.5 0 1 1-.708-.708l2-2zM8 10a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 0 1 .708-.708L7.5 14.293V10.5A.5.5 0 0 1 8 10z"/>
+															</svg>
+														</span>
+													</div>
+												</div>
+											</div>
+											<div id="{{'pricestat_' + $index}}" class="collapse">
+												<div ng:repeat="y in sorted_price_stat_data_year = r['by-year'] | orderBy: -['year']">
+													<div class="row mt-0">
+														<div class="col">
+															<span class="text-muted">{{prices_display_ccy_symbol}}{{get_number_display(y['avg-price'] / prices_display_fxrate, 2)}} from {{get_number_display(y.count,0)}} prices {{get_years_ago_display(y.year)}}</span>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
 								</div>
 							</div>
 						</div>
@@ -248,7 +367,7 @@
 			  		<div class="mask" style="background-color:rgba(0, 0, 0, 0.8);">
 						<div ng-if="use_cookies">
 							<div class="p-5">
-								<div class="row mt-2">
+								<div class="row mt-3">
 								</div>
 							</div>
 						</div>
@@ -288,6 +407,7 @@
 				$scope.request_error = "";
 				$scope.loggedin = false;
 				$scope.logginin = false;
+				$scope.ready = false;
 
 				$scope.frm_login = {"id": "", "pwd": "", "remember":false};
 				$scope.frm_signup = {email: "", "pwd": ""};
@@ -295,6 +415,14 @@
 				$scope.user_ip = '';
 				$scope.token = null;
 				
+				$scope.headline_stat1 = 0;
+				$scope.headline_stat2 = '';
+				$scope.headline_latest = '';
+
+				$scope.home_country = 'United Kingdom'
+				$scope.home_city = '';
+				$scope.home_town = '';
+
 				$scope.all_tags = [];
 				$scope.beer_tags = [];
 				$scope.pub_tags = [];
@@ -303,14 +431,14 @@
 				$scope.add_beer_tags = '';
 	
 				$scope.add_pub_name = '';
-				$scope.add_pub_country = 'United Kingdom';
+				$scope.add_pub_country = $scope.home_country 
 				$scope.add_pub_city = '';
 				$scope.add_pub_town = '';
 				$scope.add_pub_pc = '';
 				$scope.add_pub_tags = '';
 	
 				$scope.add_price_amount = 0.00;
-				$scope.prices_pub_country = 'United Kingdom';
+				$scope.prices_pub_country = $scope.home_country 
 				$scope.prices_pub_town = null;
 				$scope.prices_pub_pc = null;
 				$scope.prices_pub_city = null;
@@ -825,7 +953,7 @@
 			    }
 				$scope.set_location = function(coords)
 				{
-					$scope.home_country = '';
+					$scope.home_country = ''
 					$scope.home_city = '';
 					$scope.home_town = '';
 					$scope.home_pc = '';
@@ -908,17 +1036,17 @@
 						params = params + '&tags=wetherspoons';
 					}
 					var stats = [];
-					$scope.headline_stat1 = '';
+
+					$scope.headline_stat1 = 0;
 					$scope.headline_stat2 = '';
-					
 					$http.get($scope.service_path + '/beerpricestats/BeerTypeAndPubTypeAndTown' + params).
 						then(function(response)
 						{
 							stats = response.data['beer-price-stats'];
 							if (stats.length == 0)
 							{
-								$scope.headline_stat1 = 'Be the first to submit a pub pint price in ';
-								$scope.headline_stat2 = $scope.home_town;
+								$scope.headline_stat2 = 'Be the first to submit a price';
+								$scope.headline_stat1 = '';
 								
 								$http.get($scope.service_path + '/beerpricestats/BeerTypeAndPubTypeAndCity' + params).
 									then(function(response)
@@ -940,7 +1068,7 @@
 								{
 									max = 5;
 								}
-								$scope.headline_stat1 = tot + ' pub prices in ' + stats[0]['pub']['town'] + ' ' + stats[0]['pub']['type'] + 's ';
+								$scope.headline_stat1 = tot
 								for (i = 0; i < stats.length; i++)
 								{
 									if (stats[i]['tags'].length == 0 && stats[i]['count'] >= max)
@@ -958,7 +1086,16 @@
 					$scope.headline_latest = [];
 					$scope.headline_latest_ccy_symbol = [];
 					
-					$http.get($scope.service_path + '/beerprice?token=' + $scope.token + '&page=1&pageSize=5&pubCountry=' + $scope.home_country).
+					latestqry= '&pubCountry=' + $scope.home_country 
+//					if ($scope.home_city.length > 0)
+//					{
+//						latestqry = latestqry + '&pubCity=' + $scope.home_city
+//					}
+//					if ($scope.home_town.length > 0)
+//					{
+//						latestqry = latestqry + '&pubTown=' + $scope.home_town
+//					}
+					$http.get($scope.service_path + '/beerprice?token=' + $scope.token + '&page=1&pageSize=5' + latestqry).
 						then(function(response)
 						{
 							prices = response.data['beer-price'];
@@ -987,6 +1124,7 @@
 						function(response) 
 						{
 						});
+					$scope.ready = true
 				}
 			    
 				$scope.get_beers = function()
@@ -1015,16 +1153,16 @@
 							then(function(response)
 							{
 								$scope.beer_data = response.data;
-								$scope.add_beer_info = response.data['beer'].length + ' beers';
-								//$scope.add_beer_info = $scope.add_beer_info + ($scope.add_beer_name.length > 0 ? ' ' + $scope.add_beer_name + ($scope.add_beer_type != null ? ' (' + $scope.add_beer_type + ')' : '') : ($scope.add_beer_type != null ? ' ' + $scope.add_beer_type : ''));
-								var tags = $scope.add_beer_tags.split(' ');
-								for (t in tags)
-								{
-									if (tags[t].length > 0)
-									{
-										$scope.add_beer_info = $scope.add_beer_info + ' #' + tags[t];
-									}
-								}
+								$scope.add_beer_info = response.data['beer'].length + ' ' + $scope.add_beer_type + 's';
+								$scope.add_beer_info = $scope.add_beer_info + ' ' + ($scope.add_beer_name.length > 0 ? ' named ' + $scope.add_beer_name : '');
+//								var tags = $scope.add_beer_tags.split(' ');
+//								for (t in tags)
+//								{
+//									if (tags[t].length > 0)
+//									{
+//										$scope.add_beer_info = $scope.add_beer_info + ' #' + tags[t];
+//									}
+//								}
 								$scope.working_beer = false;
 							}, 
 							function(response) 
@@ -1077,9 +1215,9 @@
 							then(function(response)
 							{
 								$scope.pub_data = response.data;
-								$scope.add_pub_info = response.data['pub'].length + ' pubs';
-//								$scope.add_pub_info = $scope.add_pub_info + ($scope.add_pub_name.length > 0 ? ' ' + $scope.add_pub_name + ($scope.add_pub_type != null ? ' (' + $scope.add_pub_type + ')' : '') : ($scope.add_pub_type != null ? ' ' + $scope.add_pub_type : ''));
-//								$scope.add_pub_info = $scope.add_pub_info + ', ' + ($scope.add_pub_town.length > 0 ? $scope.add_pub_town + ', ': '') + ($scope.add_pub_city.length > 0 ? $scope.add_pub_city + ', ' : '') + $scope.add_pub_country;
+								$scope.add_pub_info = response.data['pub'].length + ' ' + $scope.add_pub_type + 's';
+								$scope.add_pub_info = $scope.add_pub_info + ' ' + ($scope.add_pub_name.length > 0 ? ' named ' + $scope.add_pub_name : '');
+								$scope.add_pub_info = $scope.add_pub_info + ' in ' + ($scope.add_pub_town.length > 0 ? $scope.add_pub_town + ', ': '') + ($scope.add_pub_city.length > 0 ? $scope.add_pub_city + ', ' : '') + $scope.add_pub_country;
 //								var tags = $scope.add_pub_tags.split(' ');
 //								for (t in tags)
 //								{
@@ -1174,7 +1312,7 @@
 									}
 									tot = tot + response.data['beer-price-stats'][p].count;
 								}
-								$scope.get_prices_info = response.data['beer-price-stats'].length + ' average(s) from ' + tot + ' price(s) (' + yrtot + ' in the last year) ' + $scope.prices_criteria();
+								$scope.get_prices_info = response.data['beer-price-stats'].length + ' summaries from ' + tot + ' prices (' + yrtot + ' in the last year) ' + $scope.prices_criteria();
 								$scope.working_prices = false;
 							}, 
 							function(response) 
@@ -1205,7 +1343,7 @@
 							then(function(response)
 							{
 								$scope.price_data = response.data;
-								$scope.get_prices_info = response.data['beer-price'].length + ' prices(s) ' + $scope.prices_criteria();
+								$scope.get_prices_info = response.data['beer-price'].length  + ' prices ' + $scope.prices_criteria();
 								$scope.working_prices = false;
 							}, 
 							function(response) 
@@ -1222,18 +1360,25 @@
 			    }
 			    $scope.prices_criteria = function()
 			    {
-					var beer = ($scope.prices_beer != null ?  $scope.prices_beer.name + ' (' + $scope.prices_beer_type + ')' : ($scope.prices_beer_type != null ? $scope.prices_beer_type : ''));
-					var criteria = (beer == '' ? '' : ', ' + beer + ' ') + ' - ';
-					criteria = criteria + ($scope.prices_pub != null ?  $scope.prices_pub.name + ' (' + $scope.prices_pub_type + '), ' : ($scope.prices_pub_type != null ? $scope.prices_pub_type + ', ' : ''));
-					criteria = criteria + ($scope.prices_pub_town != null ? $scope.prices_pub_town + ', ': '') + ($scope.prices_pub_city != null ? $scope.prices_pub_city + ', ' : '') + $scope.prices_pub_country;
-					var tags = $scope.prices_tags.split(' ');
-					for (t in tags)
+					var criteria = ' '
+					if ($scope.prices_beer != null && $scope.prices_beer.name != null)
 					{
-						if (tags[t].length > 0)
-						{
-							criteria = criteria + ' #' + tags[t];
-						}  
+						criteria = criteria + ' for ' + $scope.prices_beer.name + ' ';
 					}
+					else if ($scope.prices_beer_type != null)
+					{
+						criteria = criteria + ' for ' + $scope.prices_beer_type + ' ';
+					}
+					criteria = criteria + ' in ' 
+					if ($scope.prices_pub != null && $scope.prices_pub.name != null)
+					{
+						criteria = criteria + $scope.prices_pub.name + ' in ';
+					}
+					else if ($scope.prices_pub_type != null)
+					{
+						criteria = criteria + $scope.prices_pub_type + 's in '
+					}
+					criteria = criteria +  ($scope.prices_pub_town != null ? $scope.prices_pub_town + ', ': '') + ($scope.prices_pub_city != null ? $scope.prices_pub_city + ', ' : '') + $scope.prices_pub_country
 					return criteria;
 			    }
 			    $scope.add_beer = function()
@@ -1299,9 +1444,9 @@
 					$scope.pub_data = '';
 					$scope.pub_err = '';
 					$scope.add_pub_info = '';
-			    	if ($scope.add_pub_type.length == 0 || $scope.add_pub_name.length == 0 || $scope.add_pub_country.length == 0 || $scope.add_pub_town.length == 0 || $scope.add_pub_city.length == 0 || ($scope.add_pub_pc.length == 0 && $scope.add_pub_country == 'United Kingdom'))	
+			    	if ($scope.add_pub_type.length == 0 || $scope.add_pub_name.length == 0 || $scope.add_pub_country.length == 0 || $scope.add_pub_town.length == 0 || $scope.add_pub_city.length == 0 || $scope.add_pub_pc.length == 0)	
 			    	{
-						$scope.pub_err = 'Incomplete - pub type, name, country, city, town and post code (UK only) required';
+						$scope.pub_err = 'Incomplete - pub type, name, country, city, town and post code required';
 			    	}
 			    	else
 			    	{
@@ -1471,12 +1616,12 @@
 				}
 				$scope.get_price_title_desc = function(price)
 				{
-					var desc = $scope.get_beer_title_desc(price.beer) + ' at ' + $scope.get_pub_desc(price.pub, false) + ' on ' + $scope.get_date_display(price.date);
+					var desc = $scope.get_beer_title_desc(price.beer) + ' at ' + $scope.get_pub_desc(price.pub, false)
 					return desc;
 				}
 				$scope.get_pub_desc = function(pub, incTags)
 				{
-					var desc = $scope.get_pub_title(pub) + ' (' + pub.type + ') in ' + pub.town + ', ' + pub.city + ', ' + pub.country;
+					var desc = $scope.get_pub_title(pub) + ', ' + pub.type + ' in ' + pub.town + ', ' + pub.city + ', ' + pub.country;
 					if (incTags)
 					{
 						desc = desc + $scope.get_tags_desc(pub.tags);
@@ -1499,7 +1644,7 @@
 				}
 				$scope.get_pub_title_desc = function(pub)
 				{
-					var desc = pub.town + ', ' + pub.city + ', ' + pub.country;
+					var desc = pub.type + ' in ' + pub.town + ', ' + pub.city + ', ' + pub.country;
 					return desc;
 				}
 				$scope.get_beer_desc = function(beer, incTags)
