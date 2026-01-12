@@ -34,26 +34,6 @@
 				</div>
 				<div class="bg-image" style="background-size:cover;background-image:url('img/howmuchisapint_logo.png');">
 			  		<div class="mask" style="min-height: 70.9vh;background-color:rgba(0, 0, 0, 0.8);">
-						<div class="modal fade" id="frm_request_error">
-						 	<div class="modal-dialog">
-						    	<div class="modal-content text-light bg-dark bg-opacity-75">
-									<div class="modal-header">
-							    		<h4 class="modal-title text-warning">Fatal Error</h4>
-							    		<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-									</div>
-									<div class="modal-body">
-										<div class="p-2">
-											<div class="alert alert-danger">
-											  <strong>{{request_error}}</strong>
-											</div>
-										</div>
-										<div class="modal-footer">
-											<button type="submit" class="btn btn-light" data-bs-dismiss="modal" ng-click="clean()">OK</button>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
 						<div class="p-3">
 							<div class="shadow p-3 mb-4 text-light bg-dark bg-opacity-75">
 								<div ng-if="!loggedin">
@@ -171,25 +151,32 @@
 										</div>
 										<div class="row mt-3">
 											<div class="col">
+												<button type="button" class="btn-light btn-sm" ng-click="clear_beers_sel()">Clear</button>
 												<button type="button" class="btn-light btn-sm" ng-click="get_beers()">List</button>
 												<button type="button" class="btn-light btn-sm" ng-click="add_beer()">Add New</button>
 											</div>
 										</div>
 										<div class="row mt-3 mb-2">
-											<div class="col" ng-show="working_beer">
+											<div class="col" ng-show="working_get_beers">
 												<span class="spinner-border spinner-border-sm text-warning ms-1 me-1"></span>
 											</div>
-											<div class="col" ng-show="!working_beer && beer_err.length>0">
-												<span class="text-danger">{{beer_err}}</span>
+											<div class="col" ng-show="!working_get_beers && get_beers_err.length>0">
+												<span class="text-danger">{{get_beers_err}}</span>
 											</div>
-											<div class="col" ng-show="!working_beer && get_beers_info.length>0">
+											<div class="col" ng-show="!working_get_beers && get_beers_info.length>0">
 												<span>{{get_beers_info}}</span>
 											</div>
-											<div class="col text-info" ng-show="!working_beer && add_beer_info.length>0">
+											<div class="col" ng-show="working_add_beer">
+												<span class="spinner-border spinner-border-sm text-warning ms-1 me-1"></span>
+											</div>
+											<div class="col" ng-show="!working_add_beer && add_beer_err.length>0">
+												<span class="text-danger">{{add_beer_err}}</span>
+											</div>
+											<div class="col text-info" ng-show="!working_add_beer && add_beer_info.length>0">
 												<span>{{add_beer_info}}</span>
 											</div>
 										</div>
-										<div ng-show="!working_beer && beer_data.beer.length>0">
+										<div ng-show="!working_get_beers && beer_data.beer.length>0">
 											<div ng:repeat="r in sorted_beer_data = (beer_data.beer | orderBy: ['\u0022display-name\u0022'])">
 												<div class="row mt-0">
 													<div class="col">
@@ -218,30 +205,26 @@
 												<select ng-options="ctry.name as ctry.name for ctry in (country_list | orderBy: 'name')" class="form-control bg-dark text-light"" ng-model="frm_pub.country"></select>
 												<input class="form-control bg-dark text-light"" type="text" ng-model="frm_pub.city" placeholder="City"/>
 												<input class="form-control bg-dark text-light"" type="text" ng-model="frm_pub.town" placeholder="Town"/>
-												<input class="form-control bg-dark text-light"" type="text" ng-model="frm_pub.pc" placeholder="Post Code"/>
 											</div>
 										</div>
 										<div class="row mt-3">
 											<div class="col">
+												<button type="button" class="btn-light btn-sm" ng-click="clear_pubs_sel()">Clear</button>
 												<button type="button" class="btn-light btn-sm" ng-click="get_pubs()">List</button>
-												<button type="button" class="btn-light btn-sm" ng-click="add_pub()">Add New</button>
 											</div>
 										</div>
 										<div class="row mt-3 mb-2">
-											<div class="col" ng-show="working_pub">
+											<div class="col" ng-show="working_get_pubs">
 												<span class="spinner-border spinner-border-sm text-warning ms-1 me-1"></span>
 											</div>
-											<div class="col" ng-show="!working_pub && pub_err.length>0">
-												<span class="text-danger">{{pub_err}}</span>
+											<div class="col" ng-show="!working_get_pubs && get_pubs_err.length>0">
+												<span class="text-danger">{{get_pubs_err}}</span>
 											</div>
-											<div class="col text-info" ng-show="!working_pub && add_pub_info.length>0">
-												<span>{{add_pub_info}}</span>
-											</div>
-											<div class="col" ng-show="!working_pub && get_pubs_info.length>0">
+											<div class="col" ng-show="!working_get_pubs && get_pubs_info.length>0">
 												<span>{{get_pubs_info}}</span>
 											</div>
 										</div>
-										<div ng-show="!working_pub && pub_data.pub.length>0">
+										<div ng-show="!working_get_pubs && pub_data.pub.length>0">
 											<div ng:repeat="r in sorted_pub_data = (pub_data.pub | orderBy: ['\u0022display-name\u0022'])">
 												<div data-bs-toggle="collapse" data-bs-target="#{{'pub_' + $index}}">
 													<div class="row mt-0">
@@ -259,6 +242,31 @@
 														<span class="text-muted">{{r.type}} in {{r.town}}, {{r.city}}, {{r.country}}</span>
 													</div>
 												</div>
+											</div>
+											<div class="row mt-2">
+												<div class="col">
+												</div>
+											</div>
+										</div>
+										<div class="row mt-3">
+											<div class="col">
+												<input class="form-control bg-dark text-light"" type="text" ng-model="frm_pub.pc" placeholder="Post Code"/>
+											</div>
+										</div>
+										<div class="row mt-3">
+											<div class="col">
+												<button type="button" class="btn-light btn-sm" ng-click="add_pub()">Add New</button>
+											</div>
+										</div>
+										<div class="row mt-3 mb-2">
+											<div class="col" ng-show="working_add_pub">
+												<span class="spinner-border spinner-border-sm text-warning ms-1 me-1"></span>
+											</div>
+											<div class="col" ng-show="!working_add_pub && add_pub_err.length>0">
+												<span class="text-danger">{{add_pub_err}}</span>
+											</div>
+											<div class="col text-info" ng-show="!working_add_pub && add_pub_info.length>0">
+												<span>{{add_pub_info}}</span>
 											</div>
 										</div>
 									</div>
@@ -295,7 +303,7 @@
 										</div>
 										<div class="row mt-3">
 											<div class="col">
-												<select ng-options="beertype.name as beertype.name for beertype in (frm_prices.beer_type_list| orderBy:'name')" class="form-control bg-dark text-light" ng-change="upd_beer_type()" ng-model="frm_prices.beer_type" >
+												<select ng-options="beertype.name as beertype.name for beertype in (frm_prices.beer_type_list| orderBy:'name')" class="form-control bg-dark text-light" ng-change="upd_prices_beer_type()" ng-model="frm_prices.beer_type" >
 													<option value=""> -- Type  -- </option>
 												</select>
 												<select ng-options="beer as beer.name for beer in (frm_prices.beer_name_list | orderBy:['\u0022display-name\u0022'])" class="form-control bg-dark text-light" ng-model="frm_prices.beer_name" >
@@ -305,35 +313,29 @@
 										</div>
 										<div class="row mt-3">
 											<div class="col">
-												<input class="form-control bg-dark text-light" type="number" ng-model="frm_prices.amount" min="0" step="0.01" placeholder="Price"/>
-											</div>	
-											<div class="col">
-												<select ng-options="ccy.code as ccy.code + ' - ' + ccy.name for ccy in (frm_prices.ccy_list | orderBy: ['code'])" class="form-control bg-dark text-light" ng-change="" ng-model="prices_ccy" disabled>
+												<select ng-options="ccy.code as ccy.code + ' - ' + ccy.name for ccy in (frm_prices.ccy_list | orderBy: ['code'])" class="form-control bg-dark text-light" ng-change="upd_prices_display_ccy()" ng-model="frm_prices.display_ccy" >
 												</select>
-											</div>	
+									  		</div>
 										</div>
 										<div class="row mt-3">
 											<div class="col">
+												<button type="button" class="btn-light btn-sm" ng-click="clear_prices_sel()">Clear</button>
 												<button type="button" class="btn-light btn-sm" ng-click="get_prices()">List</button>
 												<button type="button" class="btn-light btn-sm" ng-click="get_avg_prices()">Summarise</button>
-												<button type="button" class="btn-light btn-sm" ng-click="add_price()">Add New</button>
 											</div>
 										</div>
 										<div class="row mt-3 mb-2">
-											<div class="col" ng-show="working_prices">
+											<div class="col" ng-show="working_get_prices">
 												<span class="spinner-border spinner-border-sm text-warning ms-1 me-1"></span>
 											</div>
-											<div class="col" ng-show="!working_prices && price_err.length>0">
-												<span class="text-danger">{{price_err}}</span>
+											<div class="col" ng-show="!working_get_prices && get_price_err.length>0">
+												<span class="text-danger">{{get_prices_err}}</span>
 											</div>
-											<div class="col" ng-show="!working_prices && add_price_info.length>0">
-												<span>{{add_price_info}}</span>
-											</div>
-											<div class="col" ng-show="!working_prices && get_prices_info.length>0">
+											<div class="col" ng-show="!working_get_prices && get_prices_info.length>0">
 												<span>{{get_prices_info}}</span>
 											</div>
 										</div>
-										<div ng-show="!working_prices && price_data['beer-price'].length>0">
+										<div ng-show="!working_get_prices && price_data['beer-price'].length>0">
 											<div ng:repeat="r in sorted_price_data = (price_data['beer-price'] | orderBy: 'date':true)">
 												<div ng:if="$index == 0 || r.date != sorted_price_data[$index - 1].date">
 													<div class="row mt-2">
@@ -345,7 +347,7 @@
 												<div data-bs-toggle="collapse" data-bs-target="#{{'price_' + $index}}">
 													<div class="row mt-0">
 														<div class="col">
-															<span class="text-info">{{r.beer.name}} {{prices_display_ccy_symbol}}{{get_number_display(r.price / prices_display_fxrate, 2)}}
+															<span class="text-info">{{r.beer.name}} {{frm_prices.display_ccy_symbol}}{{get_number_display(r.price / frm_prices.display_fxrate, 2)}}
 																<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrows-expand" viewBox="0 0 16 16">
 																  <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8zM7.646.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 1.707V5.5a.5.5 0 0 1-1 0V1.707L6.354 2.854a.5.5 0 1 1-.708-.708l2-2zM8 10a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 0 1 .708-.708L7.5 14.293V10.5A.5.5 0 0 1 8 10z"/>
 																</svg>
@@ -360,12 +362,12 @@
 												</div>
 											</div>
 										</div>
-										<div ng-show="!working_prices && price_stat_data['beer-price-stats'].length>0">
+										<div ng-show="!working_get_prices && price_stat_data['beer-price-stats'].length>0">
 											<div ng:repeat="r in sorted_price_stat_data = price_stat_data['beer-price-stats'] | orderBy: ['pub.type','beer.type','pub']">
 												<div data-bs-toggle="collapse" data-bs-target="#{{'pricestat_' + $index}}">
 													<div class="row mt-0">
 														<div class="col">
-															<span class="text-info">{{r.beer.type}} in {{r.pub.type}}s is {{prices_display_ccy_symbol}}{{get_number_display(r['avg-price'] / prices_display_fxrate, 2)}}
+															<span class="text-info">{{r.beer.type}} in {{r.pub.type}}s is {{frm_prices.display_ccy_symbol}}{{get_number_display(r['avg-price'] / frm_prices.display_fxrate, 2)}}
 																<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrows-expand" viewBox="0 0 16 16">
 																  <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8zM7.646.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 1.707V5.5a.5.5 0 0 1-1 0V1.707L6.354 2.854a.5.5 0 1 1-.708-.708l2-2zM8 10a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 0 1 .708-.708L7.5 14.293V10.5A.5.5 0 0 1 8 10z"/>
 																</svg>
@@ -377,11 +379,40 @@
 													<div ng:repeat="y in sorted_price_stat_data_year = r['by-year'] | orderBy: -['year']">
 														<div class="row mt-0">
 															<div class="col">
-																<span class="text-muted">{{prices_display_ccy_symbol}}{{get_number_display(y['avg-price'] / prices_display_fxrate, 2)}} from {{get_number_display(y.count,0)}} prices {{get_years_ago_display(y.year)}}</span>
+																<span class="text-muted">{{frm_prices.display_ccy_symbol}}{{get_number_display(y['avg-price'] / frm_prices.display_fxrate, 2)}} from {{get_number_display(y.count,0)}} prices {{get_years_ago_display(y.year)}}</span>
 															</div>
 														</div>
 													</div>
 												</div>
+											</div>
+											<div class="row mt-2">
+												<div class="col">
+												</div>
+											</div>
+										</div>
+										<div class="row mt-3">
+											<div class="col">
+												<input class="form-control bg-dark text-light" type="number" ng-model="frm_prices.amount" min="0" step="0.01" placeholder="Price"/>
+											</div>
+											<div class="col">
+												<select ng-options="ccy.code as ccy.code + ' - ' + ccy.name for ccy in (frm_prices.ccy_list | orderBy: ['code'])" class="form-control bg-dark text-light" ng-change="" ng-model="frm_prices.ccy" disabled>
+												</select>
+											</div>	
+										</div>
+										<div class="row mt-3">
+											<div class="col">
+												<button type="button" class="btn-light btn-sm" ng-click="add_price()">Add New</button>
+											</div>
+										</div>
+										<div class="row mt-3 mb-2">
+											<div class="col" ng-show="working_add_price">
+												<span class="spinner-border spinner-border-sm text-warning ms-1 me-1"></span>
+											</div>
+											<div class="col" ng-show="!working_add_price && add_price_err.length>0">
+												<span class="text-danger">{{add_price_err}}</span>
+											</div>
+											<div class="col" ng-show="!working_add_price && get_prices_info.length>0">
+												<span>{{add_price_info}}</span>
 											</div>
 										</div>
 									</div>
@@ -458,17 +489,21 @@
 					$scope.frm_pub.town = '';
 					$scope.frm_pub.pc = '';
 		
-					$scope.pub_err = '';
+					$scope.add_pub_err = '';
 					$scope.add_pub_info = '';
+					$scope.get_pubs_err = '';
 					$scope.get_pubs_info = '';
-					$scope.working_pub = false;
+					$scope.working_get_pubs = false;
+					$scope.working_add_pub = false;
 
-					$scope.beer_err = '';
+					$scope.add_beer_err = '';
 					$scope.add_beer_info = '';
+					$scope.get_beers_err = '';
 					$scope.get_beers_info = '';
-					$scope.working_beer = false;
+					$scope.working_add_beer = false;
+					$scope.working_get_beers = false;
 
-					$scope.frm_prices = {'amount':'','beer_type':'','beer_name':'','pub_type':'','pub_name':'','pub_country':'','pub_city':'','pub_town':'','pub_pc':'','pub_type_list':[],'beer_type_list':[], 'ccy_list':[]};
+					$scope.frm_prices = {'amount':'','beer_type':'','beer_name':'','pub_type':'','pub_name':'','pub_country':'','pub_city':'','pub_town':'','pub_pc':'','display_ccy':'','display_ccy_symbol':'','display_fxrate':'','ccy':'','pub_type_list':[],'beer_type_list':[], 'ccy_list':[]};
 					$scope.frm_prices.amount = 0.00;
 					$scope.frm_prices.pub_country = $scope.home_country;
 					$scope.frm_prices.pub_town = null;
@@ -479,10 +514,12 @@
 					$scope.frm_prices.beer_type = null;
 					$scope.frm_prices.beer_name = null;
 
-					$scope.price_err = '';
+					$scope.add_price_err = '';
 					$scope.add_price_info = '';
+					$scope.get_prices_err = '';
 					$scope.get_prices_info = '';
-					$scope.working_prices = false;
+					$scope.working_get_prices = false;
+					$scope.working_add_price = false;
 				}
 				$scope.clean();
 
@@ -681,7 +718,8 @@
 						{
 							if ($scope.country_list[ctry].name == $scope.frm_prices.pub_country)
 							{
-								$scope.prices_ccy = $scope.country_list[ctry].ccy;
+								$scope.frm_prices.ccy = $scope.country_list[ctry].ccy;
+								$scope.frm_prices.display_ccy = $scope.country_list[ctry].ccy;
 							}
 						}
 						$scope.upd_prices_display_ccy();
@@ -707,8 +745,8 @@
 								if ($scope.frm_prices.pub_city_list.length == 1)
 								{
 									$scope.frm_prices.pub_city = $scope.frm_prices.pub_city_list[0].city;
-									$scope.upd_prices_pub_city();
 								}
+								$scope.upd_prices_pub_city();
 							});
 					}
 				}
@@ -745,8 +783,8 @@
 								if ($scope.frm_prices.pub_town_list.length == 1)
 								{
 									$scope.frm_prices.pub_town = $scope.frm_prices.pub_town_list[0].town;
-									$scope.upd_prices_pub_town();
 								}
+								$scope.upd_prices_pub_town();
 							});
 					}
 				} 
@@ -781,8 +819,8 @@
 							if ($scope.frm_prices.pub_type_list.length == 1)
 							{
 								$scope.frm_prices.pub_type = $scope.frm_prices.pub_type_list[0].name;
-								$scope.upd_prices_pub_type();
 							}
+							$scope.upd_prices_pub_type();
 						});
 			    } 
 			    $scope.upd_prices_pub_type = function()
@@ -823,7 +861,7 @@
 					$scope.price_stat_data = '';
 					$scope.price_data = '';
 			    }
-			    $scope.upd_beer_type = function()
+			    $scope.upd_prices_beer_type = function()
 			    {
 					$scope.price_stat_data = '';
 					$scope.price_data = '';
@@ -854,28 +892,28 @@
 			    }
 			    $scope.upd_prices_display_ccy = function()
 			    {
-			    	if ($scope.prices_display_ccy != null)
+			    	if ($scope.frm_prices.display_ccy != null)
 			    	{
-				    	$scope.prices_display_fxrate = 1;
-						if ($scope.prices_ccy != $scope.prices_display_ccy)
+				    	$scope.frm_prices.display_fxrate = 1;
+						if ($scope.frm_prices.ccy != $scope.frm_prices.display_ccy)
 						{
-							url = $scope.service_path + '/fxrate/' + $scope.prices_ccy + $scope.prices_display_ccy;
+							url = $scope.service_path + '/fxrate/' + $scope.frm_prices.ccy + $scope.frm_prices.display_ccy;
 							$scope.http_get(url, 'latest=Y', function(response)
 								{
 									if (response.data['fx-rate'] !== undefined)
 									{
-										$scope.prices_display_fxrate = response.data['fx-rate']['rate'];
+										$scope.frm_prices.display_fxrate = response.data['fx-rate']['rate'];
 									}
 								});
 						}
 						for (ccy in $scope.frm_prices.ccy_list)
 						{
-							if ($scope.frm_prices.ccy_list[ccy].code == $scope.prices_display_ccy)
+							if ($scope.frm_prices.ccy_list[ccy].code == $scope.frm_prices.display_ccy)
 							{
-								$scope.prices_display_ccy_symbol = $scope.frm_prices.ccy_list[ccy].symbol;
-								if ($scope.prices_display_ccy_symbol.length > 1)
+								$scope.frm_prices.display_ccy_symbol = $scope.frm_prices.ccy_list[ccy].symbol;
+								if ($scope.frm_prices.display_ccy_symbol.length > 1)
 								{
-									$scope.prices_display_ccy_symbol = $scope.prices_display_ccy_symbol + ' ';
+									$scope.frm_prices.display_ccy_symbol = $scope.frm_prices.display_ccy_symbol + ' ';
 								}
 							}
 						}
@@ -955,9 +993,9 @@
 											}
 										}	
 									}
-									$scope.prices_display_ccy = $scope.home_ccy;
-									$scope.prices_display_ccy_symbol = $scope.home_ccy_symbol;
-									$scope.prices_display_fxrate = 1
+									$scope.frm_prices.display_ccy = $scope.home_ccy;
+									$scope.frm_prices.display_ccy_symbol = $scope.home_ccy_symbol;
+									$scope.frm_prices.display_fxrate = 1
 								});
 
 							url = $scope.service_path + '/refdata/country';
@@ -1082,11 +1120,13 @@
 
 				$scope.get_beers = function()
 			    {
-					$scope.working_beer = true;
+					$scope.working_add_beer = false;
+					$scope.working_get_beers = true;
 					$scope.beer_data = '';
 					$scope.add_beer_info = '';
+					$scope.add_beer_err = '';
 					$scope.get_beers_info = '';
-					$scope.beer_err = '';
+					$scope.get_beers_err = '';
 					var params = 'style=small'
 					if ($scope.frm_beer.type != null)
 					{
@@ -1103,7 +1143,7 @@
 							$scope.beer_data = response.data;
 							$scope.get_beers_info = response.data['beer'].length + ' ' + $scope.frm_beer.type + 's';
 							$scope.get_beers_info = $scope.get_beers_info + ' ' + ($scope.frm_beer.name != null && $scope.frm_beer.name.length > 0 ? ' named ' + $scope.frm_beer.name : '');
-							$scope.working_beer = false;
+							$scope.working_get_beers = false;
 						}, 
 						function(response) 
 						{
@@ -1112,17 +1152,31 @@
 							{  
 								errMsg = response.status + " " + errMsg;
 							}
-							$scope.beer_err = errMsg
-							$scope.working_beer = false;
+							$scope.get_beers_err = errMsg
+							$scope.working_get_beers = false;
 						});
 			    }
-			    $scope.get_pubs = function()
+			    $scope.clear_pubs_sel = function()
 			    {
-					$scope.working_pub = true;
+					$scope.frm_pub.name = '';
+					$scope.frm_pub.city = '';
+					$scope.frm_pub.town = '';
+					$scope.frm_pub.pc = '';
 					$scope.pub_data = '';
 					$scope.add_pub_info = '';
 					$scope.get_pubs_info = '';
-					$scope.pub_err = '';
+					$scope.add_pub_err = '';
+					$scope.get_pubs_err = '';
+				}
+			    $scope.get_pubs = function()
+			    {
+					$scope.working_get_pubs = true;
+					$scope.working_add_pub = false;
+					$scope.pub_data = '';
+					$scope.add_pub_info = '';
+					$scope.get_pubs_info = '';
+					$scope.add_pub_err = '';
+					$scope.get_pubs_err = '';
 					var params = 'style=small'
 					if ($scope.frm_pub.town != null &&  $scope.frm_pub.town.length > 0)
 					{
@@ -1152,7 +1206,7 @@
 							$scope.get_pubs_info = response.data['pub'].length + ' ' + $scope.frm_pub.type + 's';
 							$scope.get_pubs_info = $scope.get_pubs_info + ' ' + ($scope.frm_pub.name != null && $scope.frm_pub.name.length > 0 ? ' named ' + $scope.frm_pub.name : '');
 							$scope.get_pubs_info = $scope.get_pubs_info + ' in ' + ($scope.frm_pub.town != null && $scope.frm_pub.town.length > 0 ? $scope.frm_pub.town + ', ': '') + ($scope.frm_pub.city != null && $scope.frm_pub.city.length > 0 ? $scope.frm_pub.city + ', ' : '') + $scope.frm_pub.country;
-							$scope.working_pub = false;
+							$scope.working_get_pubs = false;
 						}, 
 						function(response) 
 						{
@@ -1161,18 +1215,27 @@
 							{  
 								errMsg = response.status + " " + errMsg;
 							}
-							$scope.pub_err = errMsg
-							$scope.working_pub = false;
+							$scope.get_pubs_err = errMsg
+							$scope.working_get_pubs = false;
 						});
+				}
+			    $scope.clear_beers_sel = function()
+			    {
+					$scope.frm_beer.name = '';
+					$scope.beer_data = '';
+					$scope.add_beer_info = '';
+					$scope.get_beers_info = '';
+					$scope.add_beer_err = '';
+					$scope.get_beers_err = '';
 				}
 			    $scope.get_prices_params = function() //wethers)
 			    {
 					var params = 'style=small'
-					if ($scope.frm_prices.pub_town != null)
+					if ($scope.frm_prices.pub_town != null && $scope.frm_prices.pub_town.length > 0)
 					{
 						params = params + '&pubTown=' + $scope.frm_prices.pub_town;
 					}				
-					if ($scope.frm_prices.pub_city != null)
+					if ($scope.frm_prices.pub_city != null && $scope.frm_prices.pub_city.length > 0)
 					{
 						params = params + '&pubCity=' + $scope.frm_prices.pub_city;
 					}				
@@ -1180,32 +1243,34 @@
 					{
 						params = params + '&pubCountry=' + $scope.frm_prices.pub_country;
 					}				
-					if ($scope.frm_prices.pub_type != null)
+					if ($scope.frm_prices.pub_type != null && $scope.frm_prices.pub_type.length > 0)
 					{
 						params = params + '&pubType=' + $scope.frm_prices.pub_type;
 					}				
-					if ($scope.frm_prices.pub_name != null)
+					if ($scope.frm_prices.pub_name != null && $scope.frm_prices.pub_name.length > 0)
 					{
-						params = params + '&pubName=' + $scope.frm_prices.pub_name.name;
+						params = params + '&pubName=' + $scope.frm_prices.pub_name;
 					}				
-					if ($scope.frm_prices.beer_type != null)
+					if ($scope.frm_prices.beer_type != null && $scope.frm_prices.beer_type.length > 0)
 					{
 						params = params + '&beerType=' + $scope.frm_prices.beer_type;
 					}	
-					if ($scope.frm_prices.beer_name != null)
+					if ($scope.frm_prices.beer_name != null && $scope.frm_prices.beer_name.length > 0)
 					{
-						params = params + '&beerName=' + $scope.frm_prices.beer_name.name;
+						params = params + '&beerName=' + $scope.frm_prices.beer_name;
 					}
 					return params;
 				}
 			    $scope.get_avg_prices = function()
 			    {
-					$scope.price_err = '';
+					$scope.get_prices_err = '';
+					$scope.add_price_err = '';
 					$scope.add_price_info = '';
 					$scope.get_prices_info = '';
 					$scope.price_stat_data = '';
 					$scope.price_data = '';
-					$scope.working_prices = true;
+					$scope.working_get_prices = true;
+					$scope.working_add_price = false;
 					var params = $scope.get_prices_params(true);
 
 					url = $scope.service_path + '/beerpricestats/BeerTypeAndPubTypeAndCountry';
@@ -1227,7 +1292,7 @@
 								tot = tot + response.data['beer-price-stats'][p].count;
 							}
 							$scope.get_prices_info = response.data['beer-price-stats'].length + ' summaries from ' + tot + ' prices (' + yrtot + ' in the last year) ' + $scope.prices_criteria();
-							$scope.working_prices = false;
+							$scope.working_get_prices = false;
 						}, 
 						function(response) 
 						{
@@ -1236,18 +1301,19 @@
 							{  
 								errMsg = response.status + " " + errMsg;
 							}
-							$scope.price_err = errMsg
-							$scope.working_prices = false;
+							$scope.get_prices_err = errMsg
+							$scope.working_get_prices = false;
 						});
 			    }
 			    $scope.get_prices = function()
 			    {
-					$scope.price_err = '';
+					$scope.get_prices_err = '';
 					$scope.add_price_info = '';
 					$scope.get_prices_info = '';
 					$scope.price_stat_data = '';
 					$scope.price_data = '';
-					$scope.working_prices = true;
+					$scope.working_get_prices = true;
+					$scope.working_add_price = false;
 					var params = $scope.get_prices_params();
 					
 					url = $scope.service_path + '/beerprice';
@@ -1255,7 +1321,7 @@
 						{
 							$scope.price_data = response.data;
 							$scope.get_prices_info = response.data['beer-price'].length  + ' prices ' + $scope.prices_criteria();
-							$scope.working_prices = false;
+							$scope.working_get_prices = false;
 						}, 
 						function(response) 
 						{
@@ -1264,46 +1330,63 @@
 							{  
 								errMsg = response.status + " " + errMsg;
 							}
-							$scope.price_err = errMsg
-							$scope.working_prices = false;
+							$scope.get_prices_err = errMsg
+							$scope.working_get_prices = false;
 						});
 			    }
+			    $scope.clear_prices_sel = function()
+			    {
+					$scope.frm_prices.beer_type = '';
+					$scope.upd_prices_beer_type();
+					
+					$scope.frm_prices.pub_city = '';
+					$scope.upd_prices_pub_city();
+
+					$scope.get_prices_err = '';
+					$scope.add_price_err = '';
+					$scope.add_price_info = '';
+					$scope.get_prices_info = '';
+					$scope.price_stat_data = '';
+					$scope.price_data = '';
+				}
 			    $scope.prices_criteria = function()
 			    {
 					var criteria = ' '
-					if ($scope.frm_prices.beer_name != null && $scope.frm_prices.beer_name.name != null)
+					if ($scope.frm_prices.beer_name != null && $scope.frm_prices.beer_name.length > 0)
 					{
-						criteria = criteria + ' for ' + $scope.frm_prices.beer_name.name + ' ';
+						criteria = criteria + ' for ' + $scope.frm_prices.beer_name + ' ';
 					}
-					else if ($scope.frm_prices.beer_type != null)
+					else if ($scope.frm_prices.beer_type != null && $scope.frm_prices.beer_type.length > 0)
 					{
 						criteria = criteria + ' for ' + $scope.frm_prices.beer_type + ' ';
 					}
 					criteria = criteria + ' in ' 
-					if ($scope.frm_prices.pub_name != null && $scope.frm_prices.pub_name.name != null)
+					if ($scope.frm_prices.pub_name != null && $scope.frm_prices.pub_name.length > 0)
 					{
-						criteria = criteria + $scope.frm_prices.pub_name.name + ' in ';
+						criteria = criteria + $scope.frm_prices.pub_name + ' in ';
 					}
-					else if ($scope.frm_prices.pub_type != null)
+					else if ($scope.frm_prices.pub_type != null && $scope.frm_prices.pub_type.length > 0)
 					{
 						criteria = criteria + $scope.frm_prices.pub_type + 's in '
 					}
-					criteria = criteria +  ($scope.frm_prices.pub_town != null ? $scope.frm_prices.pub_town + ', ': '') + ($scope.frm_prices.pub_city != null ? $scope.frm_prices.pub_city + ', ' : '') + $scope.frm_prices.pub_country
+					criteria = criteria +  ($scope.frm_prices.pub_town != null && $scope.frm_prices.pub_town.length > 0 ? $scope.frm_prices.pub_town + ', ': '') + ($scope.frm_prices.pub_city != null && $scope.frm_prices.pub_city.length > 0 ? $scope.frm_prices.pub_city + ', ' : '') + $scope.frm_prices.pub_country
 					return criteria;
 			    }
 			    $scope.add_beer = function()
 			    {
 					$scope.beer_data = '';
-					$scope.beer_err = '';
+					$scope.add_beer_err = '';
+					$scope.get_beers_err = '';
 					$scope.add_beer_info = '';
 					$scope.get_beers_info = '';
+					$scope.working_get_beers = false;
 			    	if ($scope.frm_beer.type.length == 0 || $scope.frm_beer.name == null || $scope.frm_beer.name.length == 0)	
 			    	{
-						$scope.beer_err = 'Incomplete - beer type and name required';
+						$scope.add_beer_err = 'Beer type and name required';
 			    	}
 			    	else
 			    	{
-						$scope.working_beer = true;
+						$scope.working_add_beer = true;
 			    		msg = {"beer":{"type":$scope.frm_beer.type,"name":$scope.frm_beer.name}};
 						url = $scope.service_path + '/beer';
 						$scope.http_post(url, msg, function(response)
@@ -1313,10 +1396,10 @@
 								$scope.frm_beer.name = '';
 
 								$scope.frm_prices.beer_type = response.data.beer.type;
-								$scope.upd_beer_type();
+								$scope.upd_prices_beer_type();
 								$scope.frm_prices.beer_name = response.data.beer;
-								$scope.beer_err = response.statusText;
-								$scope.working_beer = false;
+								$scope.add_beer_err = response.statusText;
+								$scope.working_add_beer = false;
 							}, 
 							function(response) 
 							{
@@ -1325,24 +1408,26 @@
 								{  
 									errMsg = response.status + " " + errMsg;
 								}
-								$scope.beer_err = errMsg
-								$scope.working_beer = false;
+								$scope.add_beer_err = errMsg
+								$scope.working_add_beer = false;
 							});
 					}
 			    }
 			    $scope.add_pub = function()
 			    {
 					$scope.pub_data = '';
-					$scope.pub_err = '';
+					$scope.add_pub_err = '';
+					$scope.get_pubs_err = '';
 					$scope.add_pub_info = '';
 					$scope.get_pubs_info = '';
+					$scope.working_get_pubs = false;
 			    	if ($scope.frm_pub.type.length == 0 || $scope.frm_pub.name.length == 0 || $scope.frm_pub.country.length == 0 || $scope.frm_pub.town.length == 0 || $scope.frm_pub.city.length == 0 || $scope.frm_pub.pc.length == 0)	
 			    	{
-						$scope.pub_err = 'Incomplete - pub type, name, country, city, town and post-code required';
+						$scope.add_pub_err = 'Pub type, name, country, city, town and post-code required';
 			    	}
 			    	else
 			    	{
-						$scope.working_pub = true;
+						$scope.working_add_pub = true;
 			    		msg = {"pub":{"type":$scope.frm_pub.type,"name": $scope.frm_pub.name ,"country": $scope.frm_pub.country,"city": $scope.frm_pub.city,"town":$scope.frm_pub.town,"post-code":$scope.frm_pub.pc}};
 						url = $scope.service_path + '/pub';
 						$scope.http_post(url, msg, function(response)
@@ -1360,8 +1445,8 @@
 								$scope.frm_prices.pub_type = response.data.pub.type;
 								$scope.upd_prices_pub_type();
 								$scope.frm_prices.pub_name = response.data.pub;
-								$scope.pub_err = response.statusText;
-								$scope.working_pub = false;
+								$scope.add_pub_err = response.statusText;
+								$scope.working_add_pub = false;
 							}, 
 							function(response) 
 							{
@@ -1370,25 +1455,27 @@
 								{  
 									errMsg = response.status + " " + errMsg;
 								}
-								$scope.pub_err = errMsg
-								$scope.working_pub = false;
+								$scope.add_pub_err = errMsg
+								$scope.working_add_pub = false;
 							});
 					}
 			    }
 			    $scope.add_price = function()
 			    {
-					$scope.price_err = '';
+					$scope.add_price_err = '';
+					$scope.get_prices_err = '';
 					$scope.add_price_info = '';
 					$scope.get_prices_info = '';
 					$scope.price_stat_data = '';
 					$scope.price_data = '';
+					$scope.working_get_prices = false;
 			    	if ($scope.frm_prices.amount == 0 || $scope.frm_prices.pub_name.audit.id == "0" || $scope.frm_prices.beer_name.audit.id == "0")	
 			    	{
-						$scope.price_err = 'Incomplete - pub, beer and price required';
+						$scope.price_err = 'Pub, beer and price required';
 			    	}
 			    	else
 			    	{
-						$scope.working_prices = true;
+						$scope.working_add_price = true;
 					    today = new Date();
 					    date = today.getFullYear() + (today.getMonth()>8 ? '' : '0') + (today.getMonth() + 1) + (today.getDate()>9 ? '' : '0') + today.getDate();
 			    		msg = {"beer-price":{"date":date,"price":scope.frm_prices.amount,"pub-id":scope.frm_prices.pub_name.audit.id,"beer-id":$scope.frm_prices.beer_name.audit.id }};
@@ -1399,8 +1486,8 @@
 								$scope.add_price_info = $scope.get_price_desc(response.data["beer-price"], true);
 
 								$scope.frm_prices.amount = 0.00;
-								$scope.price_err = response.statusText;
-								$scope.working_prices = false;
+								$scope.add_price_err = response.statusText;
+								$scope.working_add_price = false;
 							}, 
 							function(response) 
 							{
@@ -1409,8 +1496,8 @@
 								{  
 									errMsg = response.status + " " + errMsg;
 								}
-								$scope.price_err = errMsg
-								$scope.working_prices = false;
+								$scope.add_price_err = errMsg
+								$scope.working_add_price = false;
 							});
 			    	}
 			    }
