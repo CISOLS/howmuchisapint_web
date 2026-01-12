@@ -36,16 +36,22 @@
 			  		<div class="mask" style="min-height: 70.9vh;background-color:rgba(0, 0, 0, 0.8);">
 						<div class="p-3">
 							<div class="shadow p-3 mb-4 text-light bg-dark bg-opacity-75">
-								<div ng-if="loggedin">
+								<div ng-if="!loggedin">
 									<div ng-if="logginin">
 										<div class="row">
 											<center><span class="spinner-border spinner-border-md bg-dark text-warning"></span></center>
 										</div>
 									</div>
 									<div ng-if="!logginin">
-										<div class="row mt-3">
+										<div class="row mt-3 mb-3">
 											<div class="col">
-												<span class="text-secondary">Continue annonymously or </span>
+												<span class="text-secondary">Be </span>
+												<a href="#" class="link-info text-decoration-none" ng-click="signup()">Annonymous
+													<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
+													  <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+													</svg>
+												</a>
+												<span class="text-secondary"> or </span>
 												<a href="#" class="link-info text-decoration-none" ng-click="signup()">Sign in
 													<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
 													  <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
@@ -468,7 +474,46 @@
 				$scope.working_pub = false;
 				$scope.working_beer = false;
 
-			
+				$scope.accept_cookies = function()
+				{
+					$scope.use_cookies = true;
+					d = new Date();
+		  			d.setTime(d.getTime() + (100*24*60*60*1000));
+					document.cookie = "cookies=true;expires="+d.toUTCString()+";path=/";
+				}
+				$scope.read_cookie = function(cname) 
+				{
+					name = cname + "=";
+					cookie = decodeURIComponent(document.cookie);
+					ca = cookie.split(';');
+					for(i = 0; i < ca.length; i++) 
+					{
+						c = ca[i];
+						while (c.charAt(0) == ' ') 
+						{
+							c = c.substring(1);
+						}
+					   	if (c.indexOf(name) == 0) 
+						{
+					      return c.substring(name.length, c.length);
+					   	}
+					}
+					return "";
+				}
+				$scope.check_cookies = function()
+				{
+					$scope.use_cookies=$scope.read_cookie("cookies")=="true";
+					if ($scope.use_cookies)
+					{
+						$scope.frm_login.id=$scope.read_cookie("uid");
+						if ($scope.frm_login.id!="")
+						{
+							$scope.frm_login.remember=true;
+						}
+					}
+				}
+				$scope.check_cookies();
+				
 				$scope.authenticate = function(doWork)
 				{
 					if ($scope.token == null || moment().isAfter(moment($scope.token_exp)))
@@ -855,7 +900,6 @@
 						$scope.update_location();
 					});
 				}
-
 
 				$scope.update_location = function()
 				{
