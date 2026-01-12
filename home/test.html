@@ -285,10 +285,10 @@
 										</div>
 										<div class="row mt-3">
 											<div class="col">
-												<select ng-options="pubtype.name as pubtype.name for pubtype in (frm_prices.pub_type_list | orderBy: 'name')" class="form-control bg-dark text-light" ng-change="upd_prices_pub_type()" ng-model="frm_prices.pub_type" >
+												<select ng-options="pubtype.name as pubtype.name for pubtype in (frm_prices.pub_type_list| orderBy:'name')" class="form-control bg-dark text-light" ng-change="upd_prices_pub_type()" ng-model="frm_prices.pub_type" >
 													<option value=""> -- Type  -- </option>
 												</select>
-												<select ng-options="pub as pub.name for pub in (frm_prices.pub_name_list | orderBy:['\u0022display-name\u0022'])" class="form-control bg-dark text-light" ng-model="frm_prices.pub_name" >
+												<select ng-options="pub.name as pub.name for pub in (frm_prices.pub_name_list | orderBy:['\u0022display-name\u0022'])" class="form-control bg-dark text-light" ng-model="frm_prices.pub_name" >
 													<option value=""> -- Pub  -- </option>
 												</select>
 											</div>
@@ -582,24 +582,28 @@
 				$scope.http_put = function(url, msg, success_action, error_action, invalid_action)
 				{
 					$scope.request_error = "";
-					console.log("PUT:" + url)
-					console.log(msg)
-					retry_action = function(token){$http.put(url + "?token=" + token, msg).then(function(resp){$scope.http_success(resp, success_action, error_action, invalid_action)}, function(resp){$scope.http_fail(resp, error_action, invalid_action)})};
-					$http.put(url + "?token=" + $scope.token, msg).then(function(resp){$scope.http_success(resp, success_action, error_action, invalid_action, retry_action)}, function(resp){$scope.http_fail(resp, error_action, invalid_action, retry_action)});
+					post_msg = msg
+					msg['token'] = $scope.token
+					put_msg = JSON.stringify(msg)
+					console.log("PUT:" + url + ':' + put_msg)
+					retry_action = function(token){$http.put(url, put_msg).then(function(resp){$scope.http_success(resp, success_action, error_action, invalid_action)}, function(resp){$scope.http_fail(resp, error_action, invalid_action)})};
+					$http.put(url, put_msg).then(function(resp){$scope.http_success(resp, success_action, error_action, invalid_action, retry_action)}, function(resp){$scope.http_fail(resp, error_action, invalid_action, retry_action)});
 				}
 				$scope.http_post = function(url, msg, success_action, error_action, invalid_action)
 				{
 					$scope.request_error = "";
-					console.log("POST:" + url)
-					console.log(msg)
-					retry_action = function(token){$http.post(url + "?token=" + token, msg).then(function(resp){$scope.http_success(resp, success_action, error_action, invalid_action)}, function(resp){$scope.http_fail(resp, error_action, invalid_action)})};
-					$http.post(url + "?token=" + $scope.token, msg).then(function(resp){$scope.http_success(resp, success_action, error_action, invalid_action, retry_action)}, function(resp){$scope.http_fail(resp, error_action, invalid_action, retry_action)});
+					post_msg = msg
+					msg['token'] = $scope.token
+					post_msg = JSON.stringify(msg)
+					console.log("POST:" + url + ':' + post_msg)
+					retry_action = function(token){$http.post(url, post_msg).then(function(resp){$scope.http_success(resp, success_action, error_action, invalid_action)}, function(resp){$scope.http_fail(resp, error_action, invalid_action)})};
+					$http.post(url, post_msg).then(function(resp){$scope.http_success(resp, success_action, error_action, invalid_action, retry_action)}, function(resp){$scope.http_fail(resp, error_action, invalid_action, retry_action)});
 				}
 				$scope.http_delete = function(url, success_action, error_action, invalid_action)
 				{
 					$scope.request_error = "";
 					console.log("DELETE:" + url)
-					retry_action = function(token){$http.get(url + "?token=" + token).then(function(resp){$scope.http_success(resp, success_action, error_action, invalid_action)}, function(resp){$scope.http_fail(resp, error_action, invalid_action)})};
+					retry_action = function(token){$http.get(url).then(function(resp){$scope.http_success(resp, success_action, error_action, invalid_action)}, function(resp){$scope.http_fail(resp, error_action, invalid_action)})};
 					$http.delete(url + "?token=" + $scope.token).then(function(resp){$scope.http_success(resp, success_action, error_action, invalid_action, retry_action)}, function(resp){$scope.http_fail(resp, error_action, invalid_action, retry_action)})
 				}
 
@@ -659,11 +663,6 @@
 					}
 				}
 				$scope.check_cookies();
-
-				$scope.frm_pub.country = $scope.home_country;
-				$scope.frm_pub.city = $scope.home_city;
-				$scope.frm_pub.town = $scope.home_town;
-				$scope.frm_pub.pc = $scope.home_pc;
 
 			    $scope.upd_prices_pub_country = function()
 			    {
@@ -765,22 +764,23 @@
 						{
 							for (p in response.data.pub)
 							{
-								if ((response.data.pub[p].town == $scope.frm_prices.pub_town || $scope.frm_prices.pub_town == null) && (response.data.pub[p].city == $scope.frm_prices.pub_city || $scope.frm_prices.pub_city == null) && response.data.pub[p].country == $scope.frm_prices.pub_country)
+								pub = response.data.pub[p]
+								if ((pub.town == $scope.frm_prices.pub_town || $scope.frm_prices.pub_town == null) && (pub.city == $scope.frm_prices.pub_city || $scope.frm_prices.pub_city == null) && pub.country == $scope.frm_prices.pub_country)
 								{ 
 									var ex = false;
 									for (p2 in $scope.frm_prices.pub_type_list)
 									{
-										ex = ex || $scope.frm_prices.pub_type_list[p2].type == response.data.pub[p].type;
+										ex = ex || $scope.frm_prices.pub_type_list[p2].name == pub.type;
 									}
 									if (!ex)
 									{
-										$scope.frm_prices.pub_type_list.push(response.data.pub[p]);
+										$scope.frm_prices.pub_type_list.push({'name':pub.type});
 									}
 								}
 							}
 							if ($scope.frm_prices.pub_type_list.length == 1)
 							{
-								$scope.frm_prices.pub_type = $scope.frm_prices.pub_type_list[0].type;
+								$scope.frm_prices.pub_type = $scope.frm_prices.pub_type_list[0].name;
 								$scope.upd_prices_pub_type();
 							}
 						});
@@ -807,13 +807,13 @@
 										}
 										if (!ex)
 										{
-											$scope.frm_prices.pub_name_list.push(response.data.pub[p]);
+											$scope.frm_prices.pub_name_list.push({'name':response.data.pub[p].name});
 										}
 									}
 								}
 								if ($scope.frm_prices.pub_name_list.length == 1)
 								{
-									$scope.frm_prices.pub_name = $scope.frm_prices.pub_name_list[0];
+									$scope.frm_prices.pub_name = $scope.frm_prices.pub_name_list[0].name;
 								}
 							});
 					}
@@ -908,27 +908,35 @@
 //							{
 //							});
 
-							$scope.frm_pub.city = $scope.home_city;
-							$scope.frm_pub.town = $scope.home_town;
-							$scope.frm_pub.pc = $scope.home_pc;
+
 
 							url = $scope.service_path + '/refdata/pubtype';
 							$scope.http_get(url, '', function(response)
 								{
-									$scope.frm_pub.type_list = response.data['ref-data-pub-type'];
+									$scope.frm_prices.pub_type_list = [];
+									$scope.frm_pub.type_list = [];
+									for (p in response.data['ref-data-pub-type'])
+									{
+										pubtype = response.data['ref-data-pub-type'][p]
+										$scope.frm_prices.pub_type_list.push(pubtype);
+										$scope.frm_pub.type_list.push(pubtype);
+									}
 									$scope.frm_pub.type = 'Pub'
-
-									$scope.frm_prices.pub_type_list = response.data['ref-data-pub-type'];
 									$scope.frm_prices.pub_type = 'Pub'
 								});
 
 							url = $scope.service_path + '/refdata/beertype';
 							$scope.http_get(url, '', function(response)
 								{
-									$scope.frm_beer.type_list = response.data['ref-data-beer-type'];
+									$scope.frm_prices.beer_type_list = [];
+									$scope.frm_beer.type_list = [];
+									for (beertypei in response.data['ref-data-beer-type'])
+									{
+										beertype = response.data['ref-data-beer-type'][beertypei]
+										$scope.frm_prices.beer_type_list.push(beertype);
+										$scope.frm_beer.type_list.push(beertype);
+									}
 									$scope.frm_beer.type = 'Lager'
-
-									$scope.frm_prices.beer_type_list = response.data['ref-data-beer-type'];
 									$scope.frm_prices.beer_type = 'Lager'
 								});
 
@@ -957,7 +965,18 @@
 								{
 									$scope.country_list = response.data['ref-data-country'];
 									$scope.frm_prices.pub_country = $scope.home_country;
+									$scope.upd_prices_pub_country();
+									$scope.frm_prices.pub_city = $scope.home_city;
+									$scope.upd_prices_pub_city();
+									$scope.frm_prices.pub_town = $scope.home_town;
+									$scope.upd_prices_pub_town();
+
 									$scope.frm_pub.country = $scope.home_country;
+									$scope.frm_pub.city = $scope.home_city;
+									$scope.frm_pub.town = $scope.home_town;
+									$scope.frm_pub.pc = $scope.home_pc;
+
+
 									for (ctry in response.data['ref-data-country'])
 									{
 										if (response.data['ref-data-country'][ctry].name == $scope.home_country)
@@ -1065,6 +1084,7 @@
 			    {
 					$scope.working_beer = true;
 					$scope.beer_data = '';
+					$scope.add_beer_info = '';
 					$scope.get_beers_info = '';
 					$scope.beer_err = '';
 					var params = 'style=small'
@@ -1072,7 +1092,7 @@
 					{
 						params = params + '&type=' + $scope.frm_beer.type;
 					}
-					if ($scope.frm_beer.name.length > 0)
+					if ($scope.frm_beer.name != null && $scope.frm_beer.name.length > 0)
 					{
 						params = params + '&name=' + $scope.frm_beer.name;
 					}
@@ -1082,7 +1102,7 @@
 						{
 							$scope.beer_data = response.data;
 							$scope.get_beers_info = response.data['beer'].length + ' ' + $scope.frm_beer.type + 's';
-							$scope.get_beers_info = $scope.get_beers_info + ' ' + ($scope.frm_beer.name.length > 0 ? ' named ' + $scope.frm_beer.name : '');
+							$scope.get_beers_info = $scope.get_beers_info + ' ' + ($scope.frm_beer.name != null && $scope.frm_beer.name.length > 0 ? ' named ' + $scope.frm_beer.name : '');
 							$scope.working_beer = false;
 						}, 
 						function(response) 
@@ -1100,26 +1120,27 @@
 			    {
 					$scope.working_pub = true;
 					$scope.pub_data = '';
+					$scope.add_pub_info = '';
 					$scope.get_pubs_info = '';
 					$scope.pub_err = '';
 					var params = 'style=small'
-					if ($scope.frm_pub.town.length > 0)
+					if ($scope.frm_pub.town != null &&  $scope.frm_pub.town.length > 0)
 					{
 						params = params + '&town=' + $scope.frm_pub.town;
 					}				
-					if ($scope.frm_pub.city.length > 0)
+					if ($scope.frm_pub.city != null && $scope.frm_pub.city.length > 0)
 					{
 						params = params + '&city=' + $scope.frm_pub.city;
 					}				
-					if ($scope.frm_pub.country != null)
+					if ($scope.frm_pub.country != null && $scope.frm_pub.country != null)
 					{
 						params = params + '&country=' + $scope.frm_pub.country;
 					}				
-					if ($scope.add_pub_type != null)
+					if ($scope.frm_pub.type != null && $scope.frm_pub.type != null)
 					{
-						params = params + '&type=' + $scope.add_pub_type;
+						params = params + '&type=' + $scope.frm_pub.type;
 					}				
-					if ($scope.frm_pub.name.length > 0)
+					if ($scope.frm_pub.name != null && $scope.frm_pub.name.length > 0)
 					{
 						params = params + '&name=' + $scope.frm_pub.name;
 					}	
@@ -1128,9 +1149,9 @@
 					$scope.http_get(url, params, function(response)
 						{
 							$scope.pub_data = response.data;
-							$scope.get_pubs_info = response.data['pub'].length + ' ' + $scope.add_pub_type + 's';
-							$scope.get_pubs_info = $scope.get_pubs_info + ' ' + ($scope.frm_pub.name.length > 0 ? ' named ' + $scope.frm_pub.name : '');
-							$scope.get_pubs_info = $scope.get_pubs_info + ' in ' + ($scope.frm_pub.town.length > 0 ? $scope.frm_pub.town + ', ': '') + ($scope.frm_pub.city.length > 0 ? $scope.frm_pub.city + ', ' : '') + $scope.frm_pub.country;
+							$scope.get_pubs_info = response.data['pub'].length + ' ' + $scope.frm_pub.type + 's';
+							$scope.get_pubs_info = $scope.get_pubs_info + ' ' + ($scope.frm_pub.name != null && $scope.frm_pub.name.length > 0 ? ' named ' + $scope.frm_pub.name : '');
+							$scope.get_pubs_info = $scope.get_pubs_info + ' in ' + ($scope.frm_pub.town != null && $scope.frm_pub.town.length > 0 ? $scope.frm_pub.town + ', ': '') + ($scope.frm_pub.city != null && $scope.frm_pub.city.length > 0 ? $scope.frm_pub.city + ', ' : '') + $scope.frm_pub.country;
 							$scope.working_pub = false;
 						}, 
 						function(response) 
@@ -1187,7 +1208,7 @@
 					$scope.working_prices = true;
 					var params = $scope.get_prices_params(true);
 
-					url = $scope.service_path + '/pub';
+					url = $scope.service_path + '/beerpricestats/BeerTypeAndPubTypeAndCountry';
 					$scope.http_get(url, params, function(response)
 						{
 							$scope.price_stat_data = response.data;
@@ -1229,7 +1250,7 @@
 					$scope.working_prices = true;
 					var params = $scope.get_prices_params();
 					
-					url = $scope.service_path + '/pub';
+					url = $scope.service_path + '/beerprice';
 					$scope.http_get(url, params, function(response)
 						{
 							$scope.price_data = response.data;
@@ -1275,16 +1296,17 @@
 					$scope.beer_data = '';
 					$scope.beer_err = '';
 					$scope.add_beer_info = '';
-			    	if ($scope.frm_beer.type.length == 0 || $scope.frm_beer.name.length == 0)	
+					$scope.get_beers_info = '';
+			    	if ($scope.frm_beer.type.length == 0 || $scope.frm_beer.name == null || $scope.frm_beer.name.length == 0)	
 			    	{
 						$scope.beer_err = 'Incomplete - beer type and name required';
 			    	}
 			    	else
 			    	{
 						$scope.working_beer = true;
-			    		var msg = '{"beer":{"type":"' + $scope.frm_beer.type + '","name":"' + $scope.frm_beer.name + '"}}';
+			    		msg = {"beer":{"type":$scope.frm_beer.type,"name":$scope.frm_beer.name}};
 						url = $scope.service_path + '/beer';
-						$http.post(url, function(response)
+						$scope.http_post(url, msg, function(response)
 							{
 								$scope.add_beer_info = response.data.beer.type + ' ' + response.data.beer.name
 
@@ -1313,16 +1335,17 @@
 					$scope.pub_data = '';
 					$scope.pub_err = '';
 					$scope.add_pub_info = '';
-			    	if ($scope.add_pub_type.length == 0 || $scope.frm_pub.name.length == 0 || $scope.frm_pub.country.length == 0 || $scope.frm_pub.town.length == 0 || $scope.frm_pub.city.length == 0 || $scope.frm_pub.pc.length == 0)	
+					$scope.get_pubs_info = '';
+			    	if ($scope.frm_pub.type.length == 0 || $scope.frm_pub.name.length == 0 || $scope.frm_pub.country.length == 0 || $scope.frm_pub.town.length == 0 || $scope.frm_pub.city.length == 0 || $scope.frm_pub.pc.length == 0)	
 			    	{
 						$scope.pub_err = 'Incomplete - pub type, name, country, city, town and post-code required';
 			    	}
 			    	else
 			    	{
 						$scope.working_pub = true;
-			    		var msg = '{"pub":{"type":"' + $scope.add_pub_type + '","name":"' + $scope.frm_pub.name + '","country":"' + $scope.frm_pub.country + '","city":"' + $scope.frm_pub.city + '","town":"' + $scope.frm_pub.town + '","post-code":"' + $scope.frm_pub.pc + '"}}';
+			    		msg = {"pub":{"type":$scope.frm_pub.type,"name": $scope.frm_pub.name ,"country": $scope.frm_pub.country,"city": $scope.frm_pub.city,"town":$scope.frm_pub.town,"post-code":$scope.frm_pub.pc}};
 						url = $scope.service_path + '/pub';
-						$http.post(url, function(response)
+						$scope.http_post(url, msg, function(response)
 							{
 								$scope.add_pub_info = response.data.pub.type + ' ' + response.data.pub.name + ' in ' + response.data.pub.town + ', ' + response.data.pub.city + ', ' + response.data.pub.country
 
@@ -1366,11 +1389,11 @@
 			    	else
 			    	{
 						$scope.working_prices = true;
-					    var today = new Date();
-					    var date = today.getFullYear() + (today.getMonth()>8 ? '' : '0') + (today.getMonth() + 1) + (today.getDate()>9 ? '' : '0') + today.getDate();
-			    		var msg = '{"token":"' + $scope.token + '","beer-price":{"date":"' + date + '","price":' + $scope.frm_prices.amount + ',"pub-id":"' + $scope.frm_prices.pub_name.audit.id + '","beer-id":"' + $scope.frm_prices.beer_name.audit.id + '"}}';
+					    today = new Date();
+					    date = today.getFullYear() + (today.getMonth()>8 ? '' : '0') + (today.getMonth() + 1) + (today.getDate()>9 ? '' : '0') + today.getDate();
+			    		msg = {"beer-price":{"date":date,"price":scope.frm_prices.amount,"pub-id":scope.frm_prices.pub_name.audit.id,"beer-id":$scope.frm_prices.beer_name.audit.id }};
 						url = $scope.service_path + '/beerprice';
-						$http.post(url, function(response)
+						$scope.http_post(url, msg, function(response)
 							{
 								var desc = $scope.get_beer_desc(price.beer) + ' at ' + $scope.get_pub_desc(price.pub) + ' on ' + $scope.get_date_display(price.date) + ' is ' + $scope.get_number_display(price.price , 2);
 								$scope.add_price_info = $scope.get_price_desc(response.data["beer-price"], true);
