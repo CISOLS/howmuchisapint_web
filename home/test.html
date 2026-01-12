@@ -447,26 +447,20 @@
 			{
 				$scope.api_path = "api.howmuchisapint.com/test";
 				$scope.service_path = "https://" + $scope.api_path;
-				$scope.env_msg = "";
-				$scope.request_error = "";
 				$scope.loggedin = false;
 				$scope.logginin = false
 				$scope.user = 'guest';
-				$scope.working_stats = false
 				
-				$scope.frm_login = {"id": "", "pwd": "", "remember":false};
-				$scope.frm_signup = {email: "", "pwd": ""};
 				$scope.token = "";
-				$scope.user_ip = '';
-				$scope.token = null;
 				
-				$scope.headline_stat1 = 0;
-				$scope.headline_stat2 = '';
-				$scope.headline_latest = '';
-
 				$scope.home_country = 'United Kingdom'
 				$scope.home_city = '';
 				$scope.home_town = '';
+
+				$scope.headline_stat1 = 0;
+				$scope.headline_stat2 = '';
+				$scope.headline_latest = '';
+				$scope.working_stats = false
 
 				$scope.add_beer_name = '';
 	
@@ -476,6 +470,16 @@
 				$scope.add_pub_town = '';
 				$scope.add_pub_pc = '';
 	
+			    $scope.pub_err = '';
+			    $scope.add_pub_info = '';
+			    $scope.get_pubs_info = '';
+				$scope.working_pub = false;
+
+			    $scope.beer_err = '';
+			    $scope.add_beer_info = '';
+			    $scope.get_beers_info = '';
+				$scope.working_beer = false;
+
 				$scope.add_price_amount = 0.00;
 				$scope.prices_pub_country = $scope.home_country 
 				$scope.prices_pub_town = null;
@@ -486,21 +490,31 @@
 				$scope.prices_beer_type = null;
 				$scope.prices_beer = null;
 
-			    $scope.pub_err = '';
-			    $scope.add_pub_info = '';
-			    $scope.get_pubs_info = '';
-
-			    $scope.beer_err = '';
-			    $scope.add_beer_info = '';
-			    $scope.get_beers_info = '';
-
 			    $scope.price_err = '';
 			    $scope.add_price_info = '';
 				$scope.get_prices_info = '';
-
 				$scope.working_prices = false;
-				$scope.working_pub = false;
-				$scope.working_beer = false;
+
+				$http.get('https://api.ipgeolocation.io/getip?apiKey=7109be59140c4b538dfc3bacb50a241a').
+					then(function(response)
+					{
+						console.log('ip is ' + response.data.ip);
+						$http.get('https://api.ipgeolocation.io/ipgeo?ip=' + response.data.ip + '&apiKey=7109be59140c4b538dfc3bacb50a241a').
+							then(function(response)
+							{
+								$scope.home_country = response.data.country_name;
+								$scope.home_city = response.data.long_name;
+								$scope.home_town = response.data.city;
+								$scope.home_city = response.data.district;
+								$scope.home_pc = response.data.zipcode;
+							}, 
+							function(response) 
+							{
+							});
+					}, 
+					function(response) 
+					{
+					});
 
 				$scope.accept_cookies = function()
 				{
@@ -818,28 +832,6 @@
 				$scope.login = function()
 				{
 					$scope.logginin = true;
-					$http.get('https://api.ipgeolocation.io/getip?apiKey=7109be59140c4b538dfc3bacb50a241a').
-						then(function(response)
-						{
-							console.log('ip is ' + response.data.ip);
-							$scope.user_ip = response.data.ip;
-							$http.get('https://api.ipgeolocation.io/ipgeo?ip=' + response.data.ip + '&apiKey=7109be59140c4b538dfc3bacb50a241a').
-								then(function(response)
-								{
-									$scope.home_country = response.data.country_name;
-									$scope.home_city = response.data.long_name;
-									$scope.home_town = response.data.city;
-									$scope.home_city = response.data.district;
-									$scope.home_pc = response.data.zipcode;
-								}, 
-								function(response) 
-								{
-								});
-						}, 
-						function(response) 
-						{
-						});
-
 					$scope.authenticate(function()
 					{
 
