@@ -34,6 +34,26 @@
 				</div>
 				<div class="bg-image" style="background-size:cover;background-image:url('img/howmuchisapint_logo.png');">
 			  		<div class="mask" style="min-height: 70.9vh;background-color:rgba(0, 0, 0, 0.8);">
+						<div class="modal fade" id="frm_unhandled_error">
+						 	<div class="modal-dialog">
+						    	<div class="modal-content text-light bg-dark bg-opacity-75">
+									<div class="modal-header">
+							    		<h4 class="modal-title text-warning">Fatal Error</h4>
+							    		<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+									</div>
+									<div class="modal-body">
+										<div class="p-2">
+											<div class="alert alert-danger">
+											  <strong>{{service_message}}</strong>
+											</div>							
+										</div>
+										<div class="modal-footer">
+											<button type="submit" class="btn btn-light" data-bs-dismiss="modal" ng-click="clean()">OK</button>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
 						<div class="p-3">
 							<div class="shadow p-3 mb-4 text-light bg-dark bg-opacity-75">
 								<div ng-if="!loggedin">
@@ -135,7 +155,11 @@
 											<button type="button" class="btn-light btn-sm" ng-click="agent_go()">Hit me</button>
 										</div>
 									</div>
-									<div class="row mt-4">
+								</div>
+							</div>
+							<div ng-if="loggedin">
+								<div class="shadow p-3 mb-4 text-light bg-dark bg-opacity-75">
+									<div class="row mt-0">
 										<h4><a href="#" class="link-info text-decoration-none text-warning" data-bs-toggle="collapse" data-bs-target="#data_beers">Beers
 											<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrows-expand" viewBox="0 0 16 16">
 											  <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8zM7.646.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 1.707V5.5a.5.5 0 0 1-1 0V1.707L6.354 2.854a.5.5 0 1 1-.708-.708l2-2zM8 10a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 0 1 .708-.708L7.5 14.293V10.5A.5.5 0 0 1 8 10z"/>
@@ -296,7 +320,7 @@
 												<select ng-options="pubtype.name as pubtype.name for pubtype in (frm_prices.pub_type_list| orderBy:'name')" class="form-control bg-dark text-light" ng-change="upd_prices_pub_type()" ng-model="frm_prices.pub_type" >
 													<option value=""> -- Type  -- </option>
 												</select>
-												<select ng-options="pub.name as pub.name for pub in (frm_prices.pub_name_list | orderBy:['\u0022display-name\u0022'])" class="form-control bg-dark text-light" ng-model="frm_prices.pub_name" >
+												<select ng-options="pub as pub.name for pub in (frm_prices.pub_name_list | orderBy:['\u0022display-name\u0022'])" class="form-control bg-dark text-light" ng-change="upd_prices_pub_name()" ng-model="frm_prices.pub_name" >
 													<option value=""> -- Pub  -- </option>
 												</select>
 											</div>
@@ -306,7 +330,7 @@
 												<select ng-options="beertype.name as beertype.name for beertype in (frm_prices.beer_type_list| orderBy:'name')" class="form-control bg-dark text-light" ng-change="upd_prices_beer_type()" ng-model="frm_prices.beer_type" >
 													<option value=""> -- Type  -- </option>
 												</select>
-												<select ng-options="beer as beer.name for beer in (frm_prices.beer_name_list | orderBy:['\u0022display-name\u0022'])" class="form-control bg-dark text-light" ng-model="frm_prices.beer_name" >
+												<select ng-options="beer as beer.name for beer in (frm_prices.beer_name_list | orderBy:['\u0022display-name\u0022'])" class="form-control bg-dark text-light" ng-change="upd_prices_beer_name()" ng-model="frm_prices.beer_name" >
 													<option value=""> -- Beer  -- </option>
 												</select>
 											</div>
@@ -465,7 +489,7 @@
 					$scope.loggedin = false;
 					$scope.logginin = false
 					$scope.user = 'guest';
-					$scope.request_error = "";
+					$scope.service_message = "";
 					
 					$scope.token = null;
 					
@@ -523,7 +547,7 @@
 				}
 				$scope.clean();
 
-				$scope.http_success = function(resp, success_action, err_action, inv_action, retry_action)
+				$scope.http_success = function(resp, success_action, inv_action, err_action, retry_action)
 				{
 					if (resp.data["ok"])
 					{
@@ -531,34 +555,18 @@
 					}
 					else
 					{
-						$scope.request_error = resp.data["message"];
-						if (resp.status == 403 && $scope.token != "")
-						{
-							$scope.http_expired_token(retry_action);
-						}
-						else if (resp.status > 399 && resp.status < 500 && inv_action != undefined)
-						{
-							inv_action(resp);
-						}
-						else if (err_action != undefined)
-						{
-							err_action(resp);
-						}
-						else
-						{
-							new bootstrap.Modal(document.getElementById("frm_request_error"), {}).show();
-						}
+						$scope.http_fail(resp, inv_action, err_action, retry_action);
 					}		
 				}
-				$scope.http_fail = function(resp, err_action, inv_action, retry_action)
+				$scope.http_fail = function(resp, inv_action, err_action, retry_action)
 				{
 					if (resp.data != undefined && "ok" in resp.data)
 					{
-						$scope.request_error = resp.data["message"];
+						$scope.service_message = resp.data["message"];
 					}
 					else
 					{
-						$scope.request_error = (resp.statusText=="" ? "Uknown error" : resp.statusText) + " [" + resp.status + "]";
+						$scope.service_message = (resp.statusText=="" ? "Uknown error" : resp.statusText) + " [" + resp.status + "]";
 					}
 					if (resp.status == 403 && $scope.token != "")
 					{
@@ -574,7 +582,7 @@
 					}
 					else
 					{
-						new bootstrap.Modal(document.getElementById("frm_request_error"), {}).show();
+						new bootstrap.Modal(document.getElementById("frm_unhandled_error"), {}).show();
 					}
 				}
 				$scope.http_expired_token = function(retry_action)
@@ -588,13 +596,13 @@
 							console.log('token is ' + $scope.token);
 							if (retry_action != undefined)
 							{
-								retry_action(resp.data.token);
+								retry_action();
 							}
 						});
 				}
-				$scope.http_get = function(url, params, success_action, error_action, invalid_action)
+				$scope.http_get = function(url, params, success_action, invalid_action, error_action)
 				{
-					$scope.request_error = "";
+					$scope.service_message = "";
 					req_url = url
 					if ($scope.token != "" && $scope.token != null)
 					{
@@ -613,35 +621,35 @@
 						req_url = req_url + params;
 					}
 					console.log("GET:" + req_url)
-					retry_action = function(token){$http.get(req_url).then(function(resp){$scope.http_success(resp, success_action, error_action, invalid_action)}, function(resp){$scope.http_fail(resp, error_action, invalid_action)})};
-					$http.get(req_url).then(function(resp){$scope.http_success(resp, success_action, error_action, invalid_action, retry_action)}, function(resp){$scope.http_fail(resp, error_action, invalid_action, retry_action)})
+					retry_action = function(){$http.get(req_url).then(function(resp){$scope.http_success(resp, success_action, invalid_action, error_action)}, function(resp){$scope.http_fail(resp, invalid_action, error_action)})};
+					$http.get(req_url).then(function(resp){$scope.http_success(resp, success_action, invalid_action, error_action, retry_action)}, function(resp){$scope.http_fail(resp, invalid_action, error_action, retry_action)});
 				}
-				$scope.http_put = function(url, msg, success_action, error_action, invalid_action)
+				$scope.http_put = function(url, msg, success_action, invalid_action, error_action)
 				{
-					$scope.request_error = "";
+					$scope.service_message = "";
 					post_msg = msg
 					msg['token'] = $scope.token
 					put_msg = JSON.stringify(msg)
 					console.log("PUT:" + url + ':' + put_msg)
-					retry_action = function(token){$http.put(url, put_msg).then(function(resp){$scope.http_success(resp, success_action, error_action, invalid_action)}, function(resp){$scope.http_fail(resp, error_action, invalid_action)})};
-					$http.put(url, put_msg).then(function(resp){$scope.http_success(resp, success_action, error_action, invalid_action, retry_action)}, function(resp){$scope.http_fail(resp, error_action, invalid_action, retry_action)});
+					retry_action = function(){$http.put(url, put_msg).then(function(resp){$scope.http_success(resp, success_action, invalid_action, error_action)}, function(resp){$scope.http_fail(resp, invalid_action, error_action)})};
+					$http.put(url, put_msg).then(function(resp){$scope.http_success(resp, success_action, invalid_action, error_action, retry_action)}, function(resp){$scope.http_fail(resp, invalid_action, error_action, retry_action)});
 				}
-				$scope.http_post = function(url, msg, success_action, error_action, invalid_action)
+				$scope.http_post = function(url, msg, success_action, invalid_action, error_action)
 				{
-					$scope.request_error = "";
+					$scope.service_message = "";
 					post_msg = msg
 					msg['token'] = $scope.token
 					post_msg = JSON.stringify(msg)
 					console.log("POST:" + url + ':' + post_msg)
-					retry_action = function(token){$http.post(url, post_msg).then(function(resp){$scope.http_success(resp, success_action, error_action, invalid_action)}, function(resp){$scope.http_fail(resp, error_action, invalid_action)})};
-					$http.post(url, post_msg).then(function(resp){$scope.http_success(resp, success_action, error_action, invalid_action, retry_action)}, function(resp){$scope.http_fail(resp, error_action, invalid_action, retry_action)});
+					retry_action = function(){$http.post(url, post_msg).then(function(resp){$scope.http_success(resp, success_action, invalid_action, error_action)}, function(resp){$scope.http_fail(resp, invalid_action, error_action)})};
+					$http.post(url, post_msg).then(function(resp){$scope.http_success(resp, success_action, invalid_action, error_action, retry_action)}, function(resp){$scope.http_fail(resp, invalid_action, error_action, retry_action)});
 				}
-				$scope.http_delete = function(url, success_action, error_action, invalid_action)
+				$scope.http_delete = function(url, success_action, invalid_action, error_action)
 				{
-					$scope.request_error = "";
+					$scope.service_message = "";
 					console.log("DELETE:" + url)
-					retry_action = function(token){$http.get(url).then(function(resp){$scope.http_success(resp, success_action, error_action, invalid_action)}, function(resp){$scope.http_fail(resp, error_action, invalid_action)})};
-					$http.delete(url + "?token=" + $scope.token).then(function(resp){$scope.http_success(resp, success_action, error_action, invalid_action, retry_action)}, function(resp){$scope.http_fail(resp, error_action, invalid_action, retry_action)})
+					retry_action = function(){$http.get(url).then(function(resp){$scope.http_success(resp, success_action, invalid_action, error_action)}, function(resp){$scope.http_fail(resp, invalid_action, error_action)})};
+					$http.delete(url + "?token=" + $scope.token).then(function(resp){$scope.http_success(resp, success_action, invalid_action, error_action, retry_action)}, function(resp){$scope.http_fail(resp, invalid_action, error_action, retry_action)})
 				}
 
 				$http.get('https://api.ipgeolocation.io/getip?apiKey=7109be59140c4b538dfc3bacb50a241a').then(
@@ -788,7 +796,7 @@
 								}
 								if ($scope.frm_prices.pub_town_list.length == 1)
 								{
-									$scope.frm_prices.pub_town = $scope.frm_prices.pub_town_list[0].town;
+									$scope.frm_prices.pub_town = $scope.frm_prices.pub_town_list[0].name;
 								}
 								$scope.upd_prices_pub_town();
 							});
@@ -848,9 +856,10 @@
 								$scope.frm_prices.pub_name_list = [];
 								for (p in response.data.pub)
 								{
-									if (response.data.pub[p].type == $scope.frm_prices.pub_type && response.data.pub[p].town == $scope.frm_prices.pub_town && response.data.pub[p].city == $scope.frm_prices.pub_city && response.data.pub[p].country == $scope.frm_prices.pub_country)
+									pub = response.data.pub[p]
+									if (pub.type == $scope.frm_prices.pub_type && pub.town == $scope.frm_prices.pub_town && pub.city == $scope.frm_prices.pub_city && pub.country == $scope.frm_prices.pub_country)
 									{ 
-										$scope.frm_prices.pub_name_list.push({'name':response.data.pub[p].name, 'id':response.data.pub[p].audit.id});
+										$scope.frm_prices.pub_name_list.push({'name':pub.name, 'id':pub.audit.id});
 									}
 								}
 								if ($scope.frm_prices.pub_name_list.length == 1)
@@ -860,7 +869,7 @@
 							});
 					}
 			    } 
-			    $scope.upd_pub_name = function()
+			    $scope.upd_prices_pub_name = function()
 			    {
 					$scope.price_stat_data = '';
 					$scope.price_data = '';
@@ -880,9 +889,10 @@
 								$scope.frm_prices.beer_name = null;
 								for (p in response.data.beer)
 								{
-									if (response.data.beer[p].type == $scope.frm_prices.beer_type)
+									beer = response.data.beer[p]
+									if (beer.type == $scope.frm_prices.beer_type)
 									{ 
-										$scope.frm_prices.beer_name_list.push({'name':response.data.beer[p].name, 'id':response.data.beer[p].audit.id});
+										$scope.frm_prices.beer_name_list.push({'name':beer.name, 'id':beer.audit.id});
 									}
 								}
 								if ($scope.frm_prices.beer_name_list.length == 1)
@@ -892,7 +902,7 @@
 							});
 					}
 			    } 
-			    $scope.upd_beer_name = function()
+			    $scope.upd_prices_beer_name = function()
 			    {
 					$scope.price_stat_data = '';
 					$scope.price_data = '';
@@ -1126,6 +1136,7 @@
 							$scope.working_head_stats = false
 						});
 				}
+				$scope.login()
 
 				$scope.get_beers = function()
 			    {
@@ -1156,12 +1167,12 @@
 						}, 
 						function(response) 
 						{
-							errMsg = response.data.message;
-							if (!((response.status >= 400 && response.status < 500) || (response.status >= 200 && response.status < 300)))
-							{  
-								errMsg = response.status + " " + errMsg;
-							}
-							$scope.get_beers_err = errMsg
+							$scope.get_beers_err = $scope.service_message
+							$scope.working_get_beers = false;
+						}, 
+						function(response) 
+						{
+							$scope.get_beers_err = $scope.service_message
 							$scope.working_get_beers = false;
 						});
 			    }
@@ -1219,12 +1230,12 @@
 						}, 
 						function(response) 
 						{
-							errMsg = response.data.message;
-							if (!((response.status >= 400 && response.status < 500) || (response.status >= 200 && response.status < 300)))
-							{  
-								errMsg = response.status + " " + errMsg;
-							}
-							$scope.get_pubs_err = errMsg
+							$scope.get_pubs_err = $scope.service_message
+							$scope.working_get_pubs = false;
+						},
+						function(response) 
+						{
+							$scope.get_pubs_err = $scope.service_message
 							$scope.working_get_pubs = false;
 						});
 				}
@@ -1305,12 +1316,12 @@
 						}, 
 						function(response) 
 						{
-							errMsg = response.data.message;
-							if (!((response.status >= 400 && response.status < 500) || (response.status >= 200 && response.status < 300)))
-							{  
-								errMsg = response.status + " " + errMsg;
-							}
-							$scope.get_prices_err = errMsg
+							$scope.get_prices_err = $scope.service_message
+							$scope.working_get_prices = false;
+						},
+						function(response) 
+						{
+							$scope.get_prices_err = $scope.service_message
 							$scope.working_get_prices = false;
 						});
 			    }
@@ -1334,12 +1345,12 @@
 						}, 
 						function(response) 
 						{
-							errMsg = response.data.message;
-							if (!((response.status >= 400 && response.status < 500) || (response.status >= 200 && response.status < 300)))
-							{  
-								errMsg = response.status + " " + errMsg;
-							}
-							$scope.get_prices_err = errMsg
+							$scope.get_prices_err = $scope.service_message
+							$scope.working_get_prices = false;
+						},
+						function(response) 
+						{
+							$scope.get_prices_err = $scope.service_message
 							$scope.working_get_prices = false;
 						});
 			    }
@@ -1412,12 +1423,12 @@
 							}, 
 							function(response) 
 							{
-								errMsg = response.data.message;
-								if (!((response.status >= 400 && response.status < 500) || (response.status >= 200 && response.status < 300)))
-								{  
-									errMsg = response.status + " " + errMsg;
-								}
-								$scope.add_beer_err = errMsg
+								$scope.add_beer_err = $scope.service_message
+								$scope.working_add_beer = false;
+							}, 
+							function(response) 
+							{
+								$scope.add_beer_err = $scope.service_message
 								$scope.working_add_beer = false;
 							});
 					}
@@ -1459,12 +1470,12 @@
 							}, 
 							function(response) 
 							{
-								errMsg = response.data.message;
-								if (!((response.status >= 400 && response.status < 500) || (response.status >= 200 && response.status < 300)))
-								{  
-									errMsg = response.status + " " + errMsg;
-								}
-								$scope.add_pub_err = errMsg
+								$scope.add_pub_err = $scope.service_message
+								$scope.working_add_pub = false;
+							}, 
+							function(response) 
+							{
+								$scope.add_pub_err = $scope.service_message
 								$scope.working_add_pub = false;
 							});
 					}
@@ -1500,12 +1511,12 @@
 							}, 
 							function(response) 
 							{
-								errMsg = response.data.message;
-								if (!((response.status >= 400 && response.status < 500) || (response.status >= 200 && response.status < 300)))
-								{  
-									errMsg = response.status + " " + errMsg;
-								}
-								$scope.add_price_err = errMsg
+								$scope.add_price_err = $scope.service_message
+								$scope.working_add_price = false;
+							}, 
+							function(response) 
+							{
+								$scope.add_price_err = $scope.service_message
 								$scope.working_add_price = false;
 							});
 			    	}
