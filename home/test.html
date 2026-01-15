@@ -147,12 +147,23 @@
 									</div>
 									<div class="row mt-0">
 										<div class="col">
-											<input class="form-control bg-dark text-light" type="text" ng-model="agent_command" placeholder="Guinness is a fiver at the Lescar in Sheffield" required>
+											<textarea class="form-control bg-dark text-light" ng-model="frm_agent.command" placeholder="Guinness is a fiver at the Lescar in Sheffield" rows="2" required></textarea>
 										</div>
 									</div>
 									<div class="row mt-3">
 										<div class="col">
 											<button type="button" class="btn-light btn-sm" ng-click="agent_go()">Hit me</button>
+										</div>
+									</div>
+									<div class="row mt-3 mb-2">
+										<div class="col" ng-show="working_agent">
+											<span class="spinner-border spinner-border-sm text-warning ms-1 me-1"></span>
+										</div>
+										<div class="col" ng-show="!working_agent && agent_err.length>0">
+											<span class="text-danger">{{agent_err}}</span>
+										</div>
+										<div class="col" ng-show="!working_agent && agent_info.length>0">
+											<span class="text-info">{{agent_info}}</span>
 										</div>
 									</div>
 								</div>
@@ -188,7 +199,7 @@
 												<span class="text-danger">{{get_beers_err}}</span>
 											</div>
 											<div class="col" ng-show="!working_get_beers && get_beers_info.length>0">
-												<span>{{get_beers_info}}</span>
+												<span class="text-light">{{get_beers_info}}</span>
 											</div>
 											<div class="col" ng-show="working_add_beer">
 												<span class="spinner-border spinner-border-sm text-warning ms-1 me-1"></span>
@@ -196,8 +207,8 @@
 											<div class="col" ng-show="!working_add_beer && add_beer_err.length>0">
 												<span class="text-danger">{{add_beer_err}}</span>
 											</div>
-											<div class="col text-info" ng-show="!working_add_beer && add_beer_info.length>0">
-												<span>{{add_beer_info}}</span>
+											<div class="col" ng-show="!working_add_beer && add_beer_info.length>0">
+												<span class="text-info">{{add_beer_info}}</span>
 											</div>
 										</div>
 										<div ng-show="!working_get_beers && beer_data.beer.length>0">
@@ -245,7 +256,7 @@
 												<span class="text-danger">{{get_pubs_err}}</span>
 											</div>
 											<div class="col" ng-show="!working_get_pubs && get_pubs_info.length>0">
-												<span>{{get_pubs_info}}</span>
+												<span class="text-light">{{get_pubs_info}}</span>
 											</div>
 										</div>
 										<div ng-show="!working_get_pubs && pub_data.pub.length>0">
@@ -289,8 +300,8 @@
 											<div class="col" ng-show="!working_add_pub && add_pub_err.length>0">
 												<span class="text-danger">{{add_pub_err}}</span>
 											</div>
-											<div class="col text-info" ng-show="!working_add_pub && add_pub_info.length>0">
-												<span>{{add_pub_info}}</span>
+											<div class="col" ng-show="!working_add_pub && add_pub_info.length>0">
+												<span class="text-info">{{add_pub_info}}</span>
 											</div>
 										</div>
 									</div>
@@ -356,7 +367,7 @@
 												<span class="text-danger">{{get_prices_err}}</span>
 											</div>
 											<div class="col" ng-show="!working_get_prices && get_prices_info.length>0">
-												<span>{{get_prices_info}}</span>
+												<span class="text-light">{{get_prices_info}}</span>
 											</div>
 										</div>
 										<div ng-show="!working_get_prices && price_data['beer-price'].length>0">
@@ -435,8 +446,8 @@
 											<div class="col" ng-show="!working_add_price && add_price_err.length>0">
 												<span class="text-danger">{{add_price_err}}</span>
 											</div>
-											<div class="col" ng-show="!working_add_price && get_prices_info.length>0">
-												<span>{{add_price_info}}</span>
+											<div class="col" ng-show="!working_add_price && add_price_info.length>0">
+												<span class="text-info">{{add_price_info}}</span>
 											</div>
 										</div>
 									</div>
@@ -504,6 +515,11 @@
 
 					country_list = [];
 					
+					$scope.frm_agent = {'command':''};
+					$scope.agent_err = '';
+					$scope.agent_info = '';
+					$scope.working_agent = false;
+
 					$scope.frm_beer = {'type':'','name':'','type_list':[]};
 		
 					$scope.frm_pub = {'type':'','name':'','country':'','city':'','town':'','pc':'','type_list':[]};
@@ -513,6 +529,7 @@
 					$scope.frm_pub.town = '';
 					$scope.frm_pub.pc = '';
 		
+
 					$scope.add_pub_err = '';
 					$scope.add_pub_info = '';
 					$scope.get_pubs_err = '';
@@ -527,7 +544,7 @@
 					$scope.working_add_beer = false;
 					$scope.working_get_beers = false;
 
-					$scope.frm_prices = {'amount':'','beer_type':'','beer_name':'','pub_type':'','pub_name':'','pub_country':'','pub_city':'','pub_town':'','pub_pc':'','display_ccy':'','display_ccy_symbol':'','display_fxrate':'','ccy':'','pub_type_list':[],'beer_type_list':[], 'ccy_list':[]};
+					$scope.frm_prices = {'amount':'','beer_type':'','beer_name':'','pub_type':'','pub_name':'','pub_country':'','pub_city':'','pub_town':'','pub_pc':'','display_ccy':'','display_ccy_symbol':'','display_fxrate':'','ccy':'','ccy_symbol':'','pub_type_list':[],'beer_type_list':[], 'ccy_list':[]};
 					$scope.frm_prices.amount = 0.00;
 					$scope.frm_prices.pub_country = $scope.home_country;
 					$scope.frm_prices.pub_town = null;
@@ -570,7 +587,22 @@
 					}
 					if (resp.status == 403 && $scope.token != "")
 					{
-						$scope.http_expired_token(retry_action);
+						$scope.clean()
+						$scope.login()
+						
+//						$http.get($scope.service_path + '/authenticate?uid=' + $scope.user, function(resp)
+//							{
+//								$scope.token = resp.data.token 
+//								$scope.token_exp = resp.data.expiry 
+//								console.log('token is ' + $scope.token);
+//								if (retry_action != undefined)
+//								{	
+//									retry_action();
+//								}
+//							},function(resp)
+//							{
+//								new bootstrap.Modal(document.getElementById("frm_unhandled_error"), {}).show();
+//							});
 					}
 					else if (resp.status > 399 && resp.status < 500 && inv_action != undefined)
 					{
@@ -584,21 +616,6 @@
 					{
 						new bootstrap.Modal(document.getElementById("frm_unhandled_error"), {}).show();
 					}
-				}
-				$scope.http_expired_token = function(retry_action)
-				{
-					$scope.token = '';
-					url = $scope.service_path + '/authenticate';
-					$scope.http_get(url, 'uid=' + $scope.user, function(resp)
-						{
-							$scope.token = response.data.token 
-							$scope.token_exp = response.data.expiry 
-							console.log('token is ' + $scope.token);
-							if (retry_action != undefined)
-							{
-								retry_action();
-							}
-						});
 				}
 				$scope.http_get = function(url, params, success_action, invalid_action, error_action)
 				{
@@ -621,7 +638,16 @@
 						req_url = req_url + params;
 					}
 					console.log("GET:" + req_url)
-					retry_action = function(){$http.get(req_url).then(function(resp){$scope.http_success(resp, success_action, invalid_action, error_action)}, function(resp){$scope.http_fail(resp, invalid_action, error_action)})};
+//					var retry_action = (function (url) 
+//											{
+//												return function () 
+//														{
+//															$http.get(url);
+//														};
+//											}
+//										)(req_url);
+
+					retry_action = function(){console.log("GET:" + url); $http.get(url).then(function(resp){$scope.http_success(resp, success_action, invalid_action, error_action)},function(resp){$scope.http_fail(resp, invalid_action, error_action)})};
 					$http.get(req_url).then(function(resp){$scope.http_success(resp, success_action, invalid_action, error_action, retry_action)}, function(resp){$scope.http_fail(resp, invalid_action, error_action, retry_action)});
 				}
 				$scope.http_put = function(url, msg, success_action, invalid_action, error_action)
@@ -631,7 +657,7 @@
 					msg['token'] = $scope.token
 					put_msg = JSON.stringify(msg)
 					console.log("PUT:" + url + ':' + put_msg)
-					retry_action = function(){$http.put(url, put_msg).then(function(resp){$scope.http_success(resp, success_action, invalid_action, error_action)}, function(resp){$scope.http_fail(resp, invalid_action, error_action)})};
+					retry_action = function(){console.log("PUT:" + url + ':' + put_msg); $http.put(url, put_msg).then(function(resp){$scope.http_success(resp, success_action, invalid_action, error_action)}, function(resp){$scope.http_fail(resp, invalid_action, error_action)})};
 					$http.put(url, put_msg).then(function(resp){$scope.http_success(resp, success_action, invalid_action, error_action, retry_action)}, function(resp){$scope.http_fail(resp, invalid_action, error_action, retry_action)});
 				}
 				$scope.http_post = function(url, msg, success_action, invalid_action, error_action)
@@ -641,14 +667,14 @@
 					msg['token'] = $scope.token
 					post_msg = JSON.stringify(msg)
 					console.log("POST:" + url + ':' + post_msg)
-					retry_action = function(){$http.post(url, post_msg).then(function(resp){$scope.http_success(resp, success_action, invalid_action, error_action)}, function(resp){$scope.http_fail(resp, invalid_action, error_action)})};
+					retry_action = function(){console.log("POST:" + url + ':' + post_msg); $http.post(url, post_msg).then(function(resp){$scope.http_success(resp, success_action, invalid_action, error_action)}, function(resp){$scope.http_fail(resp, invalid_action, error_action)})};
 					$http.post(url, post_msg).then(function(resp){$scope.http_success(resp, success_action, invalid_action, error_action, retry_action)}, function(resp){$scope.http_fail(resp, invalid_action, error_action, retry_action)});
 				}
 				$scope.http_delete = function(url, success_action, invalid_action, error_action)
 				{
 					$scope.service_message = "";
 					console.log("DELETE:" + url)
-					retry_action = function(){$http.get(url).then(function(resp){$scope.http_success(resp, success_action, invalid_action, error_action)}, function(resp){$scope.http_fail(resp, invalid_action, error_action)})};
+					retry_action = function(){console.log("DELETE:" + url); $http.get(url).then(function(resp){$scope.http_success(resp, success_action, invalid_action, error_action)}, function(resp){$scope.http_fail(resp, invalid_action, error_action)})};
 					$http.delete(url + "?token=" + $scope.token).then(function(resp){$scope.http_success(resp, success_action, invalid_action, error_action, retry_action)}, function(resp){$scope.http_fail(resp, invalid_action, error_action, retry_action)})
 				}
 
@@ -659,6 +685,7 @@
 						$http.get('https://api.ipgeolocation.io/ipgeo?ip=' + response.data.ip + '&apiKey=7109be59140c4b538dfc3bacb50a241a').then(
 							function(response)
 							{
+								//$scope.user = 'guest-' + response.data.ip
 								$scope.home_country = response.data.country_name;
 								$scope.home_town = response.data.city;
 								$scope.home_city = response.data.district;
@@ -1135,6 +1162,29 @@
 				}
 				$scope.login()
 
+				$scope.agent_go = function()
+			    {
+					$scope.working_agent = true;
+					$scope.agent_info = '';
+					$scope.agent_err = '';
+					$scope.http_post($scope.service_path + '/agent', {'command':$scope.frm_agent.command}, function(response)
+						{
+							$scope.beer_data = response.data;
+							$scope.agent_info = response.data['response'];
+							$scope.working_agent = false;
+						}, 
+						function(response) 
+						{
+							$scope.agent_err = $scope.service_message
+							$scope.working_agent = false;
+						}, 
+						function(response) 
+						{
+							$scope.agent_err = $scope.service_message
+							$scope.working_agent = false;
+						});
+			    }
+
 				$scope.get_beers = function()
 			    {
 					$scope.working_add_beer = false;
@@ -1499,11 +1549,20 @@
 						url = $scope.service_path + '/beerprice';
 						$scope.http_post(url, msg, function(response)
 							{
-								var desc = $scope.get_beer_desc(price.beer) + ' at ' + $scope.get_pub_desc(price.pub) + ' on ' + $scope.get_date_display(price.date) + ' is ' + $scope.get_number_display(price.price , 2);
-								$scope.add_price_info = $scope.get_price_desc(response.data["beer-price"], true);
+								price = response.data['beer-price']
+								ccy_symbol  = ''
+								for (ccy in $scope.frm_prices.ccy_list)
+								{
+									if ($scope.frm_prices.ccy_list[ccy].code == $scope.frm_prices.ccy)
+									{
+										ccy_symbol = $scope.frm_prices.ccy_list[ccy].symbol;
+									}
+								}
+
+								$scope.add_price_info = price.beer.name + ' at ' + price.pub.name + ' is ' + ccy_symbol + $scope.get_number_display(price.price, 2);
 
 								$scope.frm_prices.amount = 0.00;
-								$scope.add_price_err = response.statusText;
+								$scope.add_price_err = '';
 								$scope.working_add_price = false;
 							}, 
 							function(response) 
