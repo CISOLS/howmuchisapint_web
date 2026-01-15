@@ -102,7 +102,7 @@
 										</div>
 										<div class="row mt-0" >
 											<div class="col">
-												<span class="text-info">{{r.pub.name}} <span class="text-muted"> {{r.pub.type}} </span> {{r.beer.name}}<span class="text-muted"> {{r.beer.type}} </span> {{head_stat_3_ccy_symbol[$index]}}{{get_number_display(r.price, 2)}}</span>
+												<span class="text-info">{{r.pub.name}} <span class="text-muted"> {{r.pub.type}} </span> {{r.beer.name}}<span class="text-muted"> {{r.beer.type}} </span> {{home_ccy_symbol}}{{get_number_display(r.price, 2)}}</span>
 											</div>
 										</div>
 									</div>
@@ -132,7 +132,7 @@
 									</div>
 									<div class="row mt-1">
 										<div class="col">
-											<label class="form-label">Ask me about pint prices or tell me about a new one
+											<label class="form-label">Tell me about a new pint price<!--Ask me about pint prices or tell me about a new one-->
 												<!--a href="#" class="link-info text-decoration-none" data-bs-toggle="collapse" data-bs-target="#agent_info">
 													<span class="ms-2">
 														<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-square text-secondary" viewBox="0 0 16 16">
@@ -492,8 +492,7 @@
 			var app = angular.module('app', []);
 			app.controller('appCtrl', function($scope, $http, $location, $window) 
 			{
-				$scope.api_path = "api.howmuchisapint.com/test";
-				$scope.service_path = "https://" + $scope.api_path;
+				$scope.service_path = "https://api.howmuchisapint.com/test";
 
 				$scope.clean = function()
 				{
@@ -1046,117 +1045,93 @@
 											$scope.home_ccy = response.data['ref-data-country'][ctry].ccy;
 										}
 									}
-								});
 
 
-							$scope.logginin = false;
-							$scope.loggedin = true;
+									$scope.logginin = false;
+									$scope.loggedin = true;
 
-							$scope.working_head_stats = true;
-							var stats = [];
+									$scope.working_head_stats = true;
+									var stats = [];
 
-							$scope.head_stat_1 = 0;
-							$scope.head_stat_2 = '';
+									$scope.head_stat_1 = 0;
+									$scope.head_stat_2 = '';
 
-							url = $scope.service_path + '/refdata/ccy';
-							$scope.http_get(url, '', function(response)
-								{
-									$scope.frm_prices.ccy_list = response.data['ref-data-ccy'];
-									for (ccy in $scope.frm_prices.ccy_list)
-									{
-										if ($scope.frm_prices.ccy_list[ccy].code == $scope.home_ccy)
+									url = $scope.service_path + '/refdata/ccy';
+									$scope.http_get(url, '', function(response)
 										{
-											$scope.home_ccy_symbol = $scope.frm_prices.ccy_list[ccy].symbol;
-											if ($scope.home_ccy_symbol.length > 1)
+											$scope.frm_prices.ccy_list = response.data['ref-data-ccy'];
+											for (ccy in $scope.frm_prices.ccy_list)
 											{
-												$scope.home_ccy_symbol = $scope.home_ccy_symbol + ' ';
-											}
-										}	
-									}
-									$scope.frm_prices.display_ccy = $scope.home_ccy;
-									$scope.frm_prices.display_ccy_symbol = $scope.home_ccy_symbol;
-									$scope.frm_prices.display_fxrate = 1
-
-									var params = 'style=small';
-									params = params + '&pubCountry=' + $scope.home_country;
-									params = params + '&pubCity=' + $scope.home_city;
-									params = params + '&pubType=Pub';
-									params = params + '&pubTown=' + $scope.home_town;
-									url = $scope.service_path + '/beerpricestats/BeerTypeAndPubTypeAndTown';
-									$scope.http_get(url, params, function(response)
-										{
-											stats = response.data['beer-price-stats'];
-											if (stats.length == 0)
-											{
-												$scope.head_stat_2 = 'Be the first to submit a price';
-												$scope.head_stat_1 = '';
-												
-												url = $scope.service_path + '/beerpricestats/BeerTypeAndPubTypeAndCity';
-												$scope.http_get(url, params, function(response)
+												if ($scope.frm_prices.ccy_list[ccy].code == $scope.home_ccy)
+												{
+													$scope.home_ccy_symbol = $scope.frm_prices.ccy_list[ccy].symbol;
+													if ($scope.home_ccy_symbol.length > 1)
 													{
-														stats = response.data['beer-price-stats'];
+														$scope.home_ccy_symbol = $scope.home_ccy_symbol + ' ';
+													}
+												}	
+											}
+											$scope.frm_prices.display_ccy = $scope.home_ccy;
+											$scope.frm_prices.display_ccy_symbol = $scope.home_ccy_symbol;
+											$scope.frm_prices.display_fxrate = 1
+
+											var params = 'style=small';
+											params = params + '&pubCountry=' + $scope.home_country;
+											params = params + '&pubCity=' + $scope.home_city;
+											params = params + '&pubType=Pub';
+											params = params + '&pubTown=' + $scope.home_town;
+											url = $scope.service_path + '/beerpricestats/BeerTypeAndPubTypeAndTown';
+											$scope.http_get(url, params, function(response)
+												{
+													stats = response.data['beer-price-stats'];
+													if (stats.length == 0)
+													{
+														$scope.head_stat_2 = 'Be the first to submit a price';
+														$scope.head_stat_1 = 0;
+														
+														url = $scope.service_path + '/beerpricestats/BeerTypeAndPubTypeAndCity';
+														$scope.http_get(url, params, function(response)
+															{
+																stats = response.data['beer-price-stats'];
+															});
+													}
+													if (stats.length > 0)
+													{
+														var frst = true;
+														var max = 0;
+														var tot = 0;
+														for (i = 0; i < stats.length; i++)
+														{
+															tot = tot + stats[i]['count'];
+															max = (stats[i]['count'] > max ? stats[i]['count'] : max);
+														}
+														if (max > 5)
+														{
+															max = 5;
+														}
+														$scope.head_stat_1 = tot
+														for (i = 0; i < stats.length; i++)
+														{
+															if (stats[i]['count'] >= max)
+															{
+																if (!frst)
+																{	
+																	$scope.head_stat_2 = $scope.head_stat_2 + ', ';
+																}
+																$scope.head_stat_2 = $scope.head_stat_2 + stats[i]['beer']['type'] + ' is ' + $scope.home_ccy_symbol + $scope.get_number_display(stats[i]['avg-price'], 2);
+																frst = false;
+															}
+														}
+													}
+												});
+
+												url = $scope.service_path + '/beerprice';
+												$scope.http_get(url, 'page=1&pageSize=5&pubCountry=' + $scope.home_country, function(response)
+													{
+														$scope.head_stat_3 = response.data['beer-price'];
 													});
-											}
-											if (stats.length > 0)
-											{
-												var frst = true;
-												var max = 0;
-												var tot = 0;
-												for (i = 0; i < stats.length; i++)
-												{
-													tot = tot + stats[i]['count'];
-													max = (stats[i]['count'] > max ? stats[i]['count'] : max);
-												}
-												if (max > 5)
-												{
-													max = 5;
-												}
-												$scope.head_stat_1 = tot
-												for (i = 0; i < stats.length; i++)
-												{
-													if (stats[i]['count'] >= max)
-													{
-														if (!frst)
-														{	
-															$scope.head_stat_2 = $scope.head_stat_2 + ', ';
-														}
-														$scope.head_stat_2 = $scope.head_stat_2 + stats[i]['beer']['type'] + ' is ' + $scope.home_ccy_symbol + $scope.get_number_display(stats[i]['avg-price'], 2);
-														frst = false;
-													}
-												}
-											}
+												$scope.working_head_stats = false
 										});
-
-										$scope.head_stat_3 = [];
-										$scope.head_stat_3_ccy_symbol = [];
-
-										url = $scope.service_path + '/beerprice';
-										$scope.http_get(url, 'page=1&pageSize=5&pubCountry=' + $scope.home_country, function(response)
-											{
-												prices = response.data['beer-price'];
-												c = 0
-												for (p in prices.sort(function(a, b){return a.date < b.date ? 1 : a.date > b.date ? -1 : 1 }))
-												{
-													$scope.head_stat_3[c] = prices[p];
-													price_ccy = ''
-													for (ctry in $scope.country_list)
-													{
-														if ($scope.country_list[ctry].name == prices[p].pub.country)
-														{
-															price_ccy = $scope.country_list[ctry].ccy;
-														}
-													}
-													for (ccy in $scope.frm_prices.ccy_list['ref-data-ccy'])
-													{
-														if ($scope.frm_prices.ccy_list['ref-data-ccy'][ccy].code == price_ccy)
-														{
-															$scope.head_stat_3_ccy_symbol[c] = $scope.frm_prices.ccy_list['ref-data-ccy'][ccy].symbol;
-														}
-													}
-													c = c + 1;
-												}
-											});
-										$scope.working_head_stats = false
 								});
 						});
 				}
