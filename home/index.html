@@ -102,7 +102,7 @@
 										</div>
 										<div class="row mt-0" >
 											<div class="col">
-												<span class="text-info">{{r.pub.name}} <span class="text-muted"> {{r.pub.type}} </span> {{r.beer.name}}<span class="text-muted"> {{r.beer.type}} </span> {{head_stat_3_ccy_symbol[$index]}}{{get_number_display(r.price, 2)}}</span>
+												<span class="text-info">{{r.pub.name}} <span class="text-muted"> {{r.pub.type}} </span> {{r.beer.name}}<span class="text-muted"> {{r.beer.type}} </span> {{home_ccy_symbol}}{{get_number_display(r.price, 2)}}</span>
 											</div>
 										</div>
 									</div>
@@ -1089,7 +1089,7 @@
 											if (stats.length == 0)
 											{
 												$scope.head_stat_2 = 'Be the first to submit a price';
-												$scope.head_stat_1 = '';
+												$scope.head_stat_1 = 0;
 												
 												url = $scope.service_path + '/beerpricestats/BeerTypeAndPubTypeAndCity';
 												$scope.http_get(url, params, function(response)
@@ -1127,34 +1127,10 @@
 											}
 										});
 
-										$scope.head_stat_3 = [];
-										$scope.head_stat_3_ccy_symbol = [];
-
 										url = $scope.service_path + '/beerprice';
 										$scope.http_get(url, 'page=1&pageSize=5&pubCountry=' + $scope.home_country, function(response)
 											{
-												prices = response.data['beer-price'];
-												c = 0
-												for (p in prices.sort(function(a, b){return a.date < b.date ? 1 : a.date > b.date ? -1 : 1 }))
-												{
-													$scope.head_stat_3[c] = prices[p];
-													price_ccy = ''
-													for (ctry in $scope.country_list)
-													{
-														if ($scope.country_list[ctry].name == prices[p].pub.country)
-														{
-															price_ccy = $scope.country_list[ctry].ccy;
-														}
-													}
-													for (ccy in $scope.frm_prices.ccy_list['ref-data-ccy'])
-													{
-														if ($scope.frm_prices.ccy_list['ref-data-ccy'][ccy].code == price_ccy)
-														{
-															$scope.head_stat_3_ccy_symbol[c] = $scope.frm_prices.ccy_list['ref-data-ccy'][ccy].symbol;
-														}
-													}
-													c = c + 1;
-												}
+												$scope.head_stat_3 = response.data['beer-price'];
 											});
 										$scope.working_head_stats = false
 								});
