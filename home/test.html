@@ -678,21 +678,58 @@
 				}
 
 				$http.get('https://api.ipgeolocation.io/getip?apiKey=7109be59140c4b538dfc3bacb50a241a').then(
-					function(response)
-					{
-						console.log('ip is ' + response.data.ip);
-						$http.get('https://api.ipgeolocation.io/ipgeo?ip=' + response.data.ip + '&apiKey=7109be59140c4b538dfc3bacb50a241a').then(
-							function(response)
+				function(response)
+				{
+					console.log('ip is ' + response.data.ip);
+					$http.get('https://api.ipgeolocation.io/ipgeo?ip=' + response.data.ip + '&apiKey=7109be59140c4b538dfc3bacb50a241a').then(
+						function(response)
+						{
+							//$scope.user = 'guest-' + response.data.ip
+							$scope.home_country = response.data.country_name;
+							$scope.home_town = response.data.city;
+							$scope.home_city = response.data.district;
+							$scope.home_pc = response.data.zipcode;
+							console.log($scope.home_country+ ','+$scope.home_city+','+$scope.home_town+','+$scope.home_pc);
+						},function(response){}
+					);
+				})
+
+				$scope.set_location = function(coords)
+				{
+					$scope.home_country = '';
+					$scope.home_city = '';
+					$scope.home_town = '';
+					$scope.home_pc = '';
+		    		$http.get('https://maps.googleapis.com/maps/api/geocode/json?latlng=' + coords + '&key=AIzaSyDB-gk_9KWXlZ7eWj-SYToR8v5DTTI6T00').
+						then(function(response)
+						{
+							console.log(response.data);
+							for (res in response.data.results)
 							{
-								//$scope.user = 'guest-' + response.data.ip
-								$scope.home_country = response.data.country_name;
-								$scope.home_town = response.data.city;
-								$scope.home_city = response.data.district;
-								$scope.home_pc = response.data.zipcode;
-							},function(response){}
-						);
-					},function(response){}
-				);
+								for (add_comp in response.data.results[res]['address_components'])
+								{
+									address = response.data.results[res]['address_components'][add_comp];
+									if (address['types'][0] == 'country')
+										$scope.home_country = address['long_name'];
+									else if (address['types'][0] == 'administrative_area_level_2')
+										$scope.home_city = address['long_name'];
+									else if (address['types'][0] == 'postal_town')
+										$scope.home_town = address['long_name'];
+									else if (address['types'][0] == 'locality')
+										$scope.home_town = address['long_name'];
+									else if (address['types'][0] == 'postal_code')
+										$scope.home_pc = address['long_name'];
+								}
+							}
+							if ($scope.home_city == '')
+							{
+								$scope.home_city = $scope.home_town;
+							}
+							console.log($scope.home_country+ ','+$scope.home_city+','+$scope.home_town+','+$scope.home_pc);
+							$scope.login()
+			  		});
+
+				}
 
 
 				$scope.accept_cookies = function()
@@ -1661,13 +1698,13 @@
 					}
 				}
 			});
-//	        navigator.geolocation.getCurrentPosition(showPosition);
-//			function showPosition(position) 
-//			{
-//				var coords = position.coords.latitude + ',' + position.coords.longitude;
-//			    console.log('coords=' + coords)
-//				angular.element(document.querySelector('[ng-controller="appCtrl"]')).scope().set_location(coords);
-//			}
+	        navigator.geolocation.getCurrentPosition(showPosition);
+			function showPosition(position) 
+			{
+				var coords = position.coords.latitude + ',' + position.coords.longitude;
+			    console.log('coords=' + coords)
+				angular.element(document.querySelector('[ng-controller="appCtrl"]')).scope().set_location(coords);
+			}
 			
 		</script>
 	</body>
