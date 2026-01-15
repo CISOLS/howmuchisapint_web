@@ -1358,7 +1358,7 @@
 								}
 								tot = tot + response.data['beer-price-stats'][p].count;
 							}
-							$scope.get_prices_info = response.data['beer-price-stats'].length + ' summaries from ' + tot + ' prices (' + yrtot + ' in the last year) ' + $scope.prices_criteria();
+							$scope.get_prices_info = response.data['beer-price-stats'].length + ' summaries from ' + tot + ' prices (' + yrtot + ' this year) ' + $scope.prices_criteria();
 							$scope.working_get_prices = false;
 						}, 
 						function(response) 
@@ -1582,11 +1582,11 @@
 					ago = new Date().getFullYear() - year
 					if (ago == 0)
 					{
-						return 'in the last year';
+						return ' this year';
 					}
 					else if (ago == 1)
 					{
-						return 'in the previous year';				
+						return ' last year';				
 					}
 					else
 					{
