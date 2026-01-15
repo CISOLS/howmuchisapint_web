@@ -392,7 +392,7 @@
 												</div>
 												<div id="{{'price_' + $index}}" class="row mt-0 collapse">
 													<div class="col">
-														<span class="text-muted">{{r.pub.type}} at {{r.pub.name}}, {{r.pub.town}}, {{r.pub.city}}, {{r.pub.country}}</span>
+														<span class="text-muted">{{r.pub.type}} {{r.pub.name}}, {{r.pub.town}}, {{r.pub.city}}, {{r.pub.country}}</span>
 													</div>
 												</div>
 											</div>
@@ -492,7 +492,7 @@
 			var app = angular.module('app', []);
 			app.controller('appCtrl', function($scope, $http, $location, $window) 
 			{
-				$scope.api_path = "api.howmuchisapint.com/test";
+				$scope.api_path = "api.howmuchisapint.com/service";
 				$scope.service_path = "https://" + $scope.api_path;
 
 				$scope.clean = function()
@@ -1358,7 +1358,7 @@
 								}
 								tot = tot + response.data['beer-price-stats'][p].count;
 							}
-							$scope.get_prices_info = response.data['beer-price-stats'].length + ' summaries from ' + tot + ' prices (' + yrtot + ' in the last year) ' + $scope.prices_criteria();
+							$scope.get_prices_info = response.data['beer-price-stats'].length + ' summaries from ' + tot + ' prices (' + yrtot + ' this year) ' + $scope.prices_criteria();
 							$scope.working_get_prices = false;
 						}, 
 						function(response) 
@@ -1582,11 +1582,11 @@
 					ago = new Date().getFullYear() - year
 					if (ago == 0)
 					{
-						return 'in the last year';
+						return ' this year';
 					}
 					else if (ago == 1)
 					{
-						return 'in the previous year';				
+						return ' last year';				
 					}
 					else
 					{
