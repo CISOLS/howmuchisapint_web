@@ -615,7 +615,8 @@
 					}
 					else
 					{
-						new bootstrap.Modal(document.getElementById("frm_unhandled_error"), {}).show();
+						$scope.clean()
+						$scope.login()
 					}
 				}
 				$scope.http_get = function(url, params, success_action, invalid_action, error_action)
