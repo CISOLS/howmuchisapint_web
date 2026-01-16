@@ -143,8 +143,8 @@
 														</svg>
 													</span>
 												</a>
-												<span id="agent_info" class="collapse text-secondary ms-1">Don't get offended if this does not work... it might work but the call to the server may have timedout, it will quite possibly do something stupid, also likely the money may have run out!</span>
 											</span>
+											<span id="agent_info" class="collapse text-secondary ms-1">Don't get offended if this does not work... the command may actually have worked althoug it doesn't look like it (the request may have timed out), so check before trying again, it may also have just done something stupid, and finally it might not work if the money may has run out!</span>
 										</div>
 									</div>
 									<div class="row mt-0">
@@ -505,10 +505,6 @@
 					
 					$scope.token = null;
 					
-					$scope.home_country = 'United Kingdom';
-					$scope.home_city = '';
-					$scope.home_town = '';
-
 					$scope.head_stat_1 = 0;
 					$scope.head_stat_2 = '';
 					$scope.head_stat_3 = '';
@@ -680,6 +676,12 @@
 					$http.delete(url + "?token=" + $scope.token).then(function(resp){$scope.http_success(resp, success_action, invalid_action, error_action, retry_action)}, function(resp){$scope.http_fail(resp, invalid_action, error_action, retry_action)})
 				}
 
+				$scope.home_country = 'United Kingdom';
+				$scope.home_city = '';
+				$scope.home_town = '';
+				$scope.home_pc = '';
+				$scope.home_ccy = '';				
+				$scope.home_ccy_symbol = '';				
 				$http.get('https://api.ipgeolocation.io/getip?apiKey=7109be59140c4b538dfc3bacb50a241a').then(
 				function(response)
 				{

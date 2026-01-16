@@ -8,9 +8,11 @@
 
 		<meta name="author" content="Martin Keys">
 		<meta property="og:title" content="How Much Is a Pint"/>
-		<meta name="description" content="How much is a good old British pint of beer" />
+		<meta name="og:description" content="How much is a good old British pint of beer" />
 		<meta property="og:description" content="How much is a good old British pint of beer"/>
-		<meta property="og:image" content="img/logo.png"/>
+		<meta property="og:image" content="https://howmuchisapint.com/img/logo.png"/>
+		<meta property="og:url" content=""https://howmuchisapint.com"/>
+		<meta property="og:type" content="website" />
 
 		<link rel="icon" type="image/png" href="img/pint.png"/>
 	</head>
@@ -133,7 +135,7 @@
 									<div class="row mt-1">
 										<div class="col">
 											<label class="form-label">Tell me about a new pint price<!--Ask me about pint prices or tell me about a new one-->
-												<!--a href="#" class="link-info text-decoration-none" data-bs-toggle="collapse" data-bs-target="#agent_info">
+												<a href="#" class="link-info text-decoration-none" data-bs-toggle="collapse" data-bs-target="#agent_info">
 													<span class="ms-2">
 														<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-square text-secondary" viewBox="0 0 16 16">
 														  <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
@@ -141,8 +143,8 @@
 														</svg>
 													</span>
 												</a>
-												<span id="agent_info" class="collapse text-secondary ms-1">You can say things like...</span-->
 											</span>
+											<span id="agent_info" class="collapse text-secondary ms-1">Don't get offended if this does not work... the command may actually have worked althoug it doesn't look like it (the request may have timed out), so check before trying again, it may also have just done something stupid, and finally it might not work if the money may has run out!</span>
 										</div>
 									</div>
 									<div class="row mt-0">
@@ -503,10 +505,6 @@
 					
 					$scope.token = null;
 					
-					$scope.home_country = 'United Kingdom';
-					$scope.home_city = '';
-					$scope.home_town = '';
-
 					$scope.head_stat_1 = 0;
 					$scope.head_stat_2 = '';
 					$scope.head_stat_3 = '';
@@ -600,7 +598,8 @@
 //								}
 //							},function(resp)
 //							{
-//								new bootstrap.Modal(document.getElementById("frm_unhandled_error"), {}).show();
+								$scope.clean()
+								$scope.login()
 //							});
 					}
 					else if (resp.status > 399 && resp.status < 500 && inv_action != undefined)
@@ -613,7 +612,8 @@
 					}
 					else
 					{
-						new bootstrap.Modal(document.getElementById("frm_unhandled_error"), {}).show();
+						$scope.clean()
+						$scope.login()
 					}
 				}
 				$scope.http_get = function(url, params, success_action, invalid_action, error_action)
@@ -677,6 +677,12 @@
 					$http.delete(url + "?token=" + $scope.token).then(function(resp){$scope.http_success(resp, success_action, invalid_action, error_action, retry_action)}, function(resp){$scope.http_fail(resp, invalid_action, error_action, retry_action)})
 				}
 
+				$scope.home_country = 'United Kingdom';
+				$scope.home_city = '';
+				$scope.home_town = '';
+				$scope.home_pc = '';
+				$scope.home_ccy = '';				
+				$scope.home_ccy_symbol = '';				
 				$http.get('https://api.ipgeolocation.io/getip?apiKey=7109be59140c4b538dfc3bacb50a241a').then(
 				function(response)
 				{
