@@ -694,44 +694,6 @@
 					);
 				})
 
-				$scope.set_location = function(coords)
-				{
-					$scope.home_country = '';
-					$scope.home_city = '';
-					$scope.home_town = '';
-					$scope.home_pc = '';
-		    		$http.get('https://maps.googleapis.com/maps/api/geocode/json?latlng=' + coords + '&key=AIzaSyDB-gk_9KWXlZ7eWj-SYToR8v5DTTI6T00').
-						then(function(response)
-						{
-							console.log(response.data);
-							for (res in response.data.results)
-							{
-								for (add_comp in response.data.results[res]['address_components'])
-								{
-									address = response.data.results[res]['address_components'][add_comp];
-									if (address['types'][0] == 'country')
-										$scope.home_country = address['long_name'];
-									else if (address['types'][0] == 'administrative_area_level_2')
-										$scope.home_city = address['long_name'];
-									else if (address['types'][0] == 'postal_town')
-										$scope.home_town = address['long_name'];
-									else if (address['types'][0] == 'locality')
-										$scope.home_town = address['long_name'];
-									else if (address['types'][0] == 'postal_code')
-										$scope.home_pc = address['long_name'];
-								}
-							}
-							if ($scope.home_city == '')
-							{
-								$scope.home_city = $scope.home_town;
-							}
-							console.log($scope.home_country+ ','+$scope.home_city+','+$scope.home_town+','+$scope.home_pc);
-							$scope.login()
-			  		});
-
-				}
-
-
 				$scope.accept_cookies = function()
 				{
 					$scope.use_cookies = true;
@@ -999,6 +961,98 @@
 						}
 					}
 			    }
+
+				$scope.upd_location_stats = function()
+				{
+
+					var params = 'style=small';
+					params = params + '&pubCountry=' + $scope.home_country;
+					params = params + '&pubCity=' + $scope.home_city;
+					params = params + '&pubType=Pub';
+					params = params + '&pubTown=' + $scope.home_town;
+					url = $scope.service_path + '/beerpricestats/BeerTypeAndPubTypeAndTown';
+					$scope.http_get(url, params, function(response)
+						{
+							stats = response.data['beer-price-stats'];
+							if (stats.length == 0)
+							{
+								$scope.head_stat_2 = 'Be the first to submit a price';
+								$scope.head_stat_1 = 0;
+								
+								url = $scope.service_path + '/beerpricestats/BeerTypeAndPubTypeAndCity';
+								$scope.http_get(url, params, function(response)
+									{
+										stats = response.data['beer-price-stats'];
+									});
+							}
+							if (stats.length > 0)
+							{
+								$scope.head_stat_2 = '';
+								var frst = true;
+								var max = 0;
+								var tot = 0;
+								for (i = 0; i < stats.length; i++)
+								{
+									tot = tot + stats[i]['count'];
+									max = (stats[i]['count'] > max ? stats[i]['count'] : max);
+								}
+								if (max > 5)
+								{
+									max = 5;
+								}
+								$scope.head_stat_1 = tot
+								for (i = 0; i < stats.length; i++)
+								{
+									if (stats[i]['count'] >= max)
+									{
+										if (!frst)
+										{	
+											$scope.head_stat_2 = $scope.head_stat_2 + ', ';
+										}
+										$scope.head_stat_2 = $scope.head_stat_2 + stats[i]['beer']['type'] + ' is ' + $scope.home_ccy_symbol + $scope.get_number_display(stats[i]['avg-price'], 2);
+										frst = false;
+									}
+								}
+							}
+						});
+				}
+
+				$scope.set_location = function(coords)
+				{
+					$scope.home_country = '';
+					$scope.home_city = '';
+					$scope.home_town = '';
+					$scope.home_pc = '';
+		    		$http.get('https://maps.googleapis.com/maps/api/geocode/json?latlng=' + coords + '&key=AIzaSyDB-gk_9KWXlZ7eWj-SYToR8v5DTTI6T00').
+						then(function(response)
+						{
+							for (res in response.data.results)
+							{
+								for (add_comp in response.data.results[res]['address_components'])
+								{
+									address = response.data.results[res]['address_components'][add_comp];
+									if (address['types'][0] == 'country')
+										$scope.home_country = address['long_name'];
+									else if (address['types'][0] == 'administrative_area_level_2')
+										$scope.home_city = address['long_name'];
+									else if (address['types'][0] == 'postal_town')
+										$scope.home_town = address['long_name'];
+									else if (address['types'][0] == 'locality')
+										$scope.home_town = address['long_name'];
+									else if (address['types'][0] == 'postal_code')
+										$scope.home_pc = address['long_name'];
+								}
+							}
+							if ($scope.home_city == '')
+							{
+								$scope.home_city = $scope.home_town;
+							}
+							console.log($scope.home_country+ ','+$scope.home_city+','+$scope.home_town+','+$scope.home_pc);
+							$scope.upd_location_stats()
+			  		});
+
+				}
+
 				$scope.login = function()
 				{
 					$scope.logginin = true;	
@@ -1112,62 +1166,13 @@
 											$scope.frm_prices.display_ccy_symbol = $scope.home_ccy_symbol;
 											$scope.frm_prices.display_fxrate = 1
 
-											var params = 'style=small';
-											params = params + '&pubCountry=' + $scope.home_country;
-											params = params + '&pubCity=' + $scope.home_city;
-											params = params + '&pubType=Pub';
-											params = params + '&pubTown=' + $scope.home_town;
-											url = $scope.service_path + '/beerpricestats/BeerTypeAndPubTypeAndTown';
-											$scope.http_get(url, params, function(response)
+											url = $scope.service_path + '/beerprice';
+											$scope.http_get(url, 'page=1&pageSize=5&pubCountry=' + $scope.home_country, function(response)
 												{
-													stats = response.data['beer-price-stats'];
-													if (stats.length == 0)
-													{
-														$scope.head_stat_2 = 'Be the first to submit a price';
-														$scope.head_stat_1 = 0;
-														
-														url = $scope.service_path + '/beerpricestats/BeerTypeAndPubTypeAndCity';
-														$scope.http_get(url, params, function(response)
-															{
-																stats = response.data['beer-price-stats'];
-															});
-													}
-													if (stats.length > 0)
-													{
-														var frst = true;
-														var max = 0;
-														var tot = 0;
-														for (i = 0; i < stats.length; i++)
-														{
-															tot = tot + stats[i]['count'];
-															max = (stats[i]['count'] > max ? stats[i]['count'] : max);
-														}
-														if (max > 5)
-														{
-															max = 5;
-														}
-														$scope.head_stat_1 = tot
-														for (i = 0; i < stats.length; i++)
-														{
-															if (stats[i]['count'] >= max)
-															{
-																if (!frst)
-																{	
-																	$scope.head_stat_2 = $scope.head_stat_2 + ', ';
-																}
-																$scope.head_stat_2 = $scope.head_stat_2 + stats[i]['beer']['type'] + ' is ' + $scope.home_ccy_symbol + $scope.get_number_display(stats[i]['avg-price'], 2);
-																frst = false;
-															}
-														}
-													}
+													$scope.head_stat_3 = response.data['beer-price'];
 												});
-
-												url = $scope.service_path + '/beerprice';
-												$scope.http_get(url, 'page=1&pageSize=5&pubCountry=' + $scope.home_country, function(response)
-													{
-														$scope.head_stat_3 = response.data['beer-price'];
-													});
-												$scope.working_head_stats = false
+											$scope.working_head_stats = false
+											$scope.upd_location_stats()
 										});
 								});
 						});
