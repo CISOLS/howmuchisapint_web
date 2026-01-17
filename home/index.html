@@ -190,7 +190,7 @@
 											<div class="col">
 												<button type="button" class="btn-light btn-sm" ng-click="clear_beers_sel()">Clear</button>
 												<button type="button" class="btn-light btn-sm" ng-click="get_beers()">List</button>
-												<button type="button" class="btn-light btn-sm" ng-click="add_beer()">Add New</button>
+												<button type="button" class="btn-light btn-sm" ng-click="add_beer()">Add</button>
 											</div>
 										</div>
 										<div class="row mt-3 mb-2">
@@ -292,7 +292,7 @@
 										</div>
 										<div class="row mt-3">
 											<div class="col">
-												<button type="button" class="btn-light btn-sm" ng-click="add_pub()">Add New</button>
+												<button type="button" class="btn-light btn-sm" ng-click="add_pub()">Add</button>
 											</div>
 										</div>
 										<div class="row mt-3 mb-2">
@@ -343,7 +343,7 @@
 												<select ng-options="beertype.name as beertype.name for beertype in (frm_prices.beer_type_list| orderBy:'name')" class="form-control bg-dark text-light" ng-change="upd_prices_beer_type()" ng-model="frm_prices.beer_type" >
 													<option value=""> -- Type  -- </option>
 												</select>
-												<select ng-options="beer as beer.name for beer in (frm_prices.beer_name_list | orderBy:['\u0022display-name\u0022'])" class="form-control bg-dark text-light" ng-change="upd_prices_beer_name()" ng-model="frm_prices.beer_name" >
+												<select ng-options="beer as beer.name for beer in (frm_prices.beer_name_list | orderBy:['name'])" class="form-control bg-dark text-light" ng-change="upd_prices_beer_name()" ng-model="frm_prices.beer_name" >
 													<option value=""> -- Beer  -- </option>
 												</select>
 											</div>
@@ -438,7 +438,7 @@
 										</div>
 										<div class="row mt-3">
 											<div class="col">
-												<button type="button" class="btn-light btn-sm" ng-click="add_price()">Add New</button>
+												<button type="button" class="btn-light btn-sm" ng-click="add_price()">Add</button>
 											</div>
 										</div>
 										<div class="row mt-3 mb-2">
