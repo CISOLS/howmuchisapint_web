@@ -1336,17 +1336,17 @@
 					{
 						params = params + '&pubType=' + $scope.frm_prices.pub_type;
 					}				
-					if ($scope.frm_prices.pub_name != null && $scope.frm_prices.pub_name.length > 0)
+					if ($scope.frm_prices.pub_name != null && $scope.frm_prices.pub_name.name.length > 0)
 					{
-						params = params + '&pubName=' + $scope.frm_prices.pub_name;
+						params = params + '&pubName=' + $scope.frm_prices.pub_name.name;
 					}				
 					if ($scope.frm_prices.beer_type != null && $scope.frm_prices.beer_type.length > 0)
 					{
 						params = params + '&beerType=' + $scope.frm_prices.beer_type;
 					}	
-					if ($scope.frm_prices.beer_name != null && $scope.frm_prices.beer_name.length > 0)
+					if ($scope.frm_prices.beer_name != null && $scope.frm_prices.beer_name.name.length > 0)
 					{
-						params = params + '&beerName=' + $scope.frm_prices.beer_name;
+						params = params + '&beerName=' + $scope.frm_prices.beer_name.name;
 					}
 					return params;
 				}
@@ -1441,18 +1441,18 @@
 			    $scope.prices_criteria = function()
 			    {
 					var criteria = ' '
-					if ($scope.frm_prices.beer_name != null && $scope.frm_prices.beer_name.length > 0)
+					if ($scope.frm_prices.beer_name != null && $scope.frm_prices.beer_name.name.length > 0)
 					{
-						criteria = criteria + ' for ' + $scope.frm_prices.beer_name + ' ';
+						criteria = criteria + ' for ' + $scope.frm_prices.beer_name.name + ' ';
 					}
 					else if ($scope.frm_prices.beer_type != null && $scope.frm_prices.beer_type.length > 0)
 					{
 						criteria = criteria + ' for ' + $scope.frm_prices.beer_type + ' ';
 					}
 					criteria = criteria + ' in ' 
-					if ($scope.frm_prices.pub_name != null && $scope.frm_prices.pub_name.length > 0)
+					if ($scope.frm_prices.pub_name != null && $scope.frm_prices.pub_name.name.length > 0)
 					{
-						criteria = criteria + $scope.frm_prices.pub_name + ' in ';
+						criteria = criteria + $scope.frm_prices.pub_name.name + ' in ';
 					}
 					else if ($scope.frm_prices.pub_type != null && $scope.frm_prices.pub_type.length > 0)
 					{
