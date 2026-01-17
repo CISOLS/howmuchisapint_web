@@ -320,10 +320,10 @@
 												<select class="form-control bg-dark text-light" ng-change="upd_prices_pub_country()" ng-model="frm_prices.pub_country" >
 													<option ng-repeat="ctry in sorted = (country_list | orderBy: 'name')" value="{{ctry.name}}">{{ctry.name}}</option>
 												</select>
-												<select ng-options="pubcity.name as pubcity.name for pubcity in (frm_prices.pub_city_list | orderBy:'city')" class="form-control bg-dark text-light" ng-change="upd_prices_pub_city()" ng-model="frm_prices.pub_city" >
+												<select ng-options="pubcity.name as pubcity.name for pubcity in (frm_prices.pub_city_list | orderBy:'name')" class="form-control bg-dark text-light" ng-change="upd_prices_pub_city()" ng-model="frm_prices.pub_city" >
 													<option value=""> -- City  -- </option>
 												</select>
-												<select ng-options="pubtown.name as pubtown.name for pubtown in (frm_prices.pub_town_list | orderBy:'town')" class="form-control bg-dark text-light	" ng-change="upd_prices_pub_town()" ng-model="frm_prices.pub_town" >
+												<select ng-options="pubtown.name as pubtown.name for pubtown in (frm_prices.pub_town_list | orderBy:'name')" class="form-control bg-dark text-light	" ng-change="upd_prices_pub_town()" ng-model="frm_prices.pub_town" >
 													<option value=""> -- Town  -- </option>
 												</select>
 											</div>
@@ -598,8 +598,7 @@
 //								}
 //							},function(resp)
 //							{
-								$scope.clean()
-								$scope.login()
+//								new bootstrap.Modal(document.getElementById("frm_unhandled_error"), {}).show();
 //							});
 					}
 					else if (resp.status > 399 && resp.status < 500 && inv_action != undefined)
