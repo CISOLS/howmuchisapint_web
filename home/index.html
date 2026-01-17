@@ -413,7 +413,7 @@
 													</div>
 												</div>
 												<div id="{{'pricestat_' + $index}}" class="collapse">
-													<div ng:repeat="y in sorted_price_stat_data_year = r['by-year'] | orderBy: -['year']">
+													<div ng:repeat="y in sorted_price_stat_data_year = r['by-year'] | orderBy: ['year']:true">
 														<div class="row mt-0">
 															<div class="col">
 																<span class="text-muted">{{frm_prices.display_ccy_symbol}}{{get_number_display(y['avg-price'] / frm_prices.display_fxrate, 2)}} from {{get_number_display(y.count,0)}} prices {{get_years_ago_display(y.year)}}</span>
