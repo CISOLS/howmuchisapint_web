@@ -1172,7 +1172,7 @@
 											$scope.frm_prices.display_fxrate = 1
 
 											url = $scope.service_path + '/beerprice';
-											$scope.http_get(url, 'page=1&pageSize=5&pubCountry=' + $scope.home_country, function(response)
+											$scope.http_get(url, 'page=1&pageSize=10&pubCountry=' + $scope.home_country, function(response)
 												{
 													$scope.head_stat_3 = response.data['beer-price'];
 												});
