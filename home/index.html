@@ -1021,7 +1021,7 @@
 										minyr = stats[i]['recent-min-date']
 									}
 								}
-								$scope.head_stat_tot2 = totyr + ' recently' //' since ' + $scope.get_date_display(minyr);
+								$scope.head_stat_tot2 = totyr + ' recent' //' since ' + $scope.get_date_display(minyr);
 								var frst = true;
 								for (i = 0; i < stats.length; i++)
 								{
@@ -1426,7 +1426,7 @@
 								tot = tot + response.data['beer-price-stats'][p].count;
 								yrtot = yrtot + response.data['beer-price-stats'][p]['recent-count'];
 							}
-							$scope.get_prices_info = response.data['beer-price-stats'].length + ' summaries from ' + tot + ' prices (' + yrtot + ' recently) ' + $scope.prices_criteria();
+							$scope.get_prices_info = response.data['beer-price-stats'].length + ' summaries from ' + tot + ' prices (' + yrtot + ' recent) ' + $scope.prices_criteria();
 							$scope.working_get_prices = false;
 						}, 
 						function(response) 
