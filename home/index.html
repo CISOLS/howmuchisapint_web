@@ -94,8 +94,8 @@
 											</h4>
 										</div>
 									</div>
-									<div ng:repeat="r in sorted_head_stat_3 = (head_stat_3 | orderBy: 'date':true)">
-										<div ng:if="$index == 0 || r.date != sorted_head_stat_3[$index - 1].date">
+									<div ng:repeat="r in sorted_head_stat_recents = (head_stat_recents | orderBy: 'date':true)">
+										<div ng:if="$index == 0 || r.date != sorted_head_stat_recents[$index - 1].date">
 											<div class="row mt-2" >
 												<div class="col">
 													<span>{{get_date_display(r.date)}}</span>
@@ -112,19 +112,20 @@
 										<div class="col">
 											<h4>
 												<span ng-show="working_head_stats" class="spinner-border spinner-border-sm text-warning ms-1 me-1"></span>
-												<span ng-show="!working_head_stats" class="text-warning">{{head_stat_1}}</span>
+												<span ng-show="!working_head_stats" class="text-warning">{{head_stat_tot}} ({{head_stat_totyr}} this year)</span>
 												<span class="text-warning">pint prices in</span>
 												<span ng-show="working_head_stats" class="spinner-border spinner-border-sm text-warning ms-1 me-1"></span>
 												<span ng-show="!working_head_stats">
-													<span ng-show="home_town.length>0" class="text-warning">{{home_town}}<span class="text-muted">, {{home_city}}, {{home_country}}</span></span>
-													<span ng-show="home_town.length==0" class="text-warning">{{home_country}} </span>
+													<span ng-show="home_town.length==0 && home_city.length>0" class="text-warning">{{home_city}}<span class="text-muted">, {{home_country}}</span></span>
+													<span ng-show="home_city.length>0 && home_town.length>0" class="text-warning">{{home_town}}<span class="text-muted">, {{home_city}}, {{home_country}}</span></span>
+													<span ng-show="home_town.length==0 && home_city.length==0" class="text-warning">{{home_country}} </span>
 												</span>
 											</h4>
 										</div>
 									</div>
 									<div class="row mt-2" >
 										<div class="col">
-											<span>{{head_stat_2}}</span>
+											<span>This year in pubs, {{head_stat_avgs}}</span>
 										</div>
 									</div>
 									<div class="row mt-4">
@@ -506,10 +507,15 @@
 					$scope.token = null;
 					
 					$scope.head_stat_1 = 0;
-					$scope.head_stat_2 = '';
-					$scope.head_stat_3 = '';
+					$scope.head_stat_avgs = '';
+					$scope.head_stat_recents = '';
 					$scope.working_head_stats = false
 
+					$scope.home_country = 'United Kingdom';
+					$scope.home_city = '';
+					$scope.home_town = '';
+					$scope.home_pc = '';
+					
 					country_list = [];
 					
 					$scope.frm_agent = {'command':''};
@@ -770,6 +776,18 @@
 								for (p in response.data.pub)
 								{
 									pub = response.data.pub[p]
+									if ((pub.town == $scope.frm_prices.pub_town || $scope.frm_prices.pub_town == null) && (pub.city == $scope.frm_prices.pub_city || $scope.frm_prices.pub_city == null) && pub.country == $scope.frm_prices.pub_country)
+									{ 
+										var ex = false;
+										for (p2 in $scope.frm_prices.pub_type_list)
+										{
+											ex = ex || $scope.frm_prices.pub_type_list[p2].name == pub.type;
+										}
+										if (!ex)
+										{
+											$scope.frm_prices.pub_type_list.push({'name':pub.type});
+										}
+									}
 									if (response.data.pub[p].country == $scope.frm_prices.pub_country)
 									{ 
 										var ex = false;
@@ -788,6 +806,11 @@
 									$scope.frm_prices.pub_city = $scope.frm_prices.pub_city_list[0].city;
 								}
 								$scope.upd_prices_pub_city();
+								if ($scope.frm_prices.pub_type_list.length == 1)
+								{
+									$scope.frm_prices.pub_type = $scope.frm_prices.pub_type_list[0].name;
+								}
+								$scope.upd_prices_pub_type();
 							});
 					}
 				}
@@ -800,7 +823,6 @@
 					$scope.frm_prices.pub_type = null;
 					$scope.frm_prices.pub_name = null;
 					$scope.frm_prices.pub_town_list = [];
-					$scope.frm_prices.pub_type_list = [];
 					if ($scope.frm_prices.pub_city != null)
 					{
 						url = $scope.service_path + '/pub';
@@ -836,40 +858,6 @@
 			    {
 					$scope.price_stat_data = '';
 					$scope.price_data = '';
-					$scope.frm_prices.pub_type_list = [];
-					$scope.frm_prices.pub_name_list = [];
-					$scope.frm_prices.pub_type = null;
-					$scope.frm_prices.pub_name = null;
-					if ($scope.frm_prices.pub_town != null)
-					{
-						url = $scope.service_path + '/pub';
-						$scope.http_get(url, '', function(response)
-							{
-								$scope.frm_prices.pub_type_list = [];
-								$scope.frm_prices.pub_type = null;
-								for (p in response.data.pub)
-								{
-									pub = response.data.pub[p]
-									if ((pub.town == $scope.frm_prices.pub_town || $scope.frm_prices.pub_town == null) && (pub.city == $scope.frm_prices.pub_city || $scope.frm_prices.pub_city == null) && pub.country == $scope.frm_prices.pub_country)
-									{ 
-										var ex = false;
-										for (p2 in $scope.frm_prices.pub_type_list)
-										{
-											ex = ex || $scope.frm_prices.pub_type_list[p2].name == pub.type;
-										}
-										if (!ex)
-										{
-											$scope.frm_prices.pub_type_list.push({'name':pub.type});
-										}
-									}
-								}
-								if ($scope.frm_prices.pub_type_list.length == 1)
-								{
-									$scope.frm_prices.pub_type = $scope.frm_prices.pub_type_list[0].name;
-								}
-								$scope.upd_prices_pub_type();
-							});
-					}
 			    } 
 			    $scope.upd_prices_pub_type = function()
 			    {
@@ -972,52 +960,93 @@
 
 					var params = 'style=small';
 					params = params + '&pubCountry=' + $scope.home_country;
-					params = params + '&pubCity=' + $scope.home_city;
+					qry = 'BeerTypeAndPubTypeAndCountry'
+					if ($scope.home_city.length > 0)
+					{
+						params = params + '&pubCity=' + $scope.home_city;
+						qry = 'BeerTypeAndPubTypeAndCity'
+					}
 					params = params + '&pubType=Pub';
-					params = params + '&pubTown=' + $scope.home_town;
-					url = $scope.service_path + '/beerpricestats/BeerTypeAndPubTypeAndTown';
-					$scope.http_get(url, params, function(response)
+					if ($scope.home_town.length > 0)
+					{
+						params = params + '&pubTown=' + $scope.home_town;
+						qry = 'BeerTypeAndPubTypeAndTown'
+					}
+					$scope.http_get($scope.service_path + '/beerpricestats/' + qry, params, function(response)
 						{
 							stats = response.data['beer-price-stats'];
-							if (stats.length == 0)
+							if (stats.length==0)
 							{
-								$scope.head_stat_2 = 'Be the first to submit a price';
-								$scope.head_stat_1 = 0;
-								
-								url = $scope.service_path + '/beerpricestats/BeerTypeAndPubTypeAndCity';
-								$scope.http_get(url, params, function(response)
-									{
-										stats = response.data['beer-price-stats'];
-									});
+								$scope.head_stat_avgs = 'Be the first to submit a pub pint price in ' & $scope.home_city;
+								$scope.head_stat_tot = 0;
+								$scope.head_stat_totyr = 0;
 							}
-							if (stats.length > 0)
+							else
 							{
-								$scope.head_stat_2 = '';
+								$scope.head_stat_avgs = '';
 								var frst = true;
-								var max = 0;
 								var tot = 0;
 								for (i = 0; i < stats.length; i++)
 								{
 									tot = tot + stats[i]['count'];
-									max = (stats[i]['count'] > max ? stats[i]['count'] : max);
 								}
-								if (max > 5)
-								{
-									max = 5;
-								}
-								$scope.head_stat_1 = tot
+								$scope.head_stat_tot = tot
 								for (i = 0; i < stats.length; i++)
 								{
-									if (stats[i]['count'] >= max)
+									for (y = 0; y < stats[i]['by-year'].length; y++)
 									{
-										if (!frst)
-										{	
-											$scope.head_stat_2 = $scope.head_stat_2 + ', ';
+										if (stats[i]['by-year'][y]['year'] == new Date().getFullYear())
+										{
+											$scope.head_stat_totyr = stats[i]['by-year'][y]['count']
+											if (!frst)
+											{	
+												$scope.head_stat_avgs = $scope.head_stat_avgs + ', ';
+											}
+											$scope.head_stat_avgs = $scope.head_stat_avgs + stats[i]['beer']['type'] + ' is ' + $scope.home_ccy_symbol + $scope.get_number_display(stats[i]['by-year'][y]['avg-price'], 2);
+											frst = false;
 										}
-										$scope.head_stat_2 = $scope.head_stat_2 + stats[i]['beer']['type'] + ' is ' + $scope.home_ccy_symbol + $scope.get_number_display(stats[i]['avg-price'], 2);
-										frst = false;
 									}
 								}
+/*								if ($scope.home_country == 'United Kingdom')
+								{
+									var params = 'style=small';
+									params = params + '&pubCountry=' + $scope.home_country;
+									params = params + '&pubCity=Greater London'
+									$scope.http_get($scope.service_path + '/beerpricestats/BeerTypeAndPubTypeAndCity', params, function(response)
+										{
+											stats = response.data['beer-price-stats'];
+											$scope.head_stat_ldntot = 0;
+											$scope.head_stat_ldntotyr = 0;
+											if (stats.length>0)
+											{
+												$scope.head_stat_ldnavgs = '';
+												var frst = true;
+												var tot = 0;
+												for (i = 0; i < stats.length; i++)
+												{
+													tot = tot + stats[i]['count'];
+												}
+												$scope.head_stat_ldntot = tot
+												for (i = 0; i < stats.length; i++)
+												{
+													for (y = 0; y < stats[i]['by-year'].length; y++)
+													{
+														if (stats[i]['by-year'][y]['year'] == new Date().getFullYear())
+														{
+															$scope.head_stat_ldntotyr = stats[i]['by-year'][y]['count']
+															if (!frst)
+															{	
+																$scope.head_stat_ldnavgs = $scope.head_stat_ldnavgs + ', ';
+															}
+															$scope.head_stat_ldnavgs = $scope.head_stat_ldnavgs + stats[i]['beer']['type'] + ' is ' + $scope.home_ccy_symbol + $scope.get_number_display(stats[i]['by-year'][y]['avg-price'], 2);
+															frst = false;
+														}
+													}
+												}
+											}
+										});
+								}
+*/
 							}
 						});
 				}
@@ -1097,7 +1126,6 @@
 										$scope.frm_pub.type_list.push(pubtype);
 									}
 									$scope.frm_pub.type = 'Pub'
-									$scope.frm_prices.pub_type = 'Pub'
 									$scope.upd_prices_pub_type();
 								});
 
@@ -1113,7 +1141,6 @@
 										$scope.frm_beer.type_list.push(beertype);
 									}
 									$scope.frm_beer.type = 'Lager'
-									$scope.frm_prices.beer_type = 'Lager'
 									$scope.upd_prices_beer_type();
 								});
 
@@ -1149,8 +1176,9 @@
 									$scope.working_head_stats = true;
 									var stats = [];
 
-									$scope.head_stat_1 = 0;
-									$scope.head_stat_2 = '';
+									$scope.head_stat_tot = 0;
+									$scope.head_stat_totyr = 0;
+									$scope.head_stat_avgs = '';
 
 									url = $scope.service_path + '/refdata/ccy';
 									$scope.http_get(url, '', function(response)
@@ -1174,7 +1202,7 @@
 											url = $scope.service_path + '/beerprice';
 											$scope.http_get(url, 'page=1&pageSize=10&pubCountry=' + $scope.home_country, function(response)
 												{
-													$scope.head_stat_3 = response.data['beer-price'];
+													$scope.head_stat_recents = response.data['beer-price'];
 												});
 											$scope.working_head_stats = false
 											$scope.upd_location_stats()
