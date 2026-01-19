@@ -88,14 +88,14 @@
 									<div class="row mt-0" >
 										<div class="col">
 											<h4>
-												<span class="text-warning">Recent pint prices in</span>
+												<span class="text-warning">The latest pint prices in</span>
 												<span ng-show="working_head_stats" class="spinner-border spinner-border-sm text-warning ms-1 me-1"></span>
 												<span ng-show="!working_head_stats" class="text-warning">{{home_country}} </span>
 											</h4>
 										</div>
 									</div>
-									<div ng:repeat="r in sorted_head_stat_recents = (head_stat_recents | orderBy: 'date':true)">
-										<div ng:if="$index == 0 || r.date != sorted_head_stat_recents[$index - 1].date">
+									<div ng:repeat="r in sorted_head_stat_latest = (head_stat_latest | orderBy: 'date':true)">
+										<div ng:if="$index == 0 || r.date != sorted_head_stat_latest[$index - 1].date">
 											<div class="row mt-2" >
 												<div class="col">
 													<span>{{get_date_display(r.date)}}</span>
@@ -530,7 +530,7 @@
 					
 					$scope.head_stat_1 = 0;
 					$scope.head_stat_avgs = '';
-					$scope.head_stat_recents = '';
+					$scope.head_stat_latest = '';
 					$scope.working_head_stats = false
 
 					$scope.home_country = 'United Kingdom';
@@ -1225,9 +1225,9 @@
 											$scope.frm_prices.display_fxrate = 1
 
 											url = $scope.service_path + '/beerprice';
-											$scope.http_get(url, 'page=1&pageSize=10&pubCountry=' + $scope.home_country, function(response)
+											$scope.http_get(url, 'page=1&pageSize=5&pubCountry=' + $scope.home_country, function(response)
 												{
-													$scope.head_stat_recents = response.data['beer-price'];
+													$scope.head_stat_latest = response.data['beer-price'];
 												});
 											$scope.working_head_stats = false
 											$scope.upd_location_stats()
