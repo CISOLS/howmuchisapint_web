@@ -88,14 +88,14 @@
 									<div class="row mt-0" >
 										<div class="col">
 											<h4>
-												<span class="text-warning">Recent pint prices in</span>
+												<span class="text-warning">The latest pint prices in</span>
 												<span ng-show="working_head_stats" class="spinner-border spinner-border-sm text-warning ms-1 me-1"></span>
 												<span ng-show="!working_head_stats" class="text-warning">{{home_country}} </span>
 											</h4>
 										</div>
 									</div>
-									<div ng:repeat="r in sorted_head_stat_3 = (head_stat_3 | orderBy: 'date':true)">
-										<div ng:if="$index == 0 || r.date != sorted_head_stat_3[$index - 1].date">
+									<div ng:repeat="r in sorted_head_stat_latest = (head_stat_latest | orderBy: 'date':true)">
+										<div ng:if="$index == 0 || r.date != sorted_head_stat_latest[$index - 1].date">
 											<div class="row mt-2" >
 												<div class="col">
 													<span>{{get_date_display(r.date)}}</span>
@@ -112,19 +112,20 @@
 										<div class="col">
 											<h4>
 												<span ng-show="working_head_stats" class="spinner-border spinner-border-sm text-warning ms-1 me-1"></span>
-												<span ng-show="!working_head_stats" class="text-warning">{{head_stat_1}}</span>
+												<span ng-show="!working_head_stats" class="text-warning">{{head_stat_tot}} ({{head_stat_tot2}})</span>
 												<span class="text-warning">pint prices in</span>
 												<span ng-show="working_head_stats" class="spinner-border spinner-border-sm text-warning ms-1 me-1"></span>
 												<span ng-show="!working_head_stats">
-													<span ng-show="home_town.length>0" class="text-warning">{{home_town}}<span class="text-muted">, {{home_city}}, {{home_country}}</span></span>
-													<span ng-show="home_town.length==0" class="text-warning">{{home_country}} </span>
+													<span ng-show="home_town.length==0 && home_city.length>0" class="text-warning">{{home_city}}<span class="text-muted">, {{home_country}}</span></span>
+													<span ng-show="home_city.length>0 && home_town.length>0" class="text-warning">{{home_town}}<span class="text-muted">, {{home_city}}, {{home_country}}</span></span>
+													<span ng-show="home_town.length==0 && home_city.length==0" class="text-warning">{{home_country}} </span>
 												</span>
 											</h4>
 										</div>
 									</div>
 									<div class="row mt-2" >
 										<div class="col">
-											<span>{{head_stat_2}}</span>
+											<span>Recently in pubs, {{head_stat_avgs}}</span>
 										</div>
 									</div>
 									<div class="row mt-4">
@@ -144,7 +145,7 @@
 													</span>
 												</a>
 											</span>
-											<span id="agent_info" class="collapse text-secondary ms-1">Don't get offended if this does not work... the command may actually have worked althoug it doesn't look like it (the request may have timed out), so check before trying again, it may also have just done something stupid, and finally it might not work if the money may has run out!</span>
+											<span id="agent_info" class="collapse text-secondary ms-1">Don't get offended if this does not work... the command may actually have worked although it doesn't look like it (the request may have timed out), so check before trying again, it quite likely may respond with something stupid, so trying again might work, and finally the money may have run out!</span>
 										</div>
 									</div>
 									<div class="row mt-0">
@@ -190,7 +191,7 @@
 											<div class="col">
 												<button type="button" class="btn-light btn-sm" ng-click="clear_beers_sel()">Clear</button>
 												<button type="button" class="btn-light btn-sm" ng-click="get_beers()">List</button>
-												<button type="button" class="btn-light btn-sm" ng-click="add_beer()">Add New</button>
+												<button type="button" class="btn-light btn-sm" ng-click="add_beer()">Add</button>
 											</div>
 										</div>
 										<div class="row mt-3 mb-2">
@@ -292,7 +293,7 @@
 										</div>
 										<div class="row mt-3">
 											<div class="col">
-												<button type="button" class="btn-light btn-sm" ng-click="add_pub()">Add New</button>
+												<button type="button" class="btn-light btn-sm" ng-click="add_pub()">Add</button>
 											</div>
 										</div>
 										<div class="row mt-3 mb-2">
@@ -343,7 +344,7 @@
 												<select ng-options="beertype.name as beertype.name for beertype in (frm_prices.beer_type_list| orderBy:'name')" class="form-control bg-dark text-light" ng-change="upd_prices_beer_type()" ng-model="frm_prices.beer_type" >
 													<option value=""> -- Type  -- </option>
 												</select>
-												<select ng-options="beer as beer.name for beer in (frm_prices.beer_name_list | orderBy:['\u0022display-name\u0022'])" class="form-control bg-dark text-light" ng-change="upd_prices_beer_name()" ng-model="frm_prices.beer_name" >
+												<select ng-options="beer as beer.name for beer in (frm_prices.beer_name_list | orderBy:['name'])" class="form-control bg-dark text-light" ng-change="upd_prices_beer_name()" ng-model="frm_prices.beer_name" >
 													<option value=""> -- Beer  -- </option>
 												</select>
 											</div>
@@ -401,10 +402,10 @@
 										</div>
 										<div ng-show="!working_get_prices && price_stat_data['beer-price-stats'].length>0">
 											<div ng:repeat="r in sorted_price_stat_data = price_stat_data['beer-price-stats'] | orderBy: ['pub.type','beer.type','pub']">
-												<div data-bs-toggle="collapse" data-bs-target="#{{'pricestat_' + $index}}">
+												<div data-bs-toggle="collapse" data-bs-target="#{{'pricestat1_' + $index}}">
 													<div class="row mt-0">
 														<div class="col">
-															<span class="text-info">{{r.beer.type}} in {{r.pub.type}}s is {{frm_prices.display_ccy_symbol}}{{get_number_display(r['avg-price'] / frm_prices.display_fxrate, 2)}}
+															<span ng-show="r['recent-count']>0" class="text-info">{{r.beer.type}} in {{r.pub.type}}s is {{frm_prices.display_ccy_symbol}}{{get_number_display(r['recent-avg-price'] / frm_prices.display_fxrate, 2)}}
 																<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrows-expand" viewBox="0 0 16 16">
 																  <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8zM7.646.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 1.707V5.5a.5.5 0 0 1-1 0V1.707L6.354 2.854a.5.5 0 1 1-.708-.708l2-2zM8 10a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 0 1 .708-.708L7.5 14.293V10.5A.5.5 0 0 1 8 10z"/>
 																</svg>
@@ -412,8 +413,30 @@
 														</div>
 													</div>
 												</div>
-												<div id="{{'pricestat_' + $index}}" class="collapse">
-													<div ng:repeat="y in sorted_price_stat_data_year = r['by-year'] | orderBy: -['year']">
+												<div id="{{'pricestat1_' + $index}}" class="collapse">
+													<div ng:repeat="y in sorted_price_stat_data_year = r['by-year'] | orderBy: ['year']:true">
+														<div class="row mt-0">
+															<div class="col">
+																<span class="text-muted">{{frm_prices.display_ccy_symbol}}{{get_number_display(y['avg-price'] / frm_prices.display_fxrate, 2)}} from {{get_number_display(y.count,0)}} prices {{get_years_ago_display(y.year)}}</span>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+											<div ng:repeat="r in sorted_price_stat_data = price_stat_data['beer-price-stats'] | orderBy: ['pub.type','beer.type','pub']">
+												<div data-bs-toggle="collapse" data-bs-target="#{{'pricestat2_' + $index}}">
+													<div class="row mt-0">
+														<div class="col">
+															<span ng-show="r['recent-count']==0" class="text-info">{{r.beer.type}} in {{r.pub.type}}s has no recent prices
+																<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrows-expand" viewBox="0 0 16 16">
+																  <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8zM7.646.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 1.707V5.5a.5.5 0 0 1-1 0V1.707L6.354 2.854a.5.5 0 1 1-.708-.708l2-2zM8 10a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 0 1 .708-.708L7.5 14.293V10.5A.5.5 0 0 1 8 10z"/>
+																</svg>
+															</span>
+														</div>
+													</div>
+												</div>
+												<div id="{{'pricestat2_' + $index}}" class="collapse">
+													<div ng:repeat="y in sorted_price_stat_data_year = r['by-year'] | orderBy: ['year']:true">
 														<div class="row mt-0">
 															<div class="col">
 																<span class="text-muted">{{frm_prices.display_ccy_symbol}}{{get_number_display(y['avg-price'] / frm_prices.display_fxrate, 2)}} from {{get_number_display(y.count,0)}} prices {{get_years_ago_display(y.year)}}</span>
@@ -438,7 +461,7 @@
 										</div>
 										<div class="row mt-3">
 											<div class="col">
-												<button type="button" class="btn-light btn-sm" ng-click="add_price()">Add New</button>
+												<button type="button" class="btn-light btn-sm" ng-click="add_price()">Add</button>
 											</div>
 										</div>
 										<div class="row mt-3 mb-2">
@@ -482,10 +505,10 @@
 			<div class="p-3 text-light bg-dark">
 				<div class="row mb-1">
 					<div class="col">
-						<span class="float-start"><a href="mailto:hello@conceptintegral.com" class="link-secondary text-decoration-none">hello@conceptintegral.com</a></span>
+						<span class="float-start"><a href="mailto:hello@conceptintegral.com" class="link-secondary text-decoration-none">hello@howmuchisapint.com</a></span>
 					</div>
 					<div class="col">
-						<span class="float-end text-secondary">&copy; 2022 <a href="https://www.conceptintegral.com" class="link-secondary text-decoration-none">Concept Integral</a></span>
+						<span class="float-end text-secondary">&copy; 2026 <a href="https://www.howmuchisapint.com" class="link-secondary text-decoration-none">Concept Integral</a></span>
 					</div>
 				</div>
 			</span>
@@ -506,10 +529,15 @@
 					$scope.token = null;
 					
 					$scope.head_stat_1 = 0;
-					$scope.head_stat_2 = '';
-					$scope.head_stat_3 = '';
+					$scope.head_stat_avgs = '';
+					$scope.head_stat_latest = '';
 					$scope.working_head_stats = false
 
+					$scope.home_country = 'United Kingdom';
+					$scope.home_city = '';
+					$scope.home_town = '';
+					$scope.home_pc = '';
+					
 					country_list = [];
 					
 					$scope.frm_agent = {'command':''};
@@ -584,22 +612,22 @@
 					}
 					if (resp.status == 403 && $scope.token != "")
 					{
-						$scope.clean()
-						$scope.login()
-						
-//						$http.get($scope.service_path + '/authenticate?uid=' + $scope.user, function(resp)
-//							{
-//								$scope.token = resp.data.token 
-//								$scope.token_exp = resp.data.expiry 
-//								console.log('token is ' + $scope.token);
-//								if (retry_action != undefined)
-//								{	
-//									retry_action();
-//								}
-//							},function(resp)
-//							{
-//								new bootstrap.Modal(document.getElementById("frm_unhandled_error"), {}).show();
-//							});
+						$http.get($scope.service_path + '/authenticate?uid=' + $scope.user).then(
+							function(resp)
+							{
+								$scope.token = resp.data.token 
+								$scope.token_exp = resp.data.expiry 
+								console.log('token is ' + $scope.token);
+								if (retry_action != undefined)
+								{	
+									retry_action();
+								}
+							},
+							function(resp)
+							{
+								$scope.clean()
+								$scope.login()
+							});
 					}
 					else if (resp.status > 399 && resp.status < 500 && inv_action != undefined)
 					{
@@ -619,63 +647,27 @@
 				{
 					$scope.service_message = "";
 					req_url = url
-					if ($scope.token != "" && $scope.token != null)
-					{
-						req_url = url + "?token=" + $scope.token;
-					}
 					if (params != undefined && params.length > 0)
 					{
-						if ($scope.token == "" || $scope.token == null)
-						{
-							req_url = req_url + "?";
-						}
-						else
-						{
-							req_url = req_url + "&";
-						}
-						req_url = req_url + params;
+						req_url = req_url + '?' + params;
 					}
-					console.log("GET:" + req_url)
-//					var retry_action = (function (url) 
-//											{
-//												return function () 
-//														{
-//															$http.get(url);
-//														};
-//											}
-//										)(req_url);
-
-					retry_action = function(){console.log("GET:" + url); $http.get(url).then(function(resp){$scope.http_success(resp, success_action, invalid_action, error_action)},function(resp){$scope.http_fail(resp, invalid_action, error_action)})};
-					$http.get(req_url).then(function(resp){$scope.http_success(resp, success_action, invalid_action, error_action, retry_action)}, function(resp){$scope.http_fail(resp, invalid_action, error_action, retry_action)});
-				}
-				$scope.http_put = function(url, msg, success_action, invalid_action, error_action)
-				{
-					$scope.service_message = "";
-					post_msg = msg
-					msg['token'] = $scope.token
-					put_msg = JSON.stringify(msg)
-					console.log("PUT:" + url + ':' + put_msg)
-					retry_action = function(){console.log("PUT:" + url + ':' + put_msg); $http.put(url, put_msg).then(function(resp){$scope.http_success(resp, success_action, invalid_action, error_action)}, function(resp){$scope.http_fail(resp, invalid_action, error_action)})};
-					$http.put(url, put_msg).then(function(resp){$scope.http_success(resp, success_action, invalid_action, error_action, retry_action)}, function(resp){$scope.http_fail(resp, invalid_action, error_action, retry_action)});
+					var retry_action = function (retry_url) {
+													return function(){console.log("GET:" + retry_url + (params.length > 0 ? '&' : '?') + 'token=' + $scope.token); $http.get(retry_url + (params.length > 0 ? '&' : '?') + 'token=' + $scope.token).then(function(resp){$scope.http_success(resp, success_action, invalid_action, error_action)},function(resp){$scope.http_fail(resp, invalid_action, error_action)})};
+															}(req_url);
+					console.log("GET:" + req_url + (params.length > 0 ? '&' : '?') + 'token=' + $scope.token)
+					$http.get(req_url + (params.length > 0 ? '&' : '?') + 'token=' + $scope.token).then(function(resp){$scope.http_success(resp, success_action, invalid_action, error_action, retry_action)}, function(resp){$scope.http_fail(resp, invalid_action, error_action, retry_action)});
 				}
 				$scope.http_post = function(url, msg, success_action, invalid_action, error_action)
 				{
 					$scope.service_message = "";
-					post_msg = msg
+					var retry_action = function (retry_url, retry_msg) {
+													return function(){retry_msg['token'] = $scope.token; retry_post_msg = JSON.stringify(retry_msg); console.log("post:" + retry_url + ':' + retry_post_msg); $http.post(retry_url, retry_msg).then(function(resp){$scope.http_success(resp, success_action, invalid_action, error_action)}, function(resp){$scope.http_fail(resp, invalid_action, error_action)})};
+															}(url, msg);
 					msg['token'] = $scope.token
 					post_msg = JSON.stringify(msg)
-					console.log("POST:" + url + ':' + post_msg)
-					retry_action = function(){console.log("POST:" + url + ':' + post_msg); $http.post(url, post_msg).then(function(resp){$scope.http_success(resp, success_action, invalid_action, error_action)}, function(resp){$scope.http_fail(resp, invalid_action, error_action)})};
+					console.log("post:" + url + ':' + post_msg)
 					$http.post(url, post_msg).then(function(resp){$scope.http_success(resp, success_action, invalid_action, error_action, retry_action)}, function(resp){$scope.http_fail(resp, invalid_action, error_action, retry_action)});
 				}
-				$scope.http_delete = function(url, success_action, invalid_action, error_action)
-				{
-					$scope.service_message = "";
-					console.log("DELETE:" + url)
-					retry_action = function(){console.log("DELETE:" + url); $http.get(url).then(function(resp){$scope.http_success(resp, success_action, invalid_action, error_action)}, function(resp){$scope.http_fail(resp, invalid_action, error_action)})};
-					$http.delete(url + "?token=" + $scope.token).then(function(resp){$scope.http_success(resp, success_action, invalid_action, error_action, retry_action)}, function(resp){$scope.http_fail(resp, invalid_action, error_action, retry_action)})
-				}
-
 				$scope.home_country = 'United Kingdom';
 				$scope.home_city = '';
 				$scope.home_town = '';
@@ -770,6 +762,18 @@
 								for (p in response.data.pub)
 								{
 									pub = response.data.pub[p]
+									if ((pub.town == $scope.frm_prices.pub_town || $scope.frm_prices.pub_town == null) && (pub.city == $scope.frm_prices.pub_city || $scope.frm_prices.pub_city == null) && pub.country == $scope.frm_prices.pub_country)
+									{ 
+										var ex = false;
+										for (p2 in $scope.frm_prices.pub_type_list)
+										{
+											ex = ex || $scope.frm_prices.pub_type_list[p2].name == pub.type;
+										}
+										if (!ex)
+										{
+											$scope.frm_prices.pub_type_list.push({'name':pub.type});
+										}
+									}
 									if (response.data.pub[p].country == $scope.frm_prices.pub_country)
 									{ 
 										var ex = false;
@@ -788,6 +792,11 @@
 									$scope.frm_prices.pub_city = $scope.frm_prices.pub_city_list[0].city;
 								}
 								$scope.upd_prices_pub_city();
+								if ($scope.frm_prices.pub_type_list.length == 1)
+								{
+									$scope.frm_prices.pub_type = $scope.frm_prices.pub_type_list[0].name;
+								}
+								$scope.upd_prices_pub_type();
 							});
 					}
 				}
@@ -800,7 +809,6 @@
 					$scope.frm_prices.pub_type = null;
 					$scope.frm_prices.pub_name = null;
 					$scope.frm_prices.pub_town_list = [];
-					$scope.frm_prices.pub_type_list = [];
 					if ($scope.frm_prices.pub_city != null)
 					{
 						url = $scope.service_path + '/pub';
@@ -836,40 +844,8 @@
 			    {
 					$scope.price_stat_data = '';
 					$scope.price_data = '';
-					$scope.frm_prices.pub_type_list = [];
-					$scope.frm_prices.pub_name_list = [];
 					$scope.frm_prices.pub_type = null;
-					$scope.frm_prices.pub_name = null;
-					if ($scope.frm_prices.pub_town != null)
-					{
-						url = $scope.service_path + '/pub';
-						$scope.http_get(url, '', function(response)
-							{
-								$scope.frm_prices.pub_type_list = [];
-								$scope.frm_prices.pub_type = null;
-								for (p in response.data.pub)
-								{
-									pub = response.data.pub[p]
-									if ((pub.town == $scope.frm_prices.pub_town || $scope.frm_prices.pub_town == null) && (pub.city == $scope.frm_prices.pub_city || $scope.frm_prices.pub_city == null) && pub.country == $scope.frm_prices.pub_country)
-									{ 
-										var ex = false;
-										for (p2 in $scope.frm_prices.pub_type_list)
-										{
-											ex = ex || $scope.frm_prices.pub_type_list[p2].name == pub.type;
-										}
-										if (!ex)
-										{
-											$scope.frm_prices.pub_type_list.push({'name':pub.type});
-										}
-									}
-								}
-								if ($scope.frm_prices.pub_type_list.length == 1)
-								{
-									$scope.frm_prices.pub_type = $scope.frm_prices.pub_type_list[0].name;
-								}
-								$scope.upd_prices_pub_type();
-							});
-					}
+					$scope.upd_prices_pub_type();
 			    } 
 			    $scope.upd_prices_pub_type = function()
 			    {
@@ -887,9 +863,9 @@
 								for (p in response.data.pub)
 								{
 									pub = response.data.pub[p]
-									if (pub.type == $scope.frm_prices.pub_type && pub.town == $scope.frm_prices.pub_town && pub.city == $scope.frm_prices.pub_city && pub.country == $scope.frm_prices.pub_country)
+									if (pub.type == $scope.frm_prices.pub_type && (pub.town == $scope.frm_prices.pub_town || $scope.frm_prices.pub_town == null) && (pub.city == $scope.frm_prices.pub_city || $scope.frm_prices.pub_city == null) && pub.country == $scope.frm_prices.pub_country)
 									{ 
-										$scope.frm_prices.pub_name_list.push({'name':pub.name, 'id':pub.audit.id});
+										$scope.frm_prices.pub_name_list.push({'display-name':pub['display-name'], 'name':pub['name'], 'id':pub.audit.id});
 									}
 								}
 								if ($scope.frm_prices.pub_name_list.length == 1)
@@ -972,52 +948,96 @@
 
 					var params = 'style=small';
 					params = params + '&pubCountry=' + $scope.home_country;
-					params = params + '&pubCity=' + $scope.home_city;
+					qry = 'BeerTypeAndPubTypeAndCountry'
+					if ($scope.home_city.length > 0)
+					{
+						params = params + '&pubCity=' + $scope.home_city;
+						qry = 'BeerTypeAndPubTypeAndCity'
+					}
 					params = params + '&pubType=Pub';
-					params = params + '&pubTown=' + $scope.home_town;
-					url = $scope.service_path + '/beerpricestats/BeerTypeAndPubTypeAndTown';
-					$scope.http_get(url, params, function(response)
+					if ($scope.home_town.length > 0)
+					{
+						params = params + '&pubTown=' + $scope.home_town;
+						qry = 'BeerTypeAndPubTypeAndTown'
+					}
+					$scope.http_get($scope.service_path + '/beerpricestats/' + qry, params, function(response)
 						{
 							stats = response.data['beer-price-stats'];
-							if (stats.length == 0)
+							if (stats.length==0)
 							{
-								$scope.head_stat_2 = 'Be the first to submit a price';
-								$scope.head_stat_1 = 0;
-								
-								url = $scope.service_path + '/beerpricestats/BeerTypeAndPubTypeAndCity';
-								$scope.http_get(url, params, function(response)
-									{
-										stats = response.data['beer-price-stats'];
-									});
+								$scope.head_stat_avgs = 'Be the first to submit a pub pint price in ' & $scope.home_city;
+								$scope.head_stat_tot = 0;
+								$scope.head_stat_tot2 = '';
 							}
-							if (stats.length > 0)
+							else
 							{
-								$scope.head_stat_2 = '';
-								var frst = true;
-								var max = 0;
-								var tot = 0;
+								$scope.head_stat_avgs = '';
+								$scope.head_stat_tot = 0;
 								for (i = 0; i < stats.length; i++)
 								{
-									tot = tot + stats[i]['count'];
-									max = (stats[i]['count'] > max ? stats[i]['count'] : max);
+									$scope.head_stat_tot = $scope.head_stat_tot + stats[i]['count'];
 								}
-								if (max > 5)
-								{
-									max = 5;
-								}
-								$scope.head_stat_1 = tot
+								totyr = 0;
+								minyr = ''
 								for (i = 0; i < stats.length; i++)
 								{
-									if (stats[i]['count'] >= max)
+									totyr = totyr + stats[i]['recent-count'];
+									if (minyr == '' || stats[i]['recent-min-date'] < minyr)
 									{
-										if (!frst)
-										{	
-											$scope.head_stat_2 = $scope.head_stat_2 + ', ';
-										}
-										$scope.head_stat_2 = $scope.head_stat_2 + stats[i]['beer']['type'] + ' is ' + $scope.home_ccy_symbol + $scope.get_number_display(stats[i]['avg-price'], 2);
-										frst = false;
+										minyr = stats[i]['recent-min-date']
 									}
 								}
+								$scope.head_stat_tot2 = totyr + ' recent' //' since ' + $scope.get_date_display(minyr);
+								var frst = true;
+								for (i = 0; i < stats.length; i++)
+								{
+									if (!frst)
+									{	
+										$scope.head_stat_avgs = $scope.head_stat_avgs + ', ';
+									}
+									$scope.head_stat_avgs = $scope.head_stat_avgs + stats[i]['beer']['type'] + ' is ' + $scope.home_ccy_symbol + $scope.get_number_display(stats[i]['recent-avg-price'], 2);
+									frst = false;
+								}
+/*								if ($scope.home_country == 'United Kingdom')
+								{
+									var params = 'style=small';
+									params = params + '&pubCountry=' + $scope.home_country;
+									params = params + '&pubCity=Greater London'
+									$scope.http_get($scope.service_path + '/beerpricestats/BeerTypeAndPubTypeAndCity', params, function(response)
+										{
+											stats = response.data['beer-price-stats'];
+											$scope.head_stat_ldntot = 0;
+											$scope.head_stat_ldntotyr = 0;
+											if (stats.length>0)
+											{
+												$scope.head_stat_ldnavgs = '';
+												var frst = true;
+												var tot = 0;
+												for (i = 0; i < stats.length; i++)
+												{
+													tot = tot + stats[i]['count'];
+												}
+												$scope.head_stat_ldntot = tot
+												for (i = 0; i < stats.length; i++)
+												{
+													for (y = 0; y < stats[i]['by-year'].length; y++)
+													{
+														if (stats[i]['by-year'][y]['year'] == new Date().getFullYear())
+														{
+															$scope.head_stat_ldntotyr = stats[i]['by-year'][y]['count']
+															if (!frst)
+															{	
+																$scope.head_stat_ldnavgs = $scope.head_stat_ldnavgs + ', ';
+															}
+															$scope.head_stat_ldnavgs = $scope.head_stat_ldnavgs + stats[i]['beer']['type'] + ' is ' + $scope.home_ccy_symbol + $scope.get_number_display(stats[i]['by-year'][y]['avg-price'], 2);
+															frst = false;
+														}
+													}
+												}
+											}
+										});
+								}
+*/
 							}
 						});
 				}
@@ -1097,7 +1117,6 @@
 										$scope.frm_pub.type_list.push(pubtype);
 									}
 									$scope.frm_pub.type = 'Pub'
-									$scope.frm_prices.pub_type = 'Pub'
 									$scope.upd_prices_pub_type();
 								});
 
@@ -1113,7 +1132,6 @@
 										$scope.frm_beer.type_list.push(beertype);
 									}
 									$scope.frm_beer.type = 'Lager'
-									$scope.frm_prices.beer_type = 'Lager'
 									$scope.upd_prices_beer_type();
 								});
 
@@ -1149,8 +1167,9 @@
 									$scope.working_head_stats = true;
 									var stats = [];
 
-									$scope.head_stat_1 = 0;
-									$scope.head_stat_2 = '';
+									$scope.head_stat_tot = 0;
+									$scope.head_stat_totyr = 0;
+									$scope.head_stat_avgs = '';
 
 									url = $scope.service_path + '/refdata/ccy';
 									$scope.http_get(url, '', function(response)
@@ -1174,7 +1193,7 @@
 											url = $scope.service_path + '/beerprice';
 											$scope.http_get(url, 'page=1&pageSize=5&pubCountry=' + $scope.home_country, function(response)
 												{
-													$scope.head_stat_3 = response.data['beer-price'];
+													$scope.head_stat_latest = response.data['beer-price'];
 												});
 											$scope.working_head_stats = false
 											$scope.upd_location_stats()
@@ -1336,17 +1355,17 @@
 					{
 						params = params + '&pubType=' + $scope.frm_prices.pub_type;
 					}				
-					if ($scope.frm_prices.pub_name != null && $scope.frm_prices.pub_name.length > 0)
+					if ($scope.frm_prices.pub_name != null && $scope.frm_prices.pub_name.name.length > 0)
 					{
-						params = params + '&pubName=' + $scope.frm_prices.pub_name;
+						params = params + '&pubName=' + $scope.frm_prices.pub_name.name;
 					}				
 					if ($scope.frm_prices.beer_type != null && $scope.frm_prices.beer_type.length > 0)
 					{
 						params = params + '&beerType=' + $scope.frm_prices.beer_type;
 					}	
-					if ($scope.frm_prices.beer_name != null && $scope.frm_prices.beer_name.length > 0)
+					if ($scope.frm_prices.beer_name != null && $scope.frm_prices.beer_name.name.length > 0)
 					{
-						params = params + '&beerName=' + $scope.frm_prices.beer_name;
+						params = params + '&beerName=' + $scope.frm_prices.beer_name.name;
 					}
 					return params;
 				}
@@ -1368,19 +1387,12 @@
 							$scope.price_stat_data = response.data;
 							var tot = 0;
 							var yrtot = 0;
-							yr = new Date().getFullYear()
 							for (p in response.data['beer-price-stats'])
 							{
-								for (s in response.data['beer-price-stats'][p]['by-year'])
-								{
-									if (yr - response.data['beer-price-stats'][p]['by-year'][s].year == 0)
-									{
-										yrtot = yrtot + response.data['beer-price-stats'][p]['by-year'][s].count;
-									}
-								}
 								tot = tot + response.data['beer-price-stats'][p].count;
+								yrtot = yrtot + response.data['beer-price-stats'][p]['recent-count'];
 							}
-							$scope.get_prices_info = response.data['beer-price-stats'].length + ' summaries from ' + tot + ' prices (' + yrtot + ' this year) ' + $scope.prices_criteria();
+							$scope.get_prices_info = response.data['beer-price-stats'].length + ' summaries from ' + tot + ' prices (' + yrtot + ' recent) ' + $scope.prices_criteria();
 							$scope.working_get_prices = false;
 						}, 
 						function(response) 
@@ -1441,18 +1453,18 @@
 			    $scope.prices_criteria = function()
 			    {
 					var criteria = ' '
-					if ($scope.frm_prices.beer_name != null && $scope.frm_prices.beer_name.length > 0)
+					if ($scope.frm_prices.beer_name != null && $scope.frm_prices.beer_name.name.length > 0)
 					{
-						criteria = criteria + ' for ' + $scope.frm_prices.beer_name + ' ';
+						criteria = criteria + ' for ' + $scope.frm_prices.beer_name.name + ' ';
 					}
 					else if ($scope.frm_prices.beer_type != null && $scope.frm_prices.beer_type.length > 0)
 					{
 						criteria = criteria + ' for ' + $scope.frm_prices.beer_type + ' ';
 					}
 					criteria = criteria + ' in ' 
-					if ($scope.frm_prices.pub_name != null && $scope.frm_prices.pub_name.length > 0)
+					if ($scope.frm_prices.pub_name != null && $scope.frm_prices.pub_name.name.length > 0)
 					{
-						criteria = criteria + $scope.frm_prices.pub_name + ' in ';
+						criteria = criteria + $scope.frm_prices.pub_name.name + ' in ';
 					}
 					else if ($scope.frm_prices.pub_type != null && $scope.frm_prices.pub_type.length > 0)
 					{

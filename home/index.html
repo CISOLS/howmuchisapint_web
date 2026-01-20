@@ -612,22 +612,22 @@
 					}
 					if (resp.status == 403 && $scope.token != "")
 					{
-						$scope.clean()
-						$scope.login()
-						
-//						$http.get($scope.service_path + '/authenticate?uid=' + $scope.user, function(resp)
-//							{
-//								$scope.token = resp.data.token 
-//								$scope.token_exp = resp.data.expiry 
-//								console.log('token is ' + $scope.token);
-//								if (retry_action != undefined)
-//								{	
-//									retry_action();
-//								}
-//							},function(resp)
-//							{
-//								new bootstrap.Modal(document.getElementById("frm_unhandled_error"), {}).show();
-//							});
+						$http.get($scope.service_path + '/authenticate?uid=' + $scope.user).then(
+							function(resp)
+							{
+								$scope.token = resp.data.token 
+								$scope.token_exp = resp.data.expiry 
+								console.log('token is ' + $scope.token);
+								if (retry_action != undefined)
+								{	
+									retry_action();
+								}
+							},
+							function(resp)
+							{
+								$scope.clean()
+								$scope.login()
+							});
 					}
 					else if (resp.status > 399 && resp.status < 500 && inv_action != undefined)
 					{
@@ -647,63 +647,27 @@
 				{
 					$scope.service_message = "";
 					req_url = url
-					if ($scope.token != "" && $scope.token != null)
-					{
-						req_url = url + "?token=" + $scope.token;
-					}
 					if (params != undefined && params.length > 0)
 					{
-						if ($scope.token == "" || $scope.token == null)
-						{
-							req_url = req_url + "?";
-						}
-						else
-						{
-							req_url = req_url + "&";
-						}
-						req_url = req_url + params;
+						req_url = req_url + '?' + params;
 					}
-					console.log("GET:" + req_url)
-//					var retry_action = (function (url) 
-//											{
-//												return function () 
-//														{
-//															$http.get(url);
-//														};
-//											}
-//										)(req_url);
-
-					retry_action = function(){console.log("GET:" + url); $http.get(url).then(function(resp){$scope.http_success(resp, success_action, invalid_action, error_action)},function(resp){$scope.http_fail(resp, invalid_action, error_action)})};
-					$http.get(req_url).then(function(resp){$scope.http_success(resp, success_action, invalid_action, error_action, retry_action)}, function(resp){$scope.http_fail(resp, invalid_action, error_action, retry_action)});
-				}
-				$scope.http_put = function(url, msg, success_action, invalid_action, error_action)
-				{
-					$scope.service_message = "";
-					post_msg = msg
-					msg['token'] = $scope.token
-					put_msg = JSON.stringify(msg)
-					console.log("PUT:" + url + ':' + put_msg)
-					retry_action = function(){console.log("PUT:" + url + ':' + put_msg); $http.put(url, put_msg).then(function(resp){$scope.http_success(resp, success_action, invalid_action, error_action)}, function(resp){$scope.http_fail(resp, invalid_action, error_action)})};
-					$http.put(url, put_msg).then(function(resp){$scope.http_success(resp, success_action, invalid_action, error_action, retry_action)}, function(resp){$scope.http_fail(resp, invalid_action, error_action, retry_action)});
+					var retry_action = function (retry_url) {
+													return function(){console.log("GET:" + retry_url + (params.length > 0 ? '&' : '?') + 'token=' + $scope.token); $http.get(retry_url + (params.length > 0 ? '&' : '?') + 'token=' + $scope.token).then(function(resp){$scope.http_success(resp, success_action, invalid_action, error_action)},function(resp){$scope.http_fail(resp, invalid_action, error_action)})};
+															}(req_url);
+					console.log("GET:" + req_url + (params.length > 0 ? '&' : '?') + 'token=' + $scope.token)
+					$http.get(req_url + (params.length > 0 ? '&' : '?') + 'token=' + $scope.token).then(function(resp){$scope.http_success(resp, success_action, invalid_action, error_action, retry_action)}, function(resp){$scope.http_fail(resp, invalid_action, error_action, retry_action)});
 				}
 				$scope.http_post = function(url, msg, success_action, invalid_action, error_action)
 				{
 					$scope.service_message = "";
-					post_msg = msg
+					var retry_action = function (retry_url, retry_msg) {
+													return function(){retry_msg['token'] = $scope.token; retry_post_msg = JSON.stringify(retry_msg); console.log("post:" + retry_url + ':' + retry_post_msg); $http.post(retry_url, retry_msg).then(function(resp){$scope.http_success(resp, success_action, invalid_action, error_action)}, function(resp){$scope.http_fail(resp, invalid_action, error_action)})};
+															}(url, msg);
 					msg['token'] = $scope.token
 					post_msg = JSON.stringify(msg)
-					console.log("POST:" + url + ':' + post_msg)
-					retry_action = function(){console.log("POST:" + url + ':' + post_msg); $http.post(url, post_msg).then(function(resp){$scope.http_success(resp, success_action, invalid_action, error_action)}, function(resp){$scope.http_fail(resp, invalid_action, error_action)})};
+					console.log("post:" + url + ':' + post_msg)
 					$http.post(url, post_msg).then(function(resp){$scope.http_success(resp, success_action, invalid_action, error_action, retry_action)}, function(resp){$scope.http_fail(resp, invalid_action, error_action, retry_action)});
 				}
-				$scope.http_delete = function(url, success_action, invalid_action, error_action)
-				{
-					$scope.service_message = "";
-					console.log("DELETE:" + url)
-					retry_action = function(){console.log("DELETE:" + url); $http.get(url).then(function(resp){$scope.http_success(resp, success_action, invalid_action, error_action)}, function(resp){$scope.http_fail(resp, invalid_action, error_action)})};
-					$http.delete(url + "?token=" + $scope.token).then(function(resp){$scope.http_success(resp, success_action, invalid_action, error_action, retry_action)}, function(resp){$scope.http_fail(resp, invalid_action, error_action, retry_action)})
-				}
-
 				$scope.home_country = 'United Kingdom';
 				$scope.home_city = '';
 				$scope.home_town = '';
