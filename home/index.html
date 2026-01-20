@@ -880,6 +880,8 @@
 			    {
 					$scope.price_stat_data = '';
 					$scope.price_data = '';
+					$scope.frm_prices.pub_type = null;
+					$scope.upd_prices_pub_type();
 			    } 
 			    $scope.upd_prices_pub_type = function()
 			    {
@@ -897,9 +899,9 @@
 								for (p in response.data.pub)
 								{
 									pub = response.data.pub[p]
-									if (pub.type == $scope.frm_prices.pub_type && pub.town == $scope.frm_prices.pub_town && pub.city == $scope.frm_prices.pub_city && pub.country == $scope.frm_prices.pub_country)
+									if (pub.type == $scope.frm_prices.pub_type && (pub.town == $scope.frm_prices.pub_town || $scope.frm_prices.pub_town == null) && (pub.city == $scope.frm_prices.pub_city || $scope.frm_prices.pub_city == null) && pub.country == $scope.frm_prices.pub_country)
 									{ 
-										$scope.frm_prices.pub_name_list.push({'name':pub.name, 'id':pub.audit.id});
+										$scope.frm_prices.pub_name_list.push({'display-name':pub['display-name'], 'name':pub['name'], 'id':pub.audit.id});
 									}
 								}
 								if ($scope.frm_prices.pub_name_list.length == 1)
