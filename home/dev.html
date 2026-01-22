@@ -135,7 +135,7 @@
 									</div>
 									<div class="row mt-1">
 										<div class="col">
-											<label class="form-label">Tell me about a new pint price<!--Ask me about pint prices or tell me about a new one-->
+											<label class="form-label">Ask about recent pint prices or tell me about a new one<!--Ask me about pint prices or tell me about a new one-->
 												<a href="#" class="link-info text-decoration-none" data-bs-toggle="collapse" data-bs-target="#agent_info">
 													<span class="ms-2">
 														<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-square text-secondary" viewBox="0 0 16 16">
@@ -150,7 +150,7 @@
 									</div>
 									<div class="row mt-0">
 										<div class="col">
-											<textarea class="form-control bg-dark text-light" ng-model="frm_agent.command" placeholder="Guinness is a fiver at the Lescar in Sheffield" rows="2" required></textarea>
+											<textarea class="form-control bg-dark text-light" ng-model="frm_agent.command" placeholder="Say things like 'How much is the most expensive pint of Guinness in Sheffield in the past year?' or 'Guinness is a fiver at the Lescar in Sheffield'" rows="2" required></textarea>
 										</div>
 									</div>
 									<div class="row mt-3">
@@ -417,7 +417,7 @@
 													<div ng:repeat="y in sorted_price_stat_data_year = r['by-year'] | orderBy: ['year']:true">
 														<div class="row mt-0">
 															<div class="col">
-																<span class="text-muted">{{frm_prices.display_ccy_symbol}}{{get_number_display(y['avg-price'] / frm_prices.display_fxrate, 2)}} from {{get_number_display(y.count,0)}} prices {{get_years_ago_display(y.year)}}</span>
+																<span class="text-muted">{{frm_prices.display_ccy_symbol}}{{get_number_display(y['avg-price'] / frm_prices.display_fxrate, 2)}} {{get_number_display(y.count,0)}} prices {{get_years_ago_display(y.year)}}</span>
 															</div>
 														</div>
 													</div>
@@ -439,7 +439,7 @@
 													<div ng:repeat="y in sorted_price_stat_data_year = r['by-year'] | orderBy: ['year']:true">
 														<div class="row mt-0">
 															<div class="col">
-																<span class="text-muted">{{frm_prices.display_ccy_symbol}}{{get_number_display(y['avg-price'] / frm_prices.display_fxrate, 2)}} from {{get_number_display(y.count,0)}} prices {{get_years_ago_display(y.year)}}</span>
+																<span class="text-muted">{{frm_prices.display_ccy_symbol}}{{get_number_display(y['avg-price'] / frm_prices.display_fxrate, 2)}} {{get_number_display(y.count,0)}} prices {{get_years_ago_display(y.year)}}</span>
 															</div>
 														</div>
 													</div>
