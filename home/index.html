@@ -998,48 +998,42 @@
 									$scope.head_stat_avgs = $scope.head_stat_avgs + stats[i]['beer']['type'] + ' is ' + $scope.home_ccy_symbol + $scope.get_number_display(stats[i]['recent-avg-price'], 2);
 									frst = false;
 								}
-/*								if ($scope.home_country == 'United Kingdom')
-								{
-									var params = 'style=small';
-									params = params + '&pubCountry=' + $scope.home_country;
-									params = params + '&pubCity=Greater London'
-									$scope.http_get($scope.service_path + '/beerpricestats/BeerTypeAndPubTypeAndCity', params, function(response)
-										{
-											stats = response.data['beer-price-stats'];
-											$scope.head_stat_ldntot = 0;
-											$scope.head_stat_ldntotyr = 0;
-											if (stats.length>0)
-											{
-												$scope.head_stat_ldnavgs = '';
-												var frst = true;
-												var tot = 0;
-												for (i = 0; i < stats.length; i++)
-												{
-													tot = tot + stats[i]['count'];
-												}
-												$scope.head_stat_ldntot = tot
-												for (i = 0; i < stats.length; i++)
-												{
-													for (y = 0; y < stats[i]['by-year'].length; y++)
-													{
-														if (stats[i]['by-year'][y]['year'] == new Date().getFullYear())
-														{
-															$scope.head_stat_ldntotyr = stats[i]['by-year'][y]['count']
-															if (!frst)
-															{	
-																$scope.head_stat_ldnavgs = $scope.head_stat_ldnavgs + ', ';
-															}
-															$scope.head_stat_ldnavgs = $scope.head_stat_ldnavgs + stats[i]['beer']['type'] + ' is ' + $scope.home_ccy_symbol + $scope.get_number_display(stats[i]['by-year'][y]['avg-price'], 2);
-															frst = false;
-														}
-													}
-												}
-											}
-										});
-								}
-*/
 							}
 						});
+
+									scope.working_head_stats = true;
+									var stats = [];
+
+									$scope.head_stat_tot = 0;
+									$scope.head_stat_totyr = 0;
+									$scope.head_stat_avgs = '';
+
+									url = $scope.service_path + '/refdata/ccy';
+									$scope.http_get(url, '', function(response)
+										{
+											$scope.frm_prices.ccy_list = response.data['ref-data-ccy'];
+											for (ccy in $scope.frm_prices.ccy_list)
+											{
+												if ($scope.frm_prices.ccy_list[ccy].code == $scope.home_ccy)
+												{
+													$scope.home_ccy_symbol = $scope.frm_prices.ccy_list[ccy].symbol;
+													if ($scope.home_ccy_symbol.length > 1)
+													{
+														$scope.home_ccy_symbol = $scope.home_ccy_symbol + ' ';
+													}
+												}	
+											}
+											$scope.frm_prices.display_ccy = $scope.home_ccy;
+											$scope.frm_prices.display_ccy_symbol = $scope.home_ccy_symbol;
+											$scope.frm_prices.display_fxrate = 1
+
+											url = $scope.service_path + '/beerprice';
+											$scope.http_get(url, 'page=1&pageSize=5&pubCountry=' + $scope.home_country, function(response)
+												{
+													$scope.head_stat_latest = response.data['beer-price'];
+												});
+											$scope.working_head_stats = false
+								});
 				}
 
 				$scope.set_location = function(coords)
@@ -1164,42 +1158,7 @@
 									$scope.logginin = false;
 									$scope.loggedin = true;
 
-									$scope.working_head_stats = true;
-									var stats = [];
-
-									$scope.head_stat_tot = 0;
-									$scope.head_stat_totyr = 0;
-									$scope.head_stat_avgs = '';
-
-									url = $scope.service_path + '/refdata/ccy';
-									$scope.http_get(url, '', function(response)
-										{
-											$scope.frm_prices.ccy_list = response.data['ref-data-ccy'];
-											for (ccy in $scope.frm_prices.ccy_list)
-											{
-												if ($scope.frm_prices.ccy_list[ccy].code == $scope.home_ccy)
-												{
-													$scope.home_ccy_symbol = $scope.frm_prices.ccy_list[ccy].symbol;
-													if ($scope.home_ccy_symbol.length > 1)
-													{
-														$scope.home_ccy_symbol = $scope.home_ccy_symbol + ' ';
-													}
-												}	
-											}
-											$scope.frm_prices.display_ccy = $scope.home_ccy;
-											$scope.frm_prices.display_ccy_symbol = $scope.home_ccy_symbol;
-											$scope.frm_prices.display_fxrate = 1
-
-											url = $scope.service_path + '/beerprice';
-											$scope.http_get(url, 'page=1&pageSize=5&pubCountry=' + $scope.home_country, function(response)
-												{
-													$scope.head_stat_latest = response.data['beer-price'];
-												});
-											$scope.working_head_stats = false
-											$scope.upd_location_stats()
-										});
-								});
-						});
+									$scope.upd_location_stats();
 				}
 				$scope.login()
 
