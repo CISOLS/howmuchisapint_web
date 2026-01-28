@@ -373,7 +373,7 @@
 												<span class="text-light">{{get_prices_info}}</span>
 											</div>
 										</div>
-										<div ng-show="!working_get_prices &&  && get_prices_err.length==0 && price_data['beer-price'].length>0">
+										<div ng-show="!working_get_prices && get_prices_err.length==0 && price_data['beer-price'].length>0">
 											<div ng:repeat="r in sorted_price_data = (price_data['beer-price'] | orderBy: 'date':true)">
 												<div ng:if="$index == 0 || r.date != sorted_price_data[$index - 1].date">
 													<div class="row mt-2">
