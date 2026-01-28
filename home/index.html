@@ -369,7 +369,7 @@
 											<div class="col" ng-show="!working_get_prices && get_prices_err.length>0">
 												<span class="text-danger">{{get_prices_err}}</span>
 											</div>
-											<div class="col" ng-show="!working_get_prices && get_prices_info.length>0">
+											<div class="col" ng-show="!working_get_prices && get_prices_info.length>0 && get_prices_err.length==0">
 												<span class="text-light">{{get_prices_info}}</span>
 											</div>
 										</div>
@@ -945,20 +945,10 @@
 					}
 					if ($scope.frm_prices.display_fxrate == 0)
 					{
-						$scope.add_price_err = '';
-						$scope.add_price_info = '';
-						$scope.get_prices_info = '';
-						$scope.price_stat_data = '';
-						$scope.price_data = '';
-						$scope.get_prices_err = 'No FX rate!'
+						$scope.get_prices_err = 'No FX rate'
 					}
 					else
 					{
-						$scope.add_price_err = '';
-						$scope.add_price_info = '';
-						$scope.get_prices_info = '';
-						$scope.price_stat_data = '';
-						$scope.price_data = '';
 						$scope.get_prices_err = '';
 					}
 			    }
