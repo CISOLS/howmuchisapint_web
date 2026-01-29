@@ -925,9 +925,14 @@
 							url = $scope.service_path + '/fxrate/' + $scope.frm_prices.ccy + $scope.frm_prices.display_ccy;
 							$scope.http_get(url, 'latest=Y', function(response)
 								{
-									if (response.data['fx-rate'].length > 0)
+									if (response.data['fx-rate']['rate'] != undefined)
 									{
 										$scope.frm_prices.display_fxrate = response.data['fx-rate']['rate'];
+										$scope.get_prices_err = '';
+									}
+									else
+									{
+										$scope.get_prices_err = 'No FX rate'
 									}
 								});
 						}
@@ -942,14 +947,6 @@
 								}
 							}
 						}
-					}
-					if ($scope.frm_prices.display_fxrate == 0)
-					{
-						$scope.get_prices_err = 'No FX rate'
-					}
-					else
-					{
-						$scope.get_prices_err = '';
 					}
 			    }
 
