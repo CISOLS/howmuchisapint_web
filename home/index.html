@@ -669,12 +669,7 @@
 					console.log("post:" + url + ':' + post_msg)
 					$http.post(url, post_msg).then(function(resp){$scope.http_success(resp, success_action, invalid_action, error_action, retry_action)}, function(resp){$scope.http_fail(resp, invalid_action, error_action, retry_action)});
 				}
-				$scope.home_country = 'United Kingdom';
-				$scope.home_city = '';
-				$scope.home_town = '';
-				$scope.home_pc = '';
-				$scope.home_ccy = '';				
-				$scope.home_ccy_symbol = '';				
+				
 				$http.get('https://api.ipgeolocation.io/getip?apiKey=7109be59140c4b538dfc3bacb50a241a').then(
 				function(response)
 				{
@@ -682,12 +677,15 @@
 					$http.get('https://api.ipgeolocation.io/ipgeo?ip=' + response.data.ip + '&apiKey=7109be59140c4b538dfc3bacb50a241a').then(
 						function(response)
 						{
-							//$scope.user = 'guest-' + response.data.ip
-							$scope.home_country = response.data.country_name;
-							$scope.home_town = response.data.city;
-							$scope.home_city = response.data.district;
-							$scope.home_pc = response.data.zipcode;
-							console.log($scope.home_country+ ','+$scope.home_city+','+$scope.home_town+','+$scope.home_pc);
+							if ($scope.home_city == '')
+							{
+								//$scope.user = 'guest-' + response.data.ip
+								$scope.home_country = response.data.country_name;
+								$scope.home_town = response.data.city;
+								$scope.home_city = response.data.district;
+								$scope.home_pc = response.data.zipcode;
+								console.log('default:'+$scope.home_country+ ','+$scope.home_city+','+$scope.home_town+','+$scope.home_pc);
+							}
 						},function(response){}
 					);
 				})
@@ -1033,6 +1031,7 @@
 					$scope.frm_prices.display_ccy = $scope.home_ccy;
 					$scope.frm_prices.display_ccy_symbol = $scope.home_ccy_symbol;
 					$scope.frm_prices.display_fxrate = 1
+					console.log($scope.home_ccy_symbol +','+ $scope.home_ccy);
 
 					$scope.working_head_stats = true;
 					var stats = [];
@@ -1047,7 +1046,6 @@
 							$scope.working_head_stats = false
 						});
 
-					console.log($scope.home_country+ ','+$scope.home_city+','+$scope.home_town+','+$scope.home_pc +','+ $scope.home_ccy_symbol +','+ $scope.home_ccy);
 
 					var params = 'style=small';
 					params = params + '&pubCountry=' + $scope.home_country;
@@ -1162,6 +1160,7 @@
 								{
 									$scope.home_city = $scope.home_town;
 								}
+								console.log('approved:'+$scope.home_country+ ','+$scope.home_city+','+$scope.home_town+','+$scope.home_pc);
 								$scope.upd_location_stats();
 							}, 
 							function(response) 
