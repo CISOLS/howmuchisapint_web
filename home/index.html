@@ -736,6 +736,10 @@
 			    {
 					$scope.price_stat_data = '';
 					$scope.price_data = '';
+					$scope.get_prices_err = '';
+					$scope.add_price_err = '';
+					$scope.add_price_info = '';
+					$scope.get_prices_info = '';
 					$scope.frm_prices.pub_city = null;
 					$scope.frm_prices.pub_town = null;
 					$scope.frm_prices.pub_type = null;
@@ -805,6 +809,10 @@
 			    {
 					$scope.price_stat_data = '';
 					$scope.price_data = '';
+					$scope.get_prices_err = '';
+					$scope.add_price_err = '';
+					$scope.add_price_info = '';
+					$scope.get_prices_info = '';
 					$scope.frm_prices.pub_town = null;
 					$scope.frm_prices.pub_pc = null;
 					$scope.frm_prices.pub_type = null;
@@ -845,6 +853,10 @@
 			    {
 					$scope.price_stat_data = '';
 					$scope.price_data = '';
+					$scope.get_prices_err = '';
+					$scope.add_price_err = '';
+					$scope.add_price_info = '';
+					$scope.get_prices_info = '';
 					$scope.frm_prices.pub_type = null;
 					$scope.upd_prices_pub_type();
 			    } 
@@ -852,6 +864,10 @@
 			    {
 					$scope.price_stat_data = '';
 					$scope.price_data = '';
+					$scope.get_prices_err = '';
+					$scope.add_price_err = '';
+					$scope.add_price_info = '';
+					$scope.get_prices_info = '';
 					$scope.frm_prices.pub_name = null;
 					$scope.frm_prices.pub_name_list = [];
 					if ($scope.frm_prices.pub_type != null)
@@ -880,11 +896,19 @@
 			    {
 					$scope.price_stat_data = '';
 					$scope.price_data = '';
+					$scope.get_prices_err = '';
+					$scope.add_price_err = '';
+					$scope.add_price_info = '';
+					$scope.get_prices_info = '';
 			    }
 			    $scope.upd_prices_beer_type = function()
 			    {
 					$scope.price_stat_data = '';
 					$scope.price_data = '';
+					$scope.get_prices_err = '';
+					$scope.add_price_err = '';
+					$scope.add_price_info = '';
+					$scope.get_prices_info = '';
 					$scope.frm_prices.beer_name_list = [];
 					$scope.frm_prices.beer_name = null;
 					if ($scope.frm_prices.beer_type != null)
@@ -913,6 +937,10 @@
 			    {
 					$scope.price_stat_data = '';
 					$scope.price_data = '';
+					$scope.get_prices_err = '';
+					$scope.add_price_err = '';
+					$scope.add_price_info = '';
+					$scope.get_prices_info = '';
 			    }
 			    $scope.upd_prices_display_ccy = function()
 			    {
@@ -922,17 +950,36 @@
 						if ($scope.frm_prices.ccy != $scope.frm_prices.display_ccy)
 						{
 							$scope.frm_prices.display_fxrate = 0;
-							url = $scope.service_path + '/fxrate/' + $scope.frm_prices.ccy + $scope.frm_prices.display_ccy;
-							$scope.http_get(url, 'latest=Y', function(response)
+							$scope.http_get($scope.service_path + '/fxrate/' + $scope.frm_prices.ccy + $scope.frm_prices.display_ccy, 'latest=Y', function(response)
 								{
 									if (response.data['fx-rate']['rate'] != undefined)
 									{
 										$scope.frm_prices.display_fxrate = response.data['fx-rate']['rate'];
+										if (response.data['fx-rate']['devisor'] == $scope.frm_prices.ccy)
+										{
+											$scope.frm_prices.display_fxrate = 1/$scope.frm_prices.display_fxrate;
+										}
 										$scope.get_prices_err = '';
 									}
-									else
+									else if ($scope.frm_prices.display_fxrate == 0)
 									{
-										$scope.get_prices_err = 'No FX rate'
+										$scope.http_get($scope.service_path + '/fxrate/' + $scope.frm_prices.display_ccy + $scope.frm_prices.ccy, 'latest=Y', function(response)
+											{
+												if (response.data['fx-rate']['rate'] != undefined)
+												{
+													$scope.frm_prices.display_fxrate = response.data['fx-rate']['rate'];
+													if (response.data['fx-rate']['devisor'] == $scope.frm_prices.ccy)
+													{
+														$scope.frm_prices.display_fxrate = 1/$scope.frm_prices.display_fxrate;
+													}
+													console.log($scope.frm_prices.display_fxrate)
+													$scope.get_prices_err = '';
+												}
+												else
+												{
+													$scope.get_prices_err = 'No FX rate'
+												}
+											});
 									}
 								});
 						}
