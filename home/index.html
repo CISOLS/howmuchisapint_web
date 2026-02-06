@@ -241,8 +241,8 @@
 										<div class="row mt-3">
 											<div class="col">
 												<select ng-options="ctry.name as ctry.name for ctry in (country_list | orderBy: 'name')" class="form-control bg-dark text-light"" ng-model="frm_pub.country"></select>
-												<input class="form-control bg-dark text-light"" type="text" ng-model="frm_pub.city" placeholder="City"/>
-												<input class="form-control bg-dark text-light"" type="text" ng-model="frm_pub.town" placeholder="Town"/>
+												<input class="form-control bg-dark text-light"" type="text" ng-model="frm_pub.city" placeholder="County"/>
+												<input class="form-control bg-dark text-light"" type="text" ng-model="frm_pub.town" placeholder="City"/>
 											</div>
 										</div>
 										<div class="row mt-3">
@@ -322,10 +322,10 @@
 													<option ng-repeat="ctry in sorted = (country_list | orderBy: 'name')" value="{{ctry.name}}">{{ctry.name}}</option>
 												</select>
 												<select ng-options="pubcity.name as pubcity.name for pubcity in (frm_prices.pub_city_list | orderBy:'name')" class="form-control bg-dark text-light" ng-change="upd_prices_pub_city()" ng-model="frm_prices.pub_city" >
-													<option value=""> -- City  -- </option>
+													<option value=""> -- County  -- </option>
 												</select>
 												<select ng-options="pubtown.name as pubtown.name for pubtown in (frm_prices.pub_town_list | orderBy:'name')" class="form-control bg-dark text-light	" ng-change="upd_prices_pub_town()" ng-model="frm_prices.pub_town" >
-													<option value=""> -- Town  -- </option>
+													<option value=""> -- City  -- </option>
 												</select>
 											</div>
 										</div>
