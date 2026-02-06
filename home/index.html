@@ -800,7 +800,13 @@
 							}
 							else if ($scope.home_city != '')
 							{
-								$scope.frm_prices.pub_city = $scope.home_city;
+								for (t in $scope.frm_prices.pub_city_list)
+								{
+									if ($scope.frm_prices.pub_city_list[t]['name'] ==  $scope.home_city)	
+									{
+										$scope.frm_prices.pub_city = $scope.home_city;
+									}
+								}
 							}
 							$scope.upd_prices_pub_city();
 						});
@@ -860,7 +866,13 @@
 							}
 							else if ($scope.home_town != '')
 							{
-								$scope.frm_prices.pub_town = $scope.home_town;
+								for (t in $scope.frm_prices.pub_town_list)
+								{
+									if ($scope.frm_prices.pub_town_list[t]['name'] ==  $scope.home_town)	
+									{
+										$scope.frm_prices.pub_town = $scope.home_town;
+									}
+								}
 							}
 							$scope.upd_prices_pub_town();
 						});
