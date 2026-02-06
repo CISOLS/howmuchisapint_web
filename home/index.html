@@ -738,15 +738,15 @@
 					$scope.add_price_err = '';
 					$scope.add_price_info = '';
 					$scope.get_prices_info = '';
-					$scope.frm_prices.pub_city = null;
-					$scope.frm_prices.pub_town = null;
-					$scope.frm_prices.pub_type = null;
-					$scope.frm_prices.pub_name = null;
+//					$scope.frm_prices.pub_city = null;
+//					$scope.frm_prices.pub_town = null;
+//					$scope.frm_prices.pub_type = null;
+//					$scope.frm_prices.pub_name = null;
 					$scope.frm_prices.pub_city_list = [];
 					$scope.frm_prices.pub_town_list = [];
-					$scope.frm_prices.pub_type_list = [];
 					if ($scope.frm_prices.pub_country != null)
 					{
+						$scope.frm_prices.pub_type_list = [];
 						for (ctry in $scope.country_list)
 						{
 							if ($scope.country_list[ctry].name == $scope.frm_prices.pub_country)
@@ -756,52 +756,54 @@
 							}
 						}
 						$scope.upd_prices_display_ccy();
-
-						url = $scope.service_path + '/pub';
-						$scope.http_get(url, '', function(response)
-							{
-								$scope.frm_prices.pub_city_list = [];
-								$scope.frm_prices.pub_city = null;
-								for (p in response.data.pub)
-								{
-									pub = response.data.pub[p]
-									if ((pub.town == $scope.frm_prices.pub_town || $scope.frm_prices.pub_town == null) && (pub.city == $scope.frm_prices.pub_city || $scope.frm_prices.pub_city == null) && pub.country == $scope.frm_prices.pub_country)
-									{ 
-										var ex = false;
-										for (p2 in $scope.frm_prices.pub_type_list)
-										{
-											ex = ex || $scope.frm_prices.pub_type_list[p2].name == pub.type;
-										}
-										if (!ex)
-										{
-											$scope.frm_prices.pub_type_list.push({'name':pub.type});
-										}
-									}
-									if (response.data.pub[p].country == $scope.frm_prices.pub_country)
-									{ 
-										var ex = false;
-										for (p2 in $scope.frm_prices.pub_city_list)
-										{
-											ex = ex || $scope.frm_prices.pub_city_list[p2].name == pub.city;
-										}
-										if (!ex)
-										{
-											$scope.frm_prices.pub_city_list.push({'name':pub.city});
-										}
-									}
-								}
-								if ($scope.frm_prices.pub_city_list.length == 1)
-								{
-									$scope.frm_prices.pub_city = $scope.frm_prices.pub_city_list[0].city;
-								}
-								$scope.upd_prices_pub_city();
-								if ($scope.frm_prices.pub_type_list.length == 1)
-								{
-									$scope.frm_prices.pub_type = $scope.frm_prices.pub_type_list[0].name;
-								}
-								$scope.upd_prices_pub_type();
-							});
 					}
+					
+					url = $scope.service_path + '/pub';
+					$scope.http_get(url, '', function(response)
+						{
+							for (p in response.data.pub)
+							{
+								pub = response.data.pub[p]
+								if (pub.country == $scope.frm_prices.pub_country)
+								{ 
+									var ex = false;
+									for (p2 in $scope.frm_prices.pub_type_list)
+									{
+										ex = ex || $scope.frm_prices.pub_type_list[p2].name == pub.type;
+									}
+									if (!ex)
+									{
+										$scope.frm_prices.pub_type_list.push({'name':pub.type});
+									}
+								}
+								if (response.data.pub[p].country == $scope.frm_prices.pub_country)
+								{ 
+									var ex = false;
+									for (p2 in $scope.frm_prices.pub_city_list)
+									{
+										ex = ex || $scope.frm_prices.pub_city_list[p2].name == pub.city;
+									}
+									if (!ex)
+									{
+										$scope.frm_prices.pub_city_list.push({'name':pub.city});
+									}
+								}
+							}
+							if ($scope.frm_prices.pub_type_list.length == 1)
+							{
+								$scope.frm_prices.pub_type = $scope.frm_prices.pub_type_list[0].name;
+							}
+							$scope.upd_prices_pub_type();
+							if ($scope.frm_prices.pub_city_list.length == 1)
+							{
+								$scope.frm_prices.pub_city = $scope.frm_prices.pub_city_list[0].city;
+							}
+							else if ($scope.home_city != '')
+							{
+								$scope.frm_prices.pub_city = $scope.home_city;
+							}
+							$scope.upd_prices_pub_city();
+						});
 				}
 			    $scope.upd_prices_pub_city = function()
 			    {
@@ -811,41 +813,57 @@
 					$scope.add_price_err = '';
 					$scope.add_price_info = '';
 					$scope.get_prices_info = '';
-					$scope.frm_prices.pub_town = null;
-					$scope.frm_prices.pub_pc = null;
-					$scope.frm_prices.pub_type = null;
-					$scope.frm_prices.pub_name = null;
+//					$scope.frm_prices.pub_town = null;
+//					$scope.frm_prices.pub_type = null;
+//					$scope.frm_prices.pub_name = null;
 					$scope.frm_prices.pub_town_list = [];
 					if ($scope.frm_prices.pub_city != null)
 					{
-						url = $scope.service_path + '/pub';
-						$scope.http_get(url, '', function(response)
+						$scope.frm_prices.pub_type_list = [];
+					}
+					url = $scope.service_path + '/pub';
+					$scope.http_get(url, '', function(response)
+						{
+							$scope.frm_prices.pub_town = null;
+							$scope.frm_prices.pub_town_list = [];
+							for (p in response.data.pub)
 							{
-								$scope.frm_prices.pub_town = null;
-								$scope.frm_prices.pub_town_list = [];
-								for (p in response.data.pub)
-								{
-									pub = response.data.pub[p]
-									if (pub.city == $scope.frm_prices.pub_city && pub.country == $scope.frm_prices.pub_country)
-									{ 
-										var ex = false;
-										for (p2 in $scope.frm_prices.pub_town_list)
-										{
-											ex = ex || $scope.frm_prices.pub_town_list[p2].name == pub.town;
-										}
-										if (!ex)
-										{
-											$scope.frm_prices.pub_town_list.push({'name':pub.town});
-										}
+								pub = response.data.pub[p]
+								if ((pub.city == $scope.frm_prices.pub_city || $scope.frm_prices.pub_city == null) && pub.country == $scope.frm_prices.pub_country)
+								{ 
+									var ex = false;
+									for (p2 in $scope.frm_prices.pub_type_list)
+									{
+										ex = ex || $scope.frm_prices.pub_type_list[p2].name == pub.type;
+									}
+									if (!ex)
+									{
+										$scope.frm_prices.pub_type_list.push({'name':pub.type});
 									}
 								}
-								if ($scope.frm_prices.pub_town_list.length == 1)
-								{
-									$scope.frm_prices.pub_town = $scope.frm_prices.pub_town_list[0].name;
+								if (pub.city == $scope.frm_prices.pub_city && pub.country == $scope.frm_prices.pub_country)
+								{ 
+									var ex = false;
+									for (p2 in $scope.frm_prices.pub_town_list)
+									{
+										ex = ex || $scope.frm_prices.pub_town_list[p2].name == pub.town;
+									}
+									if (!ex)
+									{
+										$scope.frm_prices.pub_town_list.push({'name':pub.town});
+									}
 								}
-								$scope.upd_prices_pub_town();
-							});
-					}
+							}
+							if ($scope.frm_prices.pub_town_list.length == 1)
+							{
+								$scope.frm_prices.pub_town = $scope.frm_prices.pub_town_list[0].name;
+							}
+							else if ($scope.home_town != '')
+							{
+								$scope.frm_prices.pub_town = $scope.home_town;
+							}
+							$scope.upd_prices_pub_town();
+						});
 				} 
 			    $scope.upd_prices_pub_town = function()
 			    {
@@ -999,10 +1017,6 @@
 				{
 					$scope.frm_prices.pub_country = $scope.home_country;
 					$scope.upd_prices_pub_country();
-					$scope.frm_prices.pub_city = $scope.home_city;
-					$scope.upd_prices_pub_city();
-					$scope.frm_prices.pub_town = $scope.home_town;
-					$scope.upd_prices_pub_town();
 
 					$scope.frm_pub.country = $scope.home_country;
 					$scope.frm_pub.city = $scope.home_city;
@@ -1579,14 +1593,14 @@
 								$scope.frm_pub.name = '';
 
 								$scope.frm_prices.pub_country = response.data.pub.country;
-								$scope.upd_prices_pub_country();
 								$scope.frm_prices.pub_city = response.data.pub.city;
-								$scope.upd_prices_pub_city();
 								$scope.frm_prices.pub_town = response.data.pub.town;
-								$scope.upd_prices_pub_town();
 								$scope.frm_prices.pub_type = response.data.pub.type;
-								$scope.upd_prices_pub_type();
 								$scope.frm_prices.pub_name = response.data.pub;
+								$scope.upd_prices_pub_country();
+//								$scope.upd_prices_pub_city();
+//								$scope.upd_prices_pub_town();
+//								$scope.upd_prices_pub_type();
 								$scope.add_pub_err = response.statusText;
 								$scope.working_add_pub = false;
 							}, 
